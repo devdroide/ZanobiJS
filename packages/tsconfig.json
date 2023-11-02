@@ -2,7 +2,7 @@
   "files": [],
   "references": [
     {
-      "path": "./commons/tsconfig.build.json"
+      "path": "./common/tsconfig.build.json"
     },
     {
       "path": "./core/tsconfig.build.json"
