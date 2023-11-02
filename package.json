@@ -1,0 +1,24 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.8.7",
+    "lerna": "^7.4.1",
+    "typescript": "^5.2.2"
+  },
+  "scripts": {
+    "build": "tsc -b -v packages",
+    "build:dev": "tsc -b -v packages --watch",
+    "build:prod": "tsc -b -v packages",
+    "clean": "tsc -b --clean packages",
+    "test": "nyc --reporter=lcov mocha -r ts-node/register packages/**/*.spec.ts --timeout 5000 --exit",
+    "prerelease:alpha": "lerna version prerelease --preid alpha",
+    "prerelease:beta": "lerna version prerelease --preid beta",
+    "publish:alpha": "npm run build:prod  && npm run prerelease && lerna publish from-package --dist-tag alpha",
+    "publish:beta": "npm run build:prod && npm run prerelease && lerna publish from-package --dist-tag beta",
+    "publish": "npm run build:prod && lerna publish"
+  }
+}

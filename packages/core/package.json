@@ -1,0 +1,28 @@
+{
+  "name": "zanobijs-core",
+  "version": "0.0.0",
+  "description": "Zanobi - modern, small, powerful node.js lambda framework (@core)",
+  "keywords": [],
+  "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
+  "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise e archivo de LICENCIA.",
+  "main": "dist/index.js",
+  "directories": {
+    "dist": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devdroide/ZanobiJS.git"
+  },
+  "scripts": {
+    "tsc": "tsc",
+    "test": "node ./__tests__/core.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/devdroide/ZanobiJS/issues"
+  },
+  "homepage": "https://github.com/devdroide/ZanobiJS#readme"
+}
