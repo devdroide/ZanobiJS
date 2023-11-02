@@ -14,6 +14,7 @@
     "build:dev": "tsc -b -v packages --watch",
     "build:prod": "tsc -b -v packages",
     "clean": "tsc -b --clean packages",
+    "test": "nyc --reporter=lcov mocha -r ts-node/register packages/**/*.spec.ts --timeout 5000 --exit",
     "prerelease:alpha": "lerna version prerelease --preid alpha",
     "prerelease:beta": "lerna version prerelease --preid beta",
     "publish:alpha": "npm run build:prod  && npm run prerelease && lerna publish from-package --dist-tag alpha",
