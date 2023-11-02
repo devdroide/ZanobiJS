@@ -14,10 +14,10 @@
     "allowJs": false,
     "outDir": "dist",
     "baseUrl": ".",
-    "types": ["node"],
+    "types": ["node", "mocha", "sinon"],
     "paths": {
-      "zanobijs-commons": ["./packages/commons"],
-      "zanobijs-commons/*": ["./packages/commons/*"],
+      "zanobijs-common": ["./packages/common"],
+      "zanobijs-common/*": ["./packages/common/*"],
       "zanobijs-core": ["./packages/core"],
       "zanobijs-core/*": ["./packages/core/*"]
     }

@@ -4,11 +4,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "devDependencies": {
-    "@types/node": "^20.8.7",
-    "lerna": "^7.4.1",
-    "typescript": "^5.2.2"
-  },
   "scripts": {
     "build": "tsc -b -v packages",
     "build:dev": "tsc -b -v packages --watch",
@@ -20,5 +15,68 @@
     "publish:alpha": "npm run build:prod  && npm run prerelease && lerna publish from-package --dist-tag alpha",
     "publish:beta": "npm run build:prod && npm run prerelease && lerna publish from-package --dist-tag beta",
     "publish": "npm run build:prod && lerna publish"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.9",
+    "@types/mocha": "^10.0.3",
+    "@types/node": "^20.8.7",
+    "@types/sinon": "^10.0.20",
+    "@typescript-eslint/eslint-plugin": "^6.9.1",
+    "@typescript-eslint/parser": "^6.9.1",
+    "chai": "^4.3.10",
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "lerna": "^7.4.1",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "prettier": "^3.0.3",
+    "sinon": "^17.0.1",
+    "sinon-chai": "^3.7.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
+  "engines": {
+    "node": ">= 16"
+  },
+  "nyc": {
+    "include": [
+      "packages/**/*.ts"
+    ],
+    "exclude": [
+      "**/*.js",
+      "**/*.d.ts",
+      "**/*.spec.ts",
+      "**/*.mock.ts",
+      "packages/**/__test__/**/*.ts",
+      "packages/**/test/**/*.ts",
+      "packages/testing/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "lcov",
+      "html",
+      "text-summary"
+    ],
+    "check-coverage": true,
+    "all": true,
+    "sourceMap": true,
+    "instrument": true
+  },
+  "mocha": {
+    "require": [
+      "ts-node/register",
+      "tsconfig-paths/register",
+      "node_modules/reflect-metadata/Reflect.js"
+    ],
+    "exit": true
   }
 }
