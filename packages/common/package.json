@@ -4,7 +4,7 @@
   "description": "Zanobi - modern, small, powerful node.js lambda framework (@common)",
   "keywords": [],
   "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
-  "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise e archivo de LICENCIA.",
+  "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise el archivo de LICENCIA.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "directories": {
