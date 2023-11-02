@@ -4,8 +4,17 @@
     "outDir": "./dist",
     "declaration": true,
     "declarationDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "zanobijs-common": ["../common/src"],
+      "zanobijs-common/*": ["../common/src/*"]
+    }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "test/**/*", "*.spec.ts"]
+  "exclude": ["node_modules", "dist", "test/**/*", "*.spec.ts"],
+  "references": [
+    {
+      "path": "../common/tsconfig.build.json"
+    }
+  ]
 }
