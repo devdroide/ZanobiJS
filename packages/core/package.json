@@ -32,5 +32,6 @@
   },
   "peerDependencies": {
     "zanobijs-common": "*"
-  }
+  },
+  "gitHead": "8c072ffa7048be60272ef6c629495603cd42df4a"
 }
