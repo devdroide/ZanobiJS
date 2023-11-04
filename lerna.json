@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "version": "1.0.0-beta.0",
+  "command": {
+    "version": {
+      "allowBranch": ["main", "beta"],
+      "conventionalCommits": true,
+      "message": "chore(release): publish %s"
+    }
+  }
+}

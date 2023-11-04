@@ -1,0 +1,29 @@
+{
+  "name": "zanobijs-common",
+  "version": "1.0.0-beta.0",
+  "description": "Zanobi - modern, small, powerful node.js lambda framework (@common)",
+  "keywords": [],
+  "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
+  "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise el archivo de LICENCIA.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "dist": "dist",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devdroide/ZanobiJS.git"
+  },
+  "bugs": {
+    "url": "https://github.com/devdroide/ZanobiJS/issues"
+  },
+  "homepage": "https://github.com/devdroide/ZanobiJS#readme",
+  "dependencies": {
+    "joi": "^17.11.0",
+    "reflect-metadata": "^0.1.13"
+  }
+}
