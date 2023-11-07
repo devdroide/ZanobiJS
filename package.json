@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc -b -v packages",
     "build:prod": "tsc -b -v packages",
-    "clean": "tsc -b --clean packages",
+    "clean": "npx gulp clean:packages",
     "test": "nyc --reporter=lcov mocha -r ts-node/register packages/**/*.spec.ts --timeout 5000 --exit",
     "version:newBeta": "lerna version premajor --preid beta --conventional-commits --conventional-prerelease --create-release github",
     "version:conventional": "lerna version --conventional-commits --create-release github",
@@ -15,7 +15,7 @@
     "publish:newBeta": "npm run build:prod && npm run version:newBeta && lerna publish from-package --dist-tag beta",
     "publish:conventionalBeta": "npm run build:prod && npm run version:conventional && lerna publish from-package --dist-tag beta",
     "publish:conventional": "npm run build:prod && npm run version:conventional && lerna publish from-package",
-    "publish": "npm run build:prod && npm run version:stable && lerna publish from-package"
+    "publish:stable": "npm run build:prod && npm run version:stable && lerna publish from-package"
   },
   "devDependencies": {
     "@types/chai": "^4.3.9",
@@ -28,6 +28,7 @@
     "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
+    "gulp": "^4.0.2",
     "lerna": "^7.4.1",
     "mocha": "^10.2.0",
     "nyc": "^15.1.0",

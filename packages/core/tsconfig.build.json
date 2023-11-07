@@ -1,16 +1,13 @@
 {
   "extends": "../tsconfig.build.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationDir": "./dist",
-    "rootDir": "./src",
+    "outDir": ".",
+    "rootDir": ".",
     "paths": {
-      "zanobijs-common": ["../common/src"],
-      "zanobijs-common/*": ["../common/src/*"]
+      "zanobijs-common": ["../common"],
+      "zanobijs-common/*": ["../common/*"]
     }
   },
-  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "test/**/*", "*.spec.ts"],
   "references": [
     {
