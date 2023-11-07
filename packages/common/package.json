@@ -1,5 +1,5 @@
 {
-  "name": "zanobijs-common",
+  "name": "@zanobijs/common",
   "version": "1.0.0-beta.0",
   "description": "Zanobi - modern, small, powerful node.js lambda framework (@common)",
   "keywords": [],
@@ -16,7 +16,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devdroide/ZanobiJS.git"
+    "url": "git+https://github.com/devdroide/ZanobiJS.git",
+    "directory": "packages/common"
   },
   "bugs": {
     "url": "https://github.com/devdroide/ZanobiJS/issues"

@@ -32,6 +32,7 @@ module.exports = {
         tsconfigRootDir: __dirname,
         sourceType: "module",
       },
+      ignorePatterns: ["gulpfile.js"],
       rules: {
         "@typescript-eslint/no-var-requires": "off",
       },
