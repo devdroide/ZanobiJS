@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { expect } from "chai";
-import { Module } from "../../src/injector";
+import { Module } from "../../injector";
 import { ModuleTestWithImports, ModuleTestWithInjector } from "../mocks/classModule.mock";
 
 describe("Core - Injector - module", () => {

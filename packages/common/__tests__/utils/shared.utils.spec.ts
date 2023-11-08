@@ -8,7 +8,7 @@ import {
   isNull,
   isObject,
   isUndefined,
-} from "../../src/utils/shared.utils";
+} from "../../utils/shared.utils";
 
 describe("Commons - Utils - shared utils", () => {
   it("should respond is function", () => {
