@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { aliasTo, asClass } from "awilix";
-import { IModuleConfig, ILoggerService } from "zanobijs-common";
-import { unCapitalize, isEmpty, isClass } from "zanobijs-common/utils/shared.utils";
-import { Logger } from "zanobijs-common/utils";
+import { aliasTo } from "awilix";
+import { IModuleConfig, ILoggerService } from "@zanobijs/common";
+import { unCapitalize, isEmpty, isClass } from "@zanobijs/common/utils/shared.utils";
+import { Logger } from "@zanobijs/common/utils";
 import { Injector } from "./injector";
 import { Metadata } from "../metadata";
 import { InvalidModuleAnnotationException } from "../exceptions";

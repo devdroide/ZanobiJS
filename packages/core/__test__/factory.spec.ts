@@ -1,5 +1,5 @@
 import { expect } from "chai";
-// import { Module } from "zanobijs-common";
+// import { Module } from "@zanobijs/common";
 import { Factory } from "../index";
 import { ModuleTestAll } from "./mocks/classModule.mock";
 import { ControllerWithDepen2 } from "./mocks/classWithDependeciesInject.mock";
@@ -10,7 +10,7 @@ describe("Core - factory", () => {
     it("should respond error to create factory by error @Module", () => {
       class ModuleWithoutDecorator {}
       try {
-        const factoryError = new Factory(ModuleWithoutDecorator);
+        new Factory(ModuleWithoutDecorator);
       } catch (error) {
         expect(error.message).to.be.equal(
           "The class must have an annotation @Module()",

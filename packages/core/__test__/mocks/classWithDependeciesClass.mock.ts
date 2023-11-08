@@ -1,4 +1,4 @@
-import { Controller, Injectable } from "zanobijs-common";
+import { Controller, Injectable } from "@zanobijs/common";
 
 @Injectable()
 export class ServiceToService {
