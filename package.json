@@ -15,7 +15,8 @@
     "publish:newBeta": "npm run build:prod && npm run version:newBeta && lerna publish from-package --dist-tag beta",
     "publish:conventionalBeta": "npm run build:prod && npm run version:conventional && lerna publish from-package --dist-tag beta",
     "publish:conventional": "npm run build:prod && npm run version:conventional && lerna publish from-package",
-    "publish:stable": "npm run build:prod && npm run version:stable && lerna publish from-package"
+    "publish:stable": "npm run build:prod && npm run version:stable && lerna publish from-package",
+    "postpublish": "npm run clean"
   },
   "devDependencies": {
     "@types/chai": "^4.3.9",
