@@ -4,8 +4,12 @@ import { deleteAsync } from "del";
 const packages = ["common", "core"]; // Agrega aquí los nombres de tus paquetes
 
 // Tarea para limpiar los archivos compilados en la carpeta src de cada paquete
-gulp.task("clean:packages", async () => {
-  const cleanTasks = packages.map(async (packageName) => {
+gulp.task("clean:ts", async () => {
+    console.log(`Deleting files in root`);
+    await deleteAsync(["CHANGELOG.md", "*.tsbuildinfo"]);
+    console.log(`Files deleted in root`);
+
+    const cleanTasks = packages.map(async (packageName) => {
     console.log(`Deleting files in packages/${packageName}`);
     await deleteAsync([
       `packages/${packageName}/*.js`,
@@ -23,4 +27,4 @@ gulp.task("clean:packages", async () => {
 });
 
 // Tarea por defecto para ejecutar la tarea de limpieza
-gulp.task("default", gulp.series("clean:packages"));
+gulp.task("default", gulp.series("clean:ts"));
