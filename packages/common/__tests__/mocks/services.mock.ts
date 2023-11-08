@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "../../src";
+import { Inject, Injectable } from "../../index";
 
 @Injectable()
 export class ServiceOnly {

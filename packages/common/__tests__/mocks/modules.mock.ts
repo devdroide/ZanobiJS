@@ -1,4 +1,4 @@
-import { Module } from "../../src";
+import { Module } from "../../index";
 import { ControllerOnly } from "./controllers.mock";
 
 @Module({

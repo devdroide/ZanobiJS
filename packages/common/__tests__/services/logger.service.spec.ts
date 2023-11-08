@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { LoggerService } from "../../src/services/logger.service";
-import { ILoggerService } from "../../src/interfaces";
+import { LoggerService } from "../../services/logger.service";
+import { ILoggerService } from "../../interfaces";
 
 describe("Commons - Services - Logger", () => {
   let logger: ILoggerService;

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DEPENDENCIES_CLASS } from "../../src/utils/constants";
+import { DEPENDENCIES_CLASS } from "../../utils/constants";
 import {
   ServiceMix,
   ServiceOnly,

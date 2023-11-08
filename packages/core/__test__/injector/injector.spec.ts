@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Injector } from "../../src/injector";
+import { Injector } from "../../injector";
 import { ModuleTestWithInjector } from "../mocks/classModule.mock";
 import { ControllerWithDepen2 } from "../mocks/classWithDependeciesInject.mock";
 import { ControllerWithDepenClass } from "../mocks/classWithDependeciesClass.mock";

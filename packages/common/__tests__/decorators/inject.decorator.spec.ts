@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DEPENDENCIES_INJECT, HAS_INJECT } from "../../src/utils/constants";
+import { DEPENDENCIES_INJECT, HAS_INJECT } from "../../utils/constants";
 import { ControllerOnly, ControllerWithInject } from "../mocks/controllers.mock";
 
 describe("Commons - Decorators - Inject", () => {

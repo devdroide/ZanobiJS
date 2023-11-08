@@ -2,7 +2,7 @@ import { expect } from "chai";
 import {
   RuntimeException,
   InvalidModuleSchemaException,
-} from "../../src/exceptions";
+} from "../../exceptions";
 
 describe("Commons - Exception - module", () => {
   it("should respond RuntimeException empty paramters", () => {

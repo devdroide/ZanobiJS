@@ -1,8 +1,8 @@
 import { expect } from "chai";
-import { Module } from "../../src/decorators";
-import { MODULE_CONTROLLERS, MODULE_IMPORTS } from "../../src/utils/constants";
+import { Module } from "../../decorators";
+import { MODULE_CONTROLLERS, MODULE_IMPORTS } from "../../utils/constants";
 import { ModuleEmpty, ModuleWithController } from "../mocks/modules.mock";
-import { InvalidModuleSchemaException } from "../../src/exceptions";
+import { InvalidModuleSchemaException } from "../../exceptions";
 describe("Commons - Decorators - module", () => {
   it("should respond missing services in module", () => {
     try {

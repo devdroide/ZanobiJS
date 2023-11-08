@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { Metadata } from "../src/metadata";
+import { Metadata } from "../metadata";
 import { ModuleTestEmpty, ModuleTest } from "./mocks/classModule.mock";
 import { ServiceWithDepenParam } from "./mocks/classWithDependeciesInject.mock";
 import { ControllerWithDepenClass } from "./mocks/classWithDependeciesClass.mock";

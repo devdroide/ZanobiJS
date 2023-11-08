@@ -1,6 +1,6 @@
 import { expect } from "chai";
 // import { Module } from "zanobijs-common";
-import { Factory } from "../src/index";
+import { Factory } from "../index";
 import { ModuleTestAll } from "./mocks/classModule.mock";
 import { ControllerWithDepen2 } from "./mocks/classWithDependeciesInject.mock";
 
