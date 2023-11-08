@@ -1,4 +1,4 @@
-import { Module } from "zanobijs-common";
+import { Module } from "@zanobijs/common";
 import { ControllerWithDepenClass, ServiceToController } from "./classWithDependeciesClass.mock";
 import { ControllerWithDepen2, ServiceToController2 } from "./classWithDependeciesInject.mock";
 

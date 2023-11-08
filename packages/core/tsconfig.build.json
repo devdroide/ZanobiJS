@@ -4,8 +4,8 @@
     "outDir": ".",
     "rootDir": ".",
     "paths": {
-      "zanobijs-common": ["../common"],
-      "zanobijs-common/*": ["../common/*"]
+      "@zanobijs/common": ["../common"],
+      "@zanobijs/common/*": ["../common/*"]
     }
   },
   "exclude": ["node_modules", "dist", "test/**/*", "*.spec.ts"],

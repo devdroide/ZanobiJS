@@ -1,7 +1,7 @@
-import { ILoggerService, IModuleConfig } from "zanobijs-common";
+import { ILoggerService, IModuleConfig } from "@zanobijs/common";
 import { Metadata } from "../metadata";
-import { Logger } from "zanobijs-common/utils";
-import { isEmpty } from "zanobijs-common/utils/shared.utils";
+import { Logger } from "@zanobijs/common/utils";
+import { isEmpty } from "@zanobijs/common/utils/shared.utils";
 import { asClass } from "awilix";
 
 export type Constructor<T> = { new (...args: any[]): T }

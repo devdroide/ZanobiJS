@@ -1,4 +1,4 @@
-import { IModuleConfig } from "zanobijs-common";
+import { IModuleConfig } from "@zanobijs/common";
 import {
   DEPENDENCIES_CLASS,
   DEPENDENCIES_INJECT,
@@ -12,7 +12,7 @@ import {
   MODULE_EXPORTS,
   MODULE_IMPORTS,
   MODULE_SERVICES,
-} from "zanobijs-common/utils/constants";
+} from "@zanobijs/common/utils/constants";
 
 /**
  * La clase `Metadata` proporciona métodos para acceder y manipular
