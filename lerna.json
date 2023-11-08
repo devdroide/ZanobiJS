@@ -6,6 +6,9 @@
       "allowBranch": ["main", "beta"],
       "conventionalCommits": true,
       "message": "chore(release): publish %s"
+    },
+    "publish": {
+      "access": "public"
     }
   }
 }

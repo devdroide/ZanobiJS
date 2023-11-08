@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MODULE_MISSING_PROPERTY = exports.MODULE_INVALID_TYPE_PROPERTY = exports.MODULE_INVALID_PROPERTY = exports.MODULE_ERROR = void 0;
+const MODULE_ERROR = () => `An error has occurred in @Module()`;
+exports.MODULE_ERROR = MODULE_ERROR;
+const MODULE_INVALID_PROPERTY = (property) => `The content of the "${property}" property must be type "class".`;
+exports.MODULE_INVALID_PROPERTY = MODULE_INVALID_PROPERTY;
+const MODULE_INVALID_TYPE_PROPERTY = () => `{{#label}} It is not allowed because it does not match the allowed types.`;
+exports.MODULE_INVALID_TYPE_PROPERTY = MODULE_INVALID_TYPE_PROPERTY;
+const MODULE_MISSING_PROPERTY = (property) => `missing property '${property}' into the @Module() decorator.`;
+exports.MODULE_MISSING_PROPERTY = MODULE_MISSING_PROPERTY;
