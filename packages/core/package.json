@@ -9,7 +9,11 @@
   "typings": "index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devdroide/ZanobiJS.git"
+    "url": "git+https://github.com/devdroide/ZanobiJS.git",
+    "directory": "packages/core"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "tsc": "tsc",

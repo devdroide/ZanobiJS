@@ -12,6 +12,9 @@
     "url": "git+https://github.com/devdroide/ZanobiJS.git",
     "directory": "packages/common"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "bugs": {
     "url": "https://github.com/devdroide/ZanobiJS/issues"
   },
