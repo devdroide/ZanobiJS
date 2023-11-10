@@ -8,7 +8,7 @@ describe("Commons - Utils - Logger", () => {
   let successSpy: sinon.SinonSpy;
 
   beforeEach(() => {
-    process.env.ZANOBI_DEBUG = "true";
+    process.env.ZANOBIJS_LOGGER = "true";
     logger = Logger();
     successSpy = sinon.spy(logger, "success");
   });

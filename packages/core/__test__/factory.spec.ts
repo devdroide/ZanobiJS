@@ -23,6 +23,42 @@ describe("Core - factory", () => {
     });
   });
   describe("Get Entities", () => {
+    it("should respond error by resolve entity controller", () => {
+      const app = factory.create();
+      try {
+        app.get("SomeController");
+      } catch (error) {
+        console.log(error)
+        expect(error.message).to.be.equal(
+          "No 'SomeController' was found registered in @modulo.",
+        );
+        expect(error.detail).to.have.string("Could not resolve 'someController'.");
+      }
+    });
+    it("should respond error by resolve entity controller with number in name", () => {
+      const app = factory.create();
+      try {
+        app.get("123SomeController");
+      } catch (error) {
+        expect(error.message).to.be.equal(
+          "No '123SomeController' was found registered in @modulo.",
+        );
+        expect(error.detail).to.have.string("Could not resolve '123SomeController'.");
+      }
+    });
+    it("should respond error by resolve entity controller with special character", () => {
+      const app = factory.create();
+      try {
+        app.get("*123SomeController");
+      } catch (error) {
+        expect(error.message).to.be.equal(
+          "No '*123SomeController' was found registered in @modulo.",
+        );
+        expect(error.detail).to.have.string(
+          "Could not resolve '*123SomeController'.",
+        );
+      }
+    });
     it("should respond apiKey to controller the app", () => {
       const app = factory.create();
       const controllerWithDepen2 = app.get<ControllerWithDepen2>(
@@ -33,5 +69,4 @@ describe("Core - factory", () => {
       );
     });
   });
-  // it("", () => {});
 });

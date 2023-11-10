@@ -4,6 +4,45 @@ import { MODULE_CONTROLLERS, MODULE_IMPORTS } from "../../utils/constants";
 import { ModuleEmpty, ModuleWithController } from "../mocks/modules.mock";
 import { InvalidModuleSchemaException } from "../../exceptions";
 describe("Commons - Decorators - module", () => {
+  it("should respond controller type [string] invalid in module", () => {
+    try {
+      @Module({
+        imports: [],
+        controllers: ["some"],
+        services: [],
+        exports: [],
+      })
+      class ModuleInvalidController {}
+    } catch (error) {
+      expect(error.message).to.be.equal(
+        `An error has occurred in @Module(), please check the detail field`,
+      );
+      expect(error.detail).to.be.equal(
+        `The content of the "controllers" entity must be type "class".`,
+      );
+      expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
+    }
+  });
+  it("should respond controller type [object properties] invalid in module", () => {
+    try {
+      @Module({
+        imports: [],
+        controllers: [{ some: "some" }],
+        services: [],
+        exports: [],
+      })
+      class ModuleInvalidController {}
+    } catch (error) {
+      console.error(error);
+      expect(error.message).to.be.equal(
+        `An error has occurred in @Module(), please check the detail field`,
+      );
+      expect(error.detail).to.be.equal(
+        `The content of the "controllers" entity must be type "class".`,
+      );
+      expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
+    }
+  });
   it("should respond missing services in module", () => {
     try {
       @Module({
@@ -13,9 +52,11 @@ describe("Commons - Decorators - module", () => {
       })
       class ModuleIncomplete {}
     } catch (error) {
-      expect(error.message).to.be.equal(`An error has occurred in @Module()`);
+      expect(error.message).to.be.equal(
+        `An error has occurred in @Module(), please check the detail field`,
+      );
       expect(error.detail).to.be.equal(
-        `missing property 'services' into the @Module() decorator.`,
+        `missing entity 'services' into the @Module() decorator.`,
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }
@@ -30,9 +71,11 @@ describe("Commons - Decorators - module", () => {
       })
       class ModuleInvalidService {}
     } catch (error) {
-      expect(error.message).to.be.equal(`An error has occurred in @Module()`);
+      expect(error.message).to.be.equal(
+        `An error has occurred in @Module(), please check the detail field`,
+      );
       expect(error.detail).to.be.equal(
-        `"services[0]" It is not allowed because it does not match the allowed types.`,
+        `There are services that do not match the allowed types "class" or "object with provider and use value".`,
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }
@@ -47,9 +90,12 @@ describe("Commons - Decorators - module", () => {
       })
       class ModuleInvalidService {}
     } catch (error) {
-      expect(error.message).to.be.equal(`An error has occurred in @Module()`);
+      console.error(error)
+      expect(error.message).to.be.equal(
+        `An error has occurred in @Module(), please check the detail field`,
+      );
       expect(error.detail).to.be.equal(
-        `"services[0]" It is not allowed because it does not match the allowed types.`,
+        `There are services that do not match the allowed types "class" or "object with provider and use value".`,
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }
