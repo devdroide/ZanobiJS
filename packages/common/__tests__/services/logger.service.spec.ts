@@ -12,7 +12,7 @@ describe("Commons - Services - Logger", () => {
   let debugSpy: sinon.SinonSpy;
 
   beforeEach(() => {
-    process.env.ZANOBI_DEBUG = "false"
+    process.env.ZANOBIJS_LOGGER = "false"
     logger = LoggerService.getInstance();
     successSpy = sinon.spy(logger, "success");
     warnSpy = sinon.spy(logger, "warn");

@@ -55,7 +55,7 @@ export class LoggerService implements ILoggerService {
    * @param arg - Argumentos adicionales.
    */
   private log(color: string, level: string, message: any, ...arg: any) {
-    if (coerceBooleanProperty(process.env.ZANOBI_DEBUG))
+    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER))
       console.log(
         color,
         this.formatMessage(level, message),

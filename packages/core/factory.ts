@@ -1,6 +1,8 @@
 import "reflect-metadata";
-import {AwilixContainer, InjectionMode, createContainer } from "awilix";
+import { AwilixContainer, InjectionMode, createContainer } from "awilix";
 import { Module } from "./injector/module";
+import { unCapitalize } from "@zanobijs/common/utils/shared.utils";
+import { ContainerResolutionException } from "./exceptions/resolution.exception";
 
 /**
  * Factory es una clase que facilita la creación y configuración de
@@ -64,6 +66,12 @@ export class Factory {
    * @returns {any} - Instancia resuelta.
    */
   get<T>(entity: string): T {
-    return this.container.resolve(entity)
+    try {
+      const entityUnCapitalize = unCapitalize(entity);
+      return this.container.resolve(entityUnCapitalize);
+    } catch (error) {
+      throw new ContainerResolutionException(entity, error.message);
+    }
   }
 }
+
