@@ -38,6 +38,7 @@ export const Controller = (): ClassDecorator => {
       (dependencie, index) => {
         return {
           type: "Controller",
+          TargeName: target.name,
           nameClass: dependencie.name,
           nameClassContainer: unCapitalize(dependencie.name),
           nameParameter: paramNames[index],

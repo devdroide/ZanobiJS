@@ -3,6 +3,9 @@ import { AwilixContainer, InjectionMode, createContainer } from "awilix";
 import { Module } from "./injector/module";
 import { unCapitalize } from "@zanobijs/common/utils/shared.utils";
 import { ContainerResolutionException } from "./exceptions/resolution.exception";
+import { ILoggerService } from "@zanobijs/common";
+import { Logger } from "@zanobijs/common/utils";
+import { IFactoryOptions } from "./interface";
 
 /**
  * Factory es una clase que facilita la creación y configuración de
@@ -14,8 +17,13 @@ export class Factory {
   private moduleHandler: Module;
   private registeredClasses = {};
   private container: AwilixContainer<any>;
+  private logger: ILoggerService;
+  private options: IFactoryOptions;
 
-  constructor(appModule: any) {
+  constructor(appModule: any, options: IFactoryOptions  = {}) {
+    this.options = options;
+    this.evaluateOptions();
+    this.logger = Logger();
     this.moduleHandler = new Module();
     this.registerClassesFromModule(appModule);
   }
@@ -57,6 +65,7 @@ export class Factory {
   create(): Factory {
     this.container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     this.container.register(this.registeredClasses);
+    this.logger.info("Registered Classes", this.registeredClasses);
     return this;
   }
 
@@ -67,11 +76,15 @@ export class Factory {
    */
   get<T>(entity: string): T {
     try {
-      const entityUnCapitalize = unCapitalize(entity);
-      return this.container.resolve(entityUnCapitalize);
+      return this.container.resolve(entity);
     } catch (error) {
+      this.logger.info("Error resolving entity: ", error.message + "\n");
       throw new ContainerResolutionException(entity, error.message);
     }
   }
-}
 
+  evaluateOptions(){
+    if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = "true";
+    if (this.options.activeLoggerUser) process.env.ZANOBIJS_LOGGER = "true";
+  }
+}

@@ -1,4 +1,8 @@
-# ZanobiJS
+<p align="center">
+  <a href="https://zanobijs.vercel.app/" target="blank"><img src="https://zanobijs.vercel.app/_astro/ZanobiHero.__7I9OCQ_ZkaY1J.webp" width="120" alt="ZanobiJS Logo" /></a>
+</p>
+
+<H1 align="center">ZanobiJS</H1>
 
 It is a mini-framework for Node.js that allows you to build server-side microservices in an efficient and scalable way. It is designed to be small and efficient, but powerful enough for enterprise applications. ZanobiJS is written in TypeScript and JavaScript, giving you the flexibility to choose the language you prefer.
 ## Features
@@ -144,9 +148,14 @@ bootstrap();
 - Use the different events (success, info, warn, error, debug).
 
 ```javascript
-import { Logger } from "@zanobijs/common/utils";
+// Index.ts - This is important for the operation
+const factory = new Factory(AppModule, {
+  activeLoggerUser: true
+});
 
-process.env.ZANOBIJS_LOGGER = "true";
+// use en services controllers, etc
+
+import { Logger } from "@zanobijs/common/utils";
 
 const logger = Logger();
 

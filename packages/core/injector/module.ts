@@ -1,7 +1,12 @@
 import "reflect-metadata";
 import { aliasTo } from "awilix";
 import { IModuleConfig, ILoggerService } from "@zanobijs/common";
-import { unCapitalize, isEmpty, isClass } from "@zanobijs/common/utils/shared.utils";
+import {
+  unCapitalize,
+  isEmpty,
+  isClass,
+  snakeToCamel,
+} from "@zanobijs/common/utils/shared.utils";
 import { Logger } from "@zanobijs/common/utils";
 import { Injector } from "./injector";
 import { Metadata } from "../metadata";
@@ -46,6 +51,8 @@ export class Module {
    */
   initialize(): void {
     this.getMetadataModule();
+    this.registerAllProviders();
+    this.injector.setRegisteredClassParentModule(this.registerClass)
     this.registerDependencies();
     this.registerDependenciesToAlias();
   }
@@ -77,15 +84,19 @@ export class Module {
 
     if (entities && entities.length > 0) {
       const registeredEntities = entities
-        .filter(
-          (target) =>
+        .filter((target) => {
+          return (
             isClass(target) &&
-            this.types.includes(this.metadata.determineType(target)),
-        )
+            this.types.includes(this.metadata.determineType(target))
+          );
+        })
         .map((target) => {
           this.groupDependenciesForAlias(target);
           const targetName = unCapitalize(target.name);
-          return { [targetName]: this.injector.getInjector(target) };
+          return {
+            [target.name]: this.injector.getInjector(target),
+            [targetName]: aliasTo(target.name),
+          };
         });
 
       Object.assign(this.registerClass, ...registeredEntities);
@@ -127,6 +138,18 @@ export class Module {
           dependency.nameClassContainer,
         );
       }
+    });
+  }
+
+  private registerAllProviders() {
+    const listProviders = this.injector.getAllProvider();
+    listProviders.forEach((value, key) => {
+      const providerInject = this.injector.getInjectProvider({
+        key,
+        value,
+      });
+      this.registerClass[key] = providerInject;
+      this.registerClass[snakeToCamel(key)] = aliasTo(key);
     });
   }
 

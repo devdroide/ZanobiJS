@@ -3,11 +3,10 @@ import { Controller, Inject, Injectable } from "@zanobijs/common";
 @Injectable()
 export class ServiceToController2 {
   constructor() {}
-  getHello(){
+  getHello() {
     return "Hello ServiceToController2";
   }
 }
-
 
 @Injectable()
 export class ServiceWithDepenParam {
@@ -20,18 +19,30 @@ export class ServiceWithDepenParam {
   ) {}
 }
 
-
 @Controller()
 export class ControllerWithDepen2 {
   constructor(
     private sContro2: ServiceToController2,
     @Inject("API_KEY") private apiKey: string,
-  ) {
-    this.apiKey = apiKey;
-  }
+  ) {}
 
   getApiKey() {
     return this.apiKey;
+  }
+  getHelloService() {
+    return this.sContro2.getHello();
+  }
+}
+
+@Controller()
+export class ControllerDepenNoExists {
+  constructor(
+    private sContro2: ServiceToController2,
+    @Inject("SOMEKEY") private someKey: string,
+  ) {}
+
+  getApiKey() {
+    return this.someKey;
   }
   getHelloService() {
     return this.sContro2.getHello();

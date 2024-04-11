@@ -5,8 +5,8 @@
   "keywords": [],
   "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
   "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise el archivo de LICENCIA.",
-  "main": "index.js",
   "typings": "index.d.ts",
+  "homepage": "https://zanobijs.vercel.app",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/devdroide/ZanobiJS.git",
@@ -18,7 +18,6 @@
   "bugs": {
     "url": "https://github.com/devdroide/ZanobiJS/issues"
   },
-  "homepage": "https://github.com/devdroide/ZanobiJS#readme",
   "dependencies": {
     "joi": "^17.11.0",
     "reflect-metadata": "^0.1.13"

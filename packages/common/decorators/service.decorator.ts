@@ -35,6 +35,7 @@ export const Injectable = (): ClassDecorator => {
       (dependencie, index) => {
         return {
           type: "Service",
+          TargeName: target.name,
           nameClass: dependencie.name,
           nameClassContainer: unCapitalize(dependencie.name),
           nameParameter: paramNames[index],
