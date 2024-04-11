@@ -5,7 +5,7 @@ import { unCapitalize } from "@zanobijs/common/utils/shared.utils";
 import { ContainerResolutionException } from "./exceptions/resolution.exception";
 import { ILoggerService } from "@zanobijs/common";
 import { Logger } from "@zanobijs/common/utils";
-import { IFactoryOptions } from "./interface";
+import { IFactoryOptions } from "./interfaces";
 
 /**
  * Factory es una clase que facilita la creación y configuración de

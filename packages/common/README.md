@@ -4,6 +4,13 @@
 
 <H1 align="center">ZanobiJS</H1>
 
+[![npm](https://img.shields.io/badge/npm-1.0.0-darkorange.svg)](https://semver.org)
+[![coverage](https://img.shields.io/badge/coverage-98%-green.svg)](https://semver.org)
+[![test](https://img.shields.io/badge/test-mocha-CC0000.svg)](https://semver.org)
+[![nodejs](https://img.shields.io/badge/nodejs->=16.0.0-darkgreen.svg)](https://semver.org)
+[![typescrit](https://img.shields.io/badge/TS->=5.2.2-darkblue.svg)](https://semver.org)
+[![licence](https://img.shields.io/badge/licence-MIT-purple.svg)](https://semver.org)
+
 It is a mini-framework for Node.js that allows you to build server-side microservices in an efficient and scalable way. It is designed to be small and efficient, but powerful enough for enterprise applications. ZanobiJS is written in TypeScript and JavaScript, giving you the flexibility to choose the language you prefer.
 ## Features
 
@@ -180,7 +187,9 @@ logger.debug("Lorem ipsum debug");
 
 ## Credits
 
-ZanobiJS is heavily inspired [NestJS](https://nestjs.com/) and [AngularJS](https://angularjs.org/). Credits
+ZanobiJS is heavily inspired by [NestJS](https://nestjs.com/) and [AngularJS](https://angularjs.org/). Credits
+
+Additionally, it is used [Awilix](https://github.com/jeffijoe/awilix#readme) which is a container for Extremely powerful and effective dependency injection.
 
 Finally, it is an effort to provide help with the construction of lambdas initially.
 ## License
