@@ -49,6 +49,32 @@ export class ControllerDepenNoExists {
   }
 }
 
+@Controller()
+export class ControllerDepenOtherModules {
+  constructor(
+    private sContro2: ServiceToController2,
+    @Inject("4PI_BOOLEAN") private apiBolean: string,
+    @Inject("API_NUMBER") private apiNumber: string,
+    @Inject("API_BOOLEAN") private apiBoolean: string,
+    @Inject("API_CLASS") private apiClass: string,
+    @Inject("API_FUNCTION") private apiFunction: string,
+  ) {}
+
+  getDataProvider() {
+    console.log("Cont sContro2", this.sContro2.getHello());
+    console.log("Cont 4PI_BOOLEAN", this.apiBolean);
+    console.log("Cont API_NUMBER", this.apiNumber);
+    console.log("Cont API_BOOLEAN", this.apiBoolean);
+    console.log("Cont API_CLASS", this.apiClass);
+    console.log("Cont API_FUNCTION", this.apiFunction);
+    return this.apiBolean;
+  }
+  getHelloService() {
+    return this.sContro2.getHello();
+  }
+}
+
+
 @Injectable()
 export class ServiceWithDepen2 {
   constructor(

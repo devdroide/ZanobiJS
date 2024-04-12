@@ -21,6 +21,8 @@ export class Factory {
   private options: IFactoryOptions;
 
   constructor(appModule: any, options: IFactoryOptions  = {}) {
+    process.env.ZANOBIJS_LOGGER = "false";
+    process.env.ZANOBIJS_LOGGER_USER = "false";
     this.options = options;
     this.evaluateOptions();
     this.logger = Logger();
@@ -35,6 +37,7 @@ export class Factory {
    * @private
    */
   private registerClassesFromModule(module: any): void {
+    this.logger.debug("Factory - Registering classes for module:", module.name);
     this.registerFromModule(module);
     const importedModules = this.moduleHandler.getImports();
     if (importedModules && importedModules.length) {
@@ -50,12 +53,16 @@ export class Factory {
    * @private
    */
   private registerFromModule(module: any): void {
+    this.logger.debug("Factory - Setup:", module.name);
     this.moduleHandler.setup(module);
+    this.logger.debug("Factory - Initialize:", module.name);
     this.moduleHandler.initialize();
     Object.assign(
       this.registeredClasses,
       this.moduleHandler.getRegisterClass(),
     );
+    this.logger.success("Factory - Completion of module ", module.name);
+    this.logger.debug("===================================================");
   }
 
   /**
@@ -65,7 +72,10 @@ export class Factory {
   create(): Factory {
     this.container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     this.container.register(this.registeredClasses);
-    this.logger.info("Registered Classes", this.registeredClasses);
+    this.logger.info(
+      "Factory - classes and providers registered in the container",
+      Object.keys(this.registeredClasses),
+    );
     return this;
   }
 
@@ -85,6 +95,6 @@ export class Factory {
 
   evaluateOptions(){
     if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = "true";
-    if (this.options.activeLoggerUser) process.env.ZANOBIJS_LOGGER = "true";
+    if (this.options.activeLoggerUser) process.env.ZANOBIJS_LOGGER_USER = "true";
   }
 }

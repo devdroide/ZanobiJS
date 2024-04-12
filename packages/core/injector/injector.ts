@@ -13,10 +13,9 @@ export type Constructor<T> = { new (...args: any[]): T };
  */
 export class Injector {
   private module: IModuleConfig;
-  private listProviders = new Map();
+  private listProviders: Map<string, any>;
   private metadata: Metadata;
   private logger: ILoggerService;
-  private registeredClassParentModule = {};
   private moduleName: string = "";
 
   /**
@@ -25,11 +24,12 @@ export class Injector {
    * @param {Module} module - El módulo debe tener el decorador `@Module`
    * para poderlo procesar.
    */
-  constructor(module: any) {
+  constructor(module: any, listProviders: Map<string, any>) {
     this.metadata = Metadata.getInstance();
     this.logger = Logger();
     this.moduleName = module.name;
     this.module = module;
+    this.listProviders = listProviders;
     this.scanProviders();
   }
 
@@ -40,16 +40,13 @@ export class Injector {
    * @private
    */
   private scanProviders() {
+    this.logger.debug("Injector - Scan provider to module:", this.moduleName);
     const { services } = this.metadata.getMetadataModule(this.module);
     services.forEach((service) => {
       if (typeof service === "object")
         this.listProviders.set(service.provider, service.useValue);
     });
     this.logger.debug("Injector - list provider", this.listProviders);
-  }
-
-  setRegisteredClassParentModule(registerClass) {
-    this.registeredClassParentModule = registerClass;
   }
 
   /**
@@ -65,23 +62,14 @@ export class Injector {
     if (dInject.size > 0) {
       for (const key of dInject.keys()) {
         if (this.listProviders.has(key)) {
-          this.logger.info(`"${key}" is on providers list.`);
           const paramName = dInject.get(key);
           const useValue = this.listProviders.get(key);
           injectData[paramName] = useValue;
         } else {
-          if (key in this.registeredClassParentModule) {
-            this.logger.info(
-              `"${key}" is on registered Class in Parent Module.`,
-            );
-            const paramName = dInject.get(key);
-            injectData[paramName] = aliasTo(key);
-          } else {
-           this.logger.important(
-             `It is injecting @INJECT('${key}') provider in '${target.name}' but is not registered in '${this.moduleName}' or in previously loaded @modules`,
-           );
-            // throw new ContainerInjectResolutionException(key, target.name);
-          }
+          this.logger.important(
+            `It is injecting @INJECT('${key}') provider in '${target.name}' but is not registered in '${this.moduleName}' or in previously loaded @modules`,
+          );
+          // throw new ContainerInjectResolutionException(key, target.name);
         }
       }
     }
@@ -94,11 +82,15 @@ export class Injector {
    * @param {any} target - La clase objetivo.
    * @returns - El injector configurado.
    */
-  getInjector(target) {
+  getInjectorClass(target) {
     const injectData = this.getInjectData(target);
     let injector = asClass(target).scoped();
 
     if (!isEmpty(injectData)) {
+      this.logger.debug(
+        `Inject - list dependencies to inject of ${target.name}:`,
+        injectData,
+      );
       injector = injector.inject(() => injectData);
     }
 

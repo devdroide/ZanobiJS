@@ -7,6 +7,7 @@ import {
   ControllerWithDepen2,
   ControllerDepenNoExists,
   ServiceToController2,
+  ControllerDepenOtherModules,
 } from "./classWithDependeciesInject.mock";
 
 @Module({
@@ -99,3 +100,52 @@ export class ModuleTestAll {}
   exports: [],
 })
 export class ModuleTestProviderWithout {}
+
+@Module({
+  imports: [],
+  controllers: [ControllerDepenOtherModules],
+  services: [
+    {
+      provider: "API_KEY",
+      useValue: "isApiKey_qwerty12345",
+    },
+  ],
+  exports: [],
+})
+export class ModuleSonFromProvider {}
+
+@Module({
+  imports: [ModuleSonFromProvider],
+  controllers: [],
+  services: [
+    ServiceToController2,
+    {
+      provider: "API_NUMBER",
+      useValue: 1600,
+    },
+    {
+      provider: "API_BOOLEAN",
+      useValue: true,
+    },
+    {
+      provider: "4PI_BOOLEAN",
+      useValue: true,
+    },
+    {
+      provider: "API_CLASS",
+      useValue: new ServiceToController(),
+    },
+    {
+      provider: "API_FUNCTION",
+      useValue: function fnTest() {
+        return 2;
+      },
+    },
+    {
+      provider: "12345",
+      useValue: "no use data",
+    },
+  ],
+  exports: [],
+})
+export class ModuleWithProvider {}
