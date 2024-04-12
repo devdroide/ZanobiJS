@@ -20,6 +20,9 @@ It is a mini-framework for Node.js that allows you to build server-side microser
 - Ideal for building server-side microservices.
 - Optimized scalability and performance.
 
+## Getting started
+
+If you want to consult the [guide](https://zanobijs.vercel.app/en/) and learn about the project, visit [zanobijs.vercel.app](https://zanobijs.vercel.app/en/)
 
 ## Installation
 
@@ -148,6 +151,9 @@ bootstrap();
 // thisClientAPI
 // myKey12345API
 ```
+> [!Note]
+> It can also be used in [AWS lambda](https://zanobijs.vercel.app/en/01-getting-started/first-step/#setting), see how to do it in the [guide](https://zanobijs.vercel.app/en/01-getting-started/first-step/#setting)
+
 ## Use Logger
 
 - Import logger service of @zanobij/common/utils.
@@ -163,15 +169,15 @@ const factory = new Factory(AppModule, {
 
 // use en services controllers, etc
 
-import { Logger } from "@zanobijs/common/utils";
+import { LoggerUser } from "@zanobijs/common/utils";
 
-const logger = Logger();
+const logUser = LoggerUser();
 
-logger.success("Lorem ipsum success");
-logger.info("Lorem ipsum info");
-logger.warn("Lorem ipsum warn");
-logger.error("Lorem ipsum error");
-logger.debug("Lorem ipsum debug");
+logUser.success("Lorem ipsum success");
+logUser.info("Lorem ipsum info");
+logUser.warn("Lorem ipsum warn");
+logUser.error("Lorem ipsum error");
+logUser.debug("Lorem ipsum debug");
 
 // ***** PRINT *****
 // [SUCCESS]: Lorem ipsum success     <green print>
@@ -192,7 +198,8 @@ ZanobiJS is heavily inspired by [NestJS](https://nestjs.com/) and [AngularJS](ht
 
 Additionally, it is used [Awilix](https://github.com/jeffijoe/awilix#readme) which is a container for Extremely powerful and effective dependency injection.
 
-Finally, it is an effort to provide help with the construction of lambdas initially.
+Finally, it is an effort that we make and that we hope can help in the construction of projects.
+
 ## License
 
 Private - Read License
