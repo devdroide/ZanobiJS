@@ -29,9 +29,9 @@ export function Inject(token: string): ParameterDecorator {
     const paramNames = getConstructorParamNames(target);
     const paramName = paramNames[parameterIndex];
 
+
     /** Agregar o actualizar el valor en el Map */
     existingParameters.set(token, paramName);
-
     /** Define los metadatos para el parametro.*/
     Reflect.defineMetadata(DEPENDENCIES_INJECT, existingParameters, target);
     Reflect.defineMetadata(HAS_INJECT, true, target);

@@ -1,8 +1,14 @@
 import { expect } from "chai";
-// import { Module } from "@zanobijs/common";
+import { Module } from "@zanobijs/common";
 import { Factory } from "../index";
-import { ModuleTestAll } from "./mocks/classModule.mock";
-import { ControllerWithDepen2 } from "./mocks/classWithDependeciesInject.mock";
+import {
+  ModuleTestAll,
+  ModuleTestProviderWithout,
+} from "./mocks/classModule.mock";
+import {
+  ControllerWithDepen2,
+  ControllerDepenNoExists,
+} from "./mocks/classWithDependeciesInject.mock";
 
 describe("Core - factory", () => {
   const factory = new Factory(ModuleTestAll);
@@ -28,11 +34,12 @@ describe("Core - factory", () => {
       try {
         app.get("SomeController");
       } catch (error) {
-        console.log(error)
         expect(error.message).to.be.equal(
-          "No 'SomeController' was found registered in @modulo.",
+          "'SomeController' is not registered in any @module.",
         );
-        expect(error.detail).to.have.string("Could not resolve 'someController'.");
+        expect(error.detail).to.have.string(
+          "Could not resolve 'SomeController'.\n\nResolution path: SomeController",
+        );
       }
     });
     it("should respond error by resolve entity controller with number in name", () => {
@@ -41,9 +48,11 @@ describe("Core - factory", () => {
         app.get("123SomeController");
       } catch (error) {
         expect(error.message).to.be.equal(
-          "No '123SomeController' was found registered in @modulo.",
+          "'123SomeController' is not registered in any @module.",
         );
-        expect(error.detail).to.have.string("Could not resolve '123SomeController'.");
+        expect(error.detail).to.have.string(
+          "Could not resolve '123SomeController'.\n\nResolution path: 123SomeController",
+        );
       }
     });
     it("should respond error by resolve entity controller with special character", () => {
@@ -52,10 +61,10 @@ describe("Core - factory", () => {
         app.get("*123SomeController");
       } catch (error) {
         expect(error.message).to.be.equal(
-          "No '*123SomeController' was found registered in @modulo.",
+          "'*123SomeController' is not registered in any @module.",
         );
         expect(error.detail).to.have.string(
-          "Could not resolve '*123SomeController'.",
+          "Could not resolve '*123SomeController'.\n\nResolution path: *123SomeController",
         );
       }
     });
@@ -67,6 +76,36 @@ describe("Core - factory", () => {
       expect(controllerWithDepen2.getApiKey()).to.be.equal(
         "isApiKey_qwerty12345",
       );
+    });
+  });
+});
+
+describe("Core - factory", () => {
+  const factory = new Factory(ModuleTestProviderWithout);
+  const factoryLogger = new Factory(ModuleTestProviderWithout, {
+    activeLoggerSystem: true,
+    activeLoggerUser: true,
+  });
+  describe("Get Entities with dependencies", () => {
+    it("should respond error by inject no exist in provider modules", () => {
+      const app = factory.create();
+      try {
+        app.get<ControllerDepenNoExists>("ControllerDepenNoExists");
+      } catch (error) {
+        expect(error.message).to.be.equal(
+          "'ControllerDepenNoExists' is not registered in any @module.",
+        );
+        expect(error.detail).to.have.string(
+          "Could not resolve 'string'.\n\nResolution path: ControllerDepenNoExists -> someKey -> string",
+        );
+      }
+    });
+  });
+  describe("Validate Logger System", () => {
+    it("should active logger user and system", () => {
+      const app = factory.create();
+      console.log("APP", app)
+      expect(app).to.have.property("registeredClasses");
     });
   });
 });

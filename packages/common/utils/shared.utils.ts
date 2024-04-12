@@ -106,6 +106,9 @@ export function coerceBooleanProperty(value: any): boolean {
  * Devuelve una palabra con la primera letra en minúsculas.
  * @param {string} word Palabra a formatear
  * @returns {string} Palabra formateada
+ *
+ * @example
+ * ControllerExample ===> controllerExample
  */
 export const unCapitalize = (word: string): string =>
   word.charAt(0).toLowerCase() + word.slice(1);
@@ -139,6 +142,17 @@ export const getConstructorParamNames = (func: Function | Object): string[] => {
     return param.split(":")[0].split("=")[0].trim();
   });
 };
+
+/**
+ * Devuelve una palabra con la primera letra en minúsculas.
+ * @param {string} word Palabra a formatear
+ * @returns {string} Palabra formateada
+ */
+export const snakeToCamel = (str) => {
+  return str.toLowerCase().replace(/[-_\s]([a-z])/g, function (match) {
+    return match[1].toUpperCase();
+  });
+}
 
 /**
  * Objeto con los colores a usar en servicio de registro de logs

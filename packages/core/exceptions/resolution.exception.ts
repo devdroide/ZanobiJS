@@ -1,5 +1,7 @@
 import { RuntimeException } from "@zanobijs/common/exceptions/runtime.exception";
-import { CONTAINER_RESOLUTION_ERROR } from "./constant.message";
+import {
+  CONTAINER_RESOLUTION_ERROR,
+} from "./constant.message";
 
 /**
  * Excepción lanzada cuando se intenta obtener una entidad
@@ -11,7 +13,13 @@ import { CONTAINER_RESOLUTION_ERROR } from "./constant.message";
  * para proporcionar detalles adicionales del error.
  */
 export class ContainerResolutionException extends RuntimeException {
-  constructor(entity: string, detail: any = ``) {
+  constructor(entity: string, detail: any) {
     super(CONTAINER_RESOLUTION_ERROR(entity), detail);
   }
 }
+
+// export class ContainerInjectResolutionException extends RuntimeException {
+//   constructor(entity: string, targetName: any, detail: any = ``) {
+//     super(CONTAINER_RESOLUTION_INJECT_ERROR(entity, targetName), detail);
+//   }
+// }

@@ -7,16 +7,16 @@ import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
  *
  * @example
  * ```typescript
- * const logger = LoggerService.getInstance();
+ * const logger = LoggerUserService.getInstance();
  * logger.info('Mensaje informativo');
  * logger.error('Mensaje de error');
  * ```
  */
-export class LoggerService implements ILoggerService {
+export class LoggerUserService implements ILoggerService {
   /**
    * Instancia única del servicio LoggerService.
    */
-  private static instance: LoggerService;
+  private static instance: LoggerUserService;
 
   /**
    * Constructor privado para asegurar que no se pueda instanciar directamente.
@@ -30,7 +30,7 @@ export class LoggerService implements ILoggerService {
    */
   static getInstance(): ILoggerService {
     if (!this.instance) {
-      this.instance = new LoggerService();
+      this.instance = new LoggerUserService();
     }
     return this.instance;
   }
@@ -55,14 +55,7 @@ export class LoggerService implements ILoggerService {
    * @param arg - Argumentos adicionales.
    */
   private log(color: string, level: string, message: any, ...arg: any) {
-    if(level === "important")
-      console.log(
-        color,
-        this.formatMessage(level, message),
-        colorPrint.white,
-        ...arg,
-      );
-    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER))
+    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER))
       console.log(
         color,
         this.formatMessage(level, message),
@@ -119,15 +112,5 @@ export class LoggerService implements ILoggerService {
    */
   debug(message: string, ...arg: any) {
     this.log(colorPrint.white, "debug", message, ...arg);
-  }
-
-  /**
-   * Registra un mensaje de depuración.
-   *
-   * @param message - Mensaje de depuración.
-   * @param arg - Argumentos adicionales.
-   */
-  important(message: string, ...arg: any) {
-    this.log(colorPrint.red, "important", message, ...arg);
   }
 }

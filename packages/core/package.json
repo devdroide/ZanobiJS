@@ -5,7 +5,6 @@
   "keywords": [],
   "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
   "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise el archivo de LICENCIA.",
-  "main": "index.js",
   "typings": "index.d.ts",
   "repository": {
     "type": "git",
@@ -24,7 +23,7 @@
   },
   "homepage": "https://github.com/devdroide/ZanobiJS#readme",
   "dependencies": {
-    "awilix": "^9.0.0",
+    "awilix": "10.0.2",
     "reflect-metadata": "^0.1.13"
   },
   "peerDependencies": {

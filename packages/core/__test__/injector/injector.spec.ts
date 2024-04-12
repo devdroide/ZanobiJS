@@ -7,7 +7,7 @@ import { ControllerWithDepenClass } from "../mocks/classWithDependeciesClass.moc
 describe("Core - Injector - injector", () => {
   const injector = new Injector(ModuleTestWithInjector);
   beforeEach(() => {
-    process.env.ZANOBI_DEBUG = "false";
+    process.env.ZANOBI_DEBUG = "true";
   });
 
   it("Should respond an object with paramters to inject", () => {
