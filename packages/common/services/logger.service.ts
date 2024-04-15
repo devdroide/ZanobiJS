@@ -62,7 +62,7 @@ export class LoggerService implements ILoggerService {
         colorPrint.white,
         ...arg,
       );
-    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER))
+    if (level !== "important" && coerceBooleanProperty(process.env.ZANOBIJS_LOGGER))
       console.log(
         color,
         this.formatMessage(level, message),

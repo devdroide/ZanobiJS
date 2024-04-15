@@ -5,7 +5,6 @@ import {
   unCapitalize,
   isEmpty,
   isClass,
-  snakeToCamel,
 } from "@zanobijs/common/utils/shared.utils";
 import { Logger } from "@zanobijs/common/utils";
 import { Injector } from "./injector";
@@ -24,6 +23,7 @@ export class Module {
   private dependenciesClass: any[] = [];
   private metadata: Metadata;
   private types: string[] = ["controller", "service"];
+  private listProviders: Map<string, any> = new Map();
 
   /**
    * Constructor del módulo.
@@ -40,7 +40,8 @@ export class Module {
   setup(module: any): void {
     if (this.metadata.isTypeModule(module)) {
       this.module = module;
-      this.injector = new Injector(module);
+      this.logger.debug("Module - Create Injector to module:", module.name);
+      this.injector = new Injector(module, this.listProviders);
     } else {
       throw new InvalidModuleAnnotationException();
     }
@@ -50,9 +51,9 @@ export class Module {
    * Inicializa el módulo extrayendo metadatos y registrando las entidades.
    */
   initialize(): void {
-    this.getMetadataModule();
+    this.logger.debug("Module - Initialize:", this.module.name);
     this.registerAllProviders();
-    this.injector.setRegisteredClassParentModule(this.registerClass)
+    this.getMetadataModule();
     this.registerDependencies();
     this.registerDependenciesToAlias();
   }
@@ -81,6 +82,10 @@ export class Module {
    */
   private registerEntities(entityType: "controllers" | "services"): void {
     const entities = this.config[entityType];
+    this.logger.debug(
+      "Module - ..... searching for entities type ",
+      entityType,
+    );
 
     if (entities && entities.length > 0) {
       const registeredEntities = entities
@@ -91,15 +96,21 @@ export class Module {
           );
         })
         .map((target) => {
+          this.logger.debug(`Module - Entity <<< ${target.name} >>>`);
           this.groupDependenciesForAlias(target);
           const targetName = unCapitalize(target.name);
           return {
-            [target.name]: this.injector.getInjector(target),
+            [target.name]: this.injector.getInjectorClass(target),
             [targetName]: aliasTo(target.name),
           };
         });
 
       Object.assign(this.registerClass, ...registeredEntities);
+    } else {
+      this.logger.debug(
+        "Module - Does not have entities of that type",
+        entityType,
+      );
     }
   }
 
@@ -117,6 +128,10 @@ export class Module {
    */
   private groupDependenciesForAlias(target: Function): void {
     const dependencies: any[] = this.metadata.getClassDependencies(target);
+    this.logger.debug(
+      `Module - List dependecies of ${target.name}`,
+      dependencies,
+    );
     if (dependencies && !isEmpty(dependencies)) {
       this.dependenciesClass = [...this.dependenciesClass, ...dependencies];
     }
@@ -132,6 +147,10 @@ export class Module {
    * contructor(private sA: ServiceA) // parametro con nombre diferente
    */
   private registerDependenciesToAlias(): void {
+    this.logger.debug(
+      "Module - dependencies to register as candidates ",
+      this.dependenciesClass,
+    );
     this.dependenciesClass.forEach((dependency) => {
       if (!this.registerClass[dependency.nameParameter]) {
         this.registerClass[dependency.nameParameter] = aliasTo(
@@ -142,6 +161,7 @@ export class Module {
   }
 
   private registerAllProviders() {
+    this.logger.debug("Module - Register list provider:", this.module.name);
     const listProviders = this.injector.getAllProvider();
     listProviders.forEach((value, key) => {
       const providerInject = this.injector.getInjectProvider({
@@ -149,7 +169,7 @@ export class Module {
         value,
       });
       this.registerClass[key] = providerInject;
-      this.registerClass[snakeToCamel(key)] = aliasTo(key);
+      // this.registerClass[snakeToCamel(key)] = aliasTo(key);
     });
   }
 
@@ -166,7 +186,10 @@ export class Module {
    * @returns {any} - Clases registradas.
    */
   getRegisterClass(): any {
-    this.logger.debug("Module - register class", this.registerClass);
+    this.logger.debug(
+      "Module - List of candidate classes to register in container.",
+      this.registerClass,
+    );
     return this.registerClass;
   }
 }
