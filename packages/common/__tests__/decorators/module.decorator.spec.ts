@@ -33,7 +33,6 @@ describe("Commons - Decorators - module", () => {
       })
       class ModuleInvalidController {}
     } catch (error) {
-      console.error(error);
       expect(error.message).to.be.equal(
         `An error has occurred in @Module(), please check the detail field`,
       );
@@ -90,7 +89,6 @@ describe("Commons - Decorators - module", () => {
       })
       class ModuleInvalidService {}
     } catch (error) {
-      console.error(error)
       expect(error.message).to.be.equal(
         `An error has occurred in @Module(), please check the detail field`,
       );

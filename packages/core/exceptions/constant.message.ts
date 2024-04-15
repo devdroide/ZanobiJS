@@ -1,9 +1,6 @@
 export const MODULE_INVALID_ANNOTATION_ERROR = () =>
   `The class must have an annotation @Module()`;
-export const CONTAINER_RESOLUTION_ERROR = (entity: string) =>
-  `'${entity}' is not registered in any @module.`;
-// export const CONTAINER_RESOLUTION_INJECT_ERROR = (
-//   entity: string,
-//   targetName: any,
-// ) =>
-//   `'@Inject(${entity})' was not found in any loaded @module. Check the "${targetName}" file`;
+export const CONTAINER_RESOLUTION_ERROR = (entity: string, resolutionError: string) =>
+  `${resolutionError} please review '${entity}' and its dependencies.`;
+export const CONTAINER_RESOLUTION_ENTITY_ERROR = (entity: string) =>
+  `Please check that the entity '${entity}' exists and is registered in @modulo`;

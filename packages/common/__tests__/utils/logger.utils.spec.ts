@@ -26,7 +26,7 @@ describe("Commons - Utils - LoggerUser", () => {
   let successSpy: sinon.SinonSpy;
 
   beforeEach(() => {
-    // process.env.ZANOBIJS_LOGGER = "true";
+    process.env.ZANOBIJS_LOGGER_USER = "true";
     loggerUser = LoggerUser();
     successSpy = sinon.spy(loggerUser, "success");
   });

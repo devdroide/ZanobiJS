@@ -85,13 +85,12 @@ export class Injector {
   getInjectorClass(target) {
     const injectData = this.getInjectData(target);
     let injector = asClass(target).scoped();
-
     if (!isEmpty(injectData)) {
       this.logger.debug(
         `Inject - list dependencies to inject of ${target.name}:`,
         injectData,
       );
-      injector = injector.inject(() => injectData);
+      injector = injector.inject(this.funtionInjectData(injectData));
     }
 
     return {
@@ -108,5 +107,9 @@ export class Injector {
     return typeof provider.value === "function"
       ? asFunction(provider.value).scoped()
       : asValue(provider.value);
+  }
+
+  funtionInjectData(injectData) {
+    return () => injectData;
   }
 }

@@ -144,17 +144,6 @@ export const getConstructorParamNames = (func: Function | Object): string[] => {
 };
 
 /**
- * Devuelve una palabra con la primera letra en minúsculas.
- * @param {string} word Palabra a formatear
- * @returns {string} Palabra formateada
- */
-export const snakeToCamel = (str) => {
-  return str.toLowerCase().replace(/[-_\s]([a-z])/g, function (match) {
-    return match[1].toUpperCase();
-  });
-}
-
-/**
  * Objeto con los colores a usar en servicio de registro de logs
  */
 export const colorPrint = Object.freeze({

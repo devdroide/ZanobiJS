@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { AwilixContainer, InjectionMode, createContainer } from "awilix";
 import { Module } from "./injector/module";
 import { unCapitalize } from "@zanobijs/common/utils/shared.utils";
-import { ContainerResolutionException } from "./exceptions/resolution.exception";
+import { ContainerResolutionEntityException, ContainerResolutionException } from "./exceptions/resolution.exception";
 import { ILoggerService } from "@zanobijs/common";
 import { Logger } from "@zanobijs/common/utils";
 import { IFactoryOptions } from "./interfaces";
@@ -89,11 +89,20 @@ export class Factory {
       return this.container.resolve(entity);
     } catch (error) {
       this.logger.info("Error resolving entity: ", error.message + "\n");
-      throw new ContainerResolutionException(entity, error.message);
+      const resolutionError = error.message.split("\n");
+      const EntityFound = resolutionError[0].match(/'([^']+)'/);
+      if (EntityFound[1] === entity) {
+        throw new ContainerResolutionEntityException(entity, error.message);
+      }
+      throw new ContainerResolutionException(
+        entity,
+        resolutionError[0],
+        error.message,
+      );
     }
   }
 
-  evaluateOptions(){
+  private evaluateOptions(){
     if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = "true";
     if (this.options.activeLoggerUser) process.env.ZANOBIJS_LOGGER_USER = "true";
   }
