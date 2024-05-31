@@ -8,7 +8,7 @@ import {
   isNull,
   isObject,
   isUndefined,
-} from "../../src/utils/shared.utils";
+} from "../../utils/shared.utils";
 
 describe("Commons - Utils - shared utils", () => {
   it("should respond is function", () => {
@@ -50,5 +50,9 @@ describe("Commons - Utils - shared utils", () => {
   it("should return false for non-empty arrays", () => {
     expect(isEmpty([1, 2, 3])).to.be.false;
     expect(isEmpty(["a"])).to.be.false;
+  });
+  it("should return false for non-empty arrays", () => {
+    const myFunction = function () {};
+    expect(isEmpty(myFunction)).to.be.false;
   });
 });

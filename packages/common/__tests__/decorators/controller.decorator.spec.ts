@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { expect } from "chai";
-import { DEPENDENCIES_CLASS } from "../../src/utils/constants";
+import { DEPENDENCIES_CLASS } from "../../utils/constants";
 import {
   ControllerMix,
   ControllerOnly,
@@ -39,7 +39,6 @@ describe("Commons - Decorators - controller", () => {
       DEPENDENCIES_CLASS,
       ControllerWithService,
     );
-    // console.log(dependenciesClass);
     expect(dependenciesClass).to.be.an("array");
     expect(dependenciesClass).to.not.be.empty;
     expect(dependenciesClass[0]).to.include({ type: "Controller" });
@@ -55,7 +54,6 @@ describe("Commons - Decorators - controller", () => {
       DEPENDENCIES_CLASS,
       ControllerWithParameter,
     );
-    // console.log(dependenciesClass);
     expect(dependenciesClass).to.be.an("array");
     expect(dependenciesClass).to.not.be.empty;
     expect(dependenciesClass[0]).to.include({ type: "Controller" });
@@ -71,7 +69,6 @@ describe("Commons - Decorators - controller", () => {
       DEPENDENCIES_CLASS,
       ControllerMix,
     );
-    // console.log(dependenciesClass);
     expect(dependenciesClass).to.be.an("array");
     expect(dependenciesClass).to.not.be.empty;
     expect(dependenciesClass[1]).to.include({ type: "Controller" });

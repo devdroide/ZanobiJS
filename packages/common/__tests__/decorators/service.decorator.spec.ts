@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { DEPENDENCIES_CLASS } from "../../src/utils/constants";
+import { DEPENDENCIES_CLASS } from "../../utils/constants";
 import {
   ServiceMix,
   ServiceOnly,
@@ -20,7 +20,6 @@ describe("Commons - Decorator - service", () => {
       DEPENDENCIES_CLASS,
       ServiceWithService,
     );
-    // console.log(dependenciesClass);
     expect(dependenciesClass).to.be.an("array");
     expect(dependenciesClass).to.not.be.empty;
     expect(dependenciesClass[0]).to.include({ type: "Service" });
@@ -36,7 +35,6 @@ describe("Commons - Decorator - service", () => {
       DEPENDENCIES_CLASS,
       ServiceWithParameter,
     );
-    // console.log(dependenciesClass);
     expect(dependenciesClass).to.be.an("array");
     expect(dependenciesClass).to.not.be.empty;
     expect(dependenciesClass[0]).to.include({ type: "Service" });
@@ -52,7 +50,6 @@ describe("Commons - Decorator - service", () => {
       DEPENDENCIES_CLASS,
       ServiceMix,
     );
-    // console.log(dependenciesClass);
     expect(dependenciesClass).to.be.an("array");
     expect(dependenciesClass).to.not.be.empty;
     expect(dependenciesClass[1]).to.include({ type: "Service" });

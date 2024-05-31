@@ -1,4 +1,4 @@
-import { Controller, Inject } from "../../src";
+import { Controller, Inject } from "../../index";
 import { ServiceOnly } from "./services.mock";
 
 @Controller()

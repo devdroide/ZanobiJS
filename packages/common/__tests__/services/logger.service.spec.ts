@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as sinon from "sinon";
-import { LoggerService } from "../../src/services/logger.service";
-import { ILoggerService } from "../../src/interfaces";
+import { LoggerService } from "../../services/logger.service";
+import { ILoggerService } from "../../interfaces";
 
 describe("Commons - Services - Logger", () => {
   let logger: ILoggerService;
@@ -12,7 +12,7 @@ describe("Commons - Services - Logger", () => {
   let debugSpy: sinon.SinonSpy;
 
   beforeEach(() => {
-    process.env.ZANOBI_DEBUG = "false"
+    process.env.ZANOBIJS_LOGGER = "false"
     logger = LoggerService.getInstance();
     successSpy = sinon.spy(logger, "success");
     warnSpy = sinon.spy(logger, "warn");
