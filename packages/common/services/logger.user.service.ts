@@ -1,4 +1,5 @@
-import { ILoggerService } from "../interfaces";
+import * as util from "util";
+import { ILoggerService, IOptionsLog } from "../interfaces";
 import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
 
 /**
@@ -17,20 +18,24 @@ export class LoggerUserService implements ILoggerService {
    * Instancia única del servicio LoggerService.
    */
   private static instance: LoggerUserService;
-
+  private options: IOptionsLog = {
+    withColor: true,
+  };
   /**
    * Constructor privado para asegurar que no se pueda instanciar directamente.
    */
-  private constructor() {}
+  private constructor(options?: IOptionsLog) {
+    this.options.withColor = options?.withColor ?? true;
+  }
 
   /**
    * Obtiene la única instancia de LoggerService.
-   *
+   * @param options - Listado de opciones para aplicar a la instancia.
    * @returns La única instancia de LoggerService.
    */
-  static getInstance(): ILoggerService {
+  static getInstance(options?: IOptionsLog): ILoggerService {
     if (!this.instance) {
-      this.instance = new LoggerUserService();
+      this.instance = new LoggerUserService(options);
     }
     return this.instance;
   }
@@ -43,7 +48,12 @@ export class LoggerUserService implements ILoggerService {
    * @returns Mensaje formateado.
    */
   private formatMessage(level: string, message: any) {
-    return `[${level.toUpperCase()}]: ${message}`;
+    const formatedMessage = util.inspect(message, {
+      showHidden: false,
+      depth: null,
+      colors: this.options.withColor,
+    });
+    return `[${level.toUpperCase()}]: ${formatedMessage}`;
   }
 
   /**
@@ -57,7 +67,7 @@ export class LoggerUserService implements ILoggerService {
   private log(color: string, level: string, message: any, ...arg: any) {
     if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER))
       console.log(
-        color,
+        this.options.withColor ? color : "",
         this.formatMessage(level, message),
         colorPrint.white,
         ...arg,
