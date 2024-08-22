@@ -19,7 +19,7 @@ export class LoggerUserService implements ILoggerService {
    */
   private static instance: LoggerUserService;
   private options: IOptionsLog = {
-    withColor: true
+    withColor: true,
   };
   /**
    * Constructor privado para asegurar que no se pueda instanciar directamente.
@@ -30,7 +30,7 @@ export class LoggerUserService implements ILoggerService {
 
   /**
    * Obtiene la única instancia de LoggerService.
-   *
+   * @param options - Listado de opciones para aplicar a la instancia.
    * @returns La única instancia de LoggerService.
    */
   static getInstance(options?: IOptionsLog): ILoggerService {

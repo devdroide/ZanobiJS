@@ -30,7 +30,7 @@ export class LoggerService implements ILoggerService {
 
   /**
    * Obtiene la única instancia de LoggerService.
-   *
+   * @param options - Listado de opciones para aplicar a la instancia.
    * @returns La única instancia de LoggerService.
    */
   static getInstance(options?: IOptionsLog): ILoggerService {
