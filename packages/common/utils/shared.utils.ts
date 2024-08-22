@@ -128,8 +128,8 @@ export const unCapitalize = (word: string): string =>
  */
 export const getConstructorParamNames = (func: Function | Object): string[] => {
   const ctorString = func.toString();
-  /** Encuentra todo lo que está entre paréntesis. */
-  const ctorParamsMatch = ctorString.match(/\(([^)]*)\)/);
+  /** Encuentra todo lo que está dentro de los paréntesis d el constructor. */
+  const ctorParamsMatch = ctorString.match(/constructor\s*\(([^)]*)\)/);
   /** Verifica si paramsString está vacío */
   if (!ctorParamsMatch) return [];
 

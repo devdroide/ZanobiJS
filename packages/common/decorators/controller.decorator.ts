@@ -28,7 +28,6 @@ export const Controller = (): ClassDecorator => {
     const dependencies: any[] =
       Reflect.getMetadata(DEPENDENCIES_CONSTRUCTOR, target) || [];
     logger.debug("@Controller dependencies", dependencies);
-
     /** Obtiene los nombres de los parámetros del constructor de la clase. */
     const paramNames: any[] = getConstructorParamNames(target);
     logger.debug("@Controller paramNames", paramNames);

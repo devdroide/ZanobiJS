@@ -40,6 +40,7 @@ export class ControllerWithInject {
 
 @Controller()
 export class ControllerMix {
+  private varTest: string = "1"
   constructor(
     private serviceOnly: ServiceOnly,
     @Inject("API_KEY") private apiKey: string,
