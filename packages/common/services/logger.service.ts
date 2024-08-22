@@ -1,4 +1,5 @@
-import { ILoggerService } from "../interfaces";
+import * as util from "util";
+import { ILoggerService, IOptionsLog } from "../interfaces";
 import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
 
 /**
@@ -17,20 +18,24 @@ export class LoggerService implements ILoggerService {
    * Instancia única del servicio LoggerService.
    */
   private static instance: LoggerService;
-
+  private options: IOptionsLog = {
+    withColor: true,
+  };
   /**
    * Constructor privado para asegurar que no se pueda instanciar directamente.
    */
-  private constructor() {}
+  private constructor(options?: IOptionsLog) {
+    this.options.withColor = options?.withColor ?? true;
+  }
 
   /**
    * Obtiene la única instancia de LoggerService.
    *
    * @returns La única instancia de LoggerService.
    */
-  static getInstance(): ILoggerService {
+  static getInstance(options?: IOptionsLog): ILoggerService {
     if (!this.instance) {
-      this.instance = new LoggerService();
+      this.instance = new LoggerService(options);
     }
     return this.instance;
   }
@@ -43,7 +48,12 @@ export class LoggerService implements ILoggerService {
    * @returns Mensaje formateado.
    */
   private formatMessage(level: string, message: any) {
-    return `[${level.toUpperCase()}]: ${message}`;
+    const formatedMessage = util.inspect(message, {
+      showHidden: false,
+      depth: null,
+      colors: this.options.withColor,
+    });
+    return `[${level.toUpperCase()}]: ${formatedMessage}`;
   }
 
   /**
@@ -55,14 +65,17 @@ export class LoggerService implements ILoggerService {
    * @param arg - Argumentos adicionales.
    */
   private log(color: string, level: string, message: any, ...arg: any) {
-    if(level === "important")
+    if (level === "important")
       console.log(
-        color,
+        this.options.withColor ? color : "",
         this.formatMessage(level, message),
         colorPrint.white,
         ...arg,
       );
-    if (level !== "important" && coerceBooleanProperty(process.env.ZANOBIJS_LOGGER))
+    if (
+      level !== "important" &&
+      coerceBooleanProperty(process.env.ZANOBIJS_LOGGER)
+    )
       console.log(
         color,
         this.formatMessage(level, message),
