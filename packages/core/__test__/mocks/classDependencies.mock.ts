@@ -101,3 +101,16 @@ export class Controller6 {
     return this.serv2.getDataService();
   }
 }
+
+@Controller()
+export class Controller7 {
+  private varTestNumber: number = 10;
+  private varTestString: string = "Esto es una cadena";
+  constructor(
+    @Inject("SOME_INJECT") private someInj: string,
+    private serv2: Service2) {}
+
+  geData() {
+    return this.serv2.getDataService();
+  }
+}

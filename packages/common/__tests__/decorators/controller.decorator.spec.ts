@@ -9,6 +9,7 @@ import {
   ControllerWithService,
   ControllerWithoutArg,
 } from "../mocks/controllers.mock";
+
 describe("Commons - Decorators - controller", () => {
   it("should respond an empty array of dependencies", () => {
     const dependenciesClass = Reflect.getMetadata(

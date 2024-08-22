@@ -1,5 +1,9 @@
 import { Module } from "@zanobijs/common";
-import { Controller1, Controller6 } from "./classDependencies.mock";
+import {
+  Controller1,
+  Controller6,
+  Controller7,
+} from "./classDependencies.mock";
 
 @Module({
   imports: [],
@@ -45,3 +49,11 @@ export class Module3 {}
   exports: [],
 })
 export class Module4 {}
+
+@Module({
+  imports: [Module1],
+  controllers: [Controller7],
+  services: [],
+  exports: [],
+})
+export class Module5 {}
