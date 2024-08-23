@@ -48,12 +48,21 @@ export class LoggerService implements ILoggerService {
    * @returns Mensaje formateado.
    */
   private formatMessage(level: string, message: any) {
-    const formatedMessage = util.inspect(message, {
+    return `[${level.toUpperCase()}]: ${message}`;
+  }
+
+  /**
+   * Formatea el argumento que se va a imprimir.
+   *
+   * @param arg - argumento a formatear para imprimir.
+   * @returns argumentos formateado.
+   */
+  private formatArg(arg: any) {
+    return util.inspect(arg, {
       showHidden: false,
       depth: null,
       colors: this.options.withColor,
     });
-    return `[${level.toUpperCase()}]: ${formatedMessage}`;
   }
 
   /**
@@ -62,25 +71,23 @@ export class LoggerService implements ILoggerService {
    * @param color - Color asociado al nivel de mensaje.
    * @param level - Nivel del mensaje.
    * @param message - Mensaje a ser registrado.
-   * @param arg - Argumentos adicionales.
+   * @param arg - Argumentos principal a imprimir.
+   * @param otherArgs - Argumentos adicionales.
    */
-  private log(color: string, level: string, message: any, ...arg: any) {
-    if (level === "important")
+  private log(
+    color: string,
+    level: string,
+    message: any,
+    arg: any,
+    ...otherArg: any
+  ) {
+    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER))
       console.log(
         this.options.withColor ? color : "",
         this.formatMessage(level, message),
-        colorPrint.white,
-        ...arg,
-      );
-    if (
-      level !== "important" &&
-      coerceBooleanProperty(process.env.ZANOBIJS_LOGGER)
-    )
-      console.log(
-        color,
-        this.formatMessage(level, message),
-        colorPrint.white,
-        ...arg,
+        this.options.withColor ? colorPrint.white : "",
+        this.formatArg(arg),
+        ...otherArg,
       );
   }
 
@@ -88,59 +95,65 @@ export class LoggerService implements ILoggerService {
    * Registra un mensaje informativo.
    *
    * @param message - Mensaje informativo.
-   * @param arg - Argumentos adicionales.
+   * @param arg - Argumentos principal a imprimir.
+   * @param otherArgs - Argumentos adicionales.
    */
-  info(message: string, ...arg: any) {
-    this.log(colorPrint.blue, "info", message, ...arg);
+  info(message: string, arg: any, ...otherArgs: any) {
+    this.log(colorPrint.blue, "info", message, arg, ...otherArgs);
   }
 
   /**
    * Registra una advertencia.
    *
    * @param message - Mensaje de advertencia.
-   * @param arg - Argumentos adicionales.
+   * @param arg - Argumentos principal a imprimir.
+   * @param otherArgs - Argumentos adicionales.
    */
-  warn(message: string, ...arg: any) {
-    this.log(colorPrint.orange, "warn", message, ...arg);
+  warn(message: string, arg: any, ...otherArgs: any) {
+    this.log(colorPrint.orange, "warn", message, arg, ...otherArgs);
   }
 
   /**
    * Registra un mensaje de error.
    *
    * @param message - Mensaje de error.
-   * @param arg - Argumentos adicionales.
+   * @param arg - Argumentos principal a imprimir.
+   * @param otherArgs - Argumentos adicionales.
    */
-  error(message: string, ...arg: any) {
-    this.log(colorPrint.red, "error", message, ...arg);
+  error(message: string, arg: any, ...otherArgs: any) {
+    this.log(colorPrint.red, "error", message, arg, ...otherArgs);
   }
 
   /**
    * Registra un mensaje de éxito.
    *
    * @param message - Mensaje de éxito.
-   * @param arg - Argumentos adicionales.
+   * @param arg - Argumentos principal a imprimir.
+   * @param otherArgs - Argumentos adicionales.
    */
-  success(message: string, ...arg: any) {
-    this.log(colorPrint.green, "success", message, ...arg);
+  success(message: string, arg: any, ...otherArgs: any) {
+    this.log(colorPrint.green, "success", message, arg, ...otherArgs);
   }
 
   /**
    * Registra un mensaje de depuración.
    *
    * @param message - Mensaje de depuración.
-   * @param arg - Argumentos adicionales.
+   * @param arg - Argumentos principal a imprimir.
+   * @param otherArgs - Argumentos adicionales.
    */
-  debug(message: string, ...arg: any) {
-    this.log(colorPrint.white, "debug", message, ...arg);
+  debug(message: string, arg: any, ...otherArgs: any) {
+    this.log(colorPrint.white, "debug", message, arg, ...otherArgs);
   }
 
   /**
    * Registra un mensaje de depuración.
    *
    * @param message - Mensaje de depuración.
-   * @param arg - Argumentos adicionales.
+   * @param arg - Argumentos principal a imprimir.
+   * @param otherArgs - Argumentos adicionales.
    */
-  important(message: string, ...arg: any) {
-    this.log(colorPrint.red, "important", message, ...arg);
+  important(message: string, arg: any, ...otherArgs: any) {
+    this.log(colorPrint.BgRed, "important", message, arg, ...otherArgs);
   }
 }
