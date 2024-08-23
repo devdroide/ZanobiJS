@@ -1,0 +1,15 @@
+export declare const DEPENDENCIES_CONSTRUCTOR = "design:paramtypes";
+export declare const DEPENDENCIES_CLASS = "__dependencies:class__";
+export declare const DEPENDENCIES_PARAMETERS = "__dependencies:paramater__";
+export declare const DEPENDENCIES_INJECT = "__dependencies:inject__";
+export declare const HAS_INJECT = "__has:inject__";
+export declare const IS_MODULE = "__is:module__";
+export declare const IS_IMPORTS = "__is:import__";
+export declare const IS_CONTROLLER = "__is:controller__";
+export declare const IS_SERVICE = "__is:service__";
+export declare const IS_EXPORT = "__is:export__";
+export declare const MODULE_IMPORTS = "module:imports";
+export declare const MODULE_CONTROLLERS = "module:controllers";
+export declare const MODULE_SERVICES = "module:services";
+export declare const MODULE_EXPORTS = "module:exports";
+export declare const PRIMITIVE_TYPES: string[];
