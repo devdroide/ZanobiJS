@@ -1,6 +1,6 @@
 {
   "name": "@zanobijs/core",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Zanobi - modern, small, powerful node.js lambda framework (@core)",
   "keywords": [],
   "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",

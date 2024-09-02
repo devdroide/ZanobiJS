@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { Module } from "@zanobijs/common";
 import { Factory } from "../index";
-import { Module1, Module2, Module4, ModuleEmpty } from "./mocks/classModules.mock";
+import { Module1, Module2, Module4, Module5, ModuleEmpty } from "./mocks/classModules.mock";
 import { Controller1, Controller6 } from "./mocks/classDependencies.mock";
 
 describe("Core - factory options", () => {
@@ -34,7 +34,6 @@ describe("Core - factory - Entities", () => {
     try {
       app.get("SomeController");
     } catch (error) {
-      console.log(error.detail);
       expect(error.message).to.be.equal(
         "Please check that the entity 'SomeController' exists and is registered in @modulo",
       );
@@ -89,7 +88,19 @@ describe("Core - factory - Entities", () => {
 
 describe("Core - factory - Module to Module", () => {
   it("It should respond getData of controller.", () => {
-    const factory = new Factory(Module2);
+    const factory = new Factory(Module2, {
+      activeLoggerSystem: true,
+      activeLoggerUser: true,
+    });
+    const app = factory.create();
+    const controller1: Controller1 = app.get("controller1");
+    expect(controller1.getData()).to.be.equal("Hello world");
+  });
+  it("It should respond getData of controller.", () => {
+    const factory = new Factory(Module5, {
+      activeLoggerSystem: true,
+      activeLoggerUser: true,
+    });
     const app = factory.create();
     const controller1: Controller1 = app.get("controller1");
     expect(controller1.getData()).to.be.equal("Hello world");
