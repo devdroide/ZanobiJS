@@ -1,9 +1,9 @@
-import { ILoggerService, IModuleConfig } from "@zanobijs/common";
+import { ILoggerService } from "@zanobijs/common";
 import { Metadata } from "../metadata";
 import { Logger } from "@zanobijs/common/utils";
 import { isEmpty } from "@zanobijs/common/utils/shared.utils";
-import { aliasTo, asClass, asFunction, asValue } from "awilix";
-// import { ContainerInjectResolutionException } from "../exceptions/resolution.exception";
+import { asClass, asFunction, asValue } from "awilix";
+import { TClass } from "../interfaces";
 
 export type Constructor<T> = { new (...args: any[]): T };
 
@@ -12,7 +12,7 @@ export type Constructor<T> = { new (...args: any[]): T };
  * solo para parametros tipo objecto { provider, useValue }
  */
 export class Injector {
-  private module: IModuleConfig;
+  private module: TClass;
   private listProviders: Map<string, any>;
   private metadata: Metadata;
   private logger: ILoggerService;
@@ -24,7 +24,7 @@ export class Injector {
    * @param {Module} module - El módulo debe tener el decorador `@Module`
    * para poderlo procesar.
    */
-  constructor(module: any, listProviders: Map<string, any>) {
+  constructor(module: TClass, listProviders: Map<string, any>) {
     this.metadata = Metadata.getInstance();
     this.logger = Logger();
     this.moduleName = module.name;
@@ -50,13 +50,13 @@ export class Injector {
   }
 
   /**
-   * Método para obtener un objeto con los parámetros y valores
-   * que se inyectarán en la clase (target).
+   * Método para obtener un objeto con los parámetros(key) y valores(useValue)
+   * que se inyectarán en la clase (target) mediante asClass().inject().
    *
-   * @param {Class} target - La clase objetivo.
+   * @param { TClass} target - La clase objetivo.
    * @returns {object} - Objeto con datos a inyectar.
    */
-  getInjectData(target: Function): object {
+  getInjectData(target: TClass): object {
     const injectData = {};
     const dInject = this.metadata.getInjectionDependencies(target);
     if (dInject.size > 0) {
@@ -67,9 +67,9 @@ export class Injector {
           injectData[paramName] = useValue;
         } else {
           this.logger.important(
-            `It is injecting @INJECT('${key}') provider in '${target.name}' but is not registered in '${this.moduleName}' or in previously loaded @modules`,
+            `You are trying to inject @INJECT('${key}') into '${target.name}'`,
+            `but the provider '${key}' and its value are not registered in '${this.moduleName}' or any other previously loaded modules`,
           );
-          // throw new ContainerInjectResolutionException(key, target.name);
         }
       }
     }
@@ -77,7 +77,11 @@ export class Injector {
   }
 
   /**
-   * Método para obtener el injector apropiado para la clase objetivo.
+   * Método para obtener el injector apropiado para la clase objetivo
+   * e inyectar los parametros del constructor encontrados en getInjectData
+   *
+   * Al hacer asClass().inject() evita que los busque en el contenedor ya que
+   * se registran de forma local en la clase objetivo
    *
    * @param {any} target - La clase objetivo.
    * @returns - El injector configurado.

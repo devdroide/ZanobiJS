@@ -126,7 +126,7 @@ export const unCapitalize = (word: string): string =>
  * function exampleFunc(arg1, arg2) {}
  * getConstructorParamNames(exampleFunc) // Devuelve ["arg1", "arg2"]
  */
-export const getConstructorParamNames = (func: Function | Object): string[] => {
+export const getConstructorParamNames = (func: Function | object): string[] => {
   const ctorString = func.toString();
   /** Encuentra todo lo que está dentro de los paréntesis d el constructor. */
   const ctorParamsMatch = ctorString.match(/constructor\s*\(([^)]*)\)/);

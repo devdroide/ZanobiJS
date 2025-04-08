@@ -6,7 +6,6 @@ import {
   Controller2,
   Controller3,
   Service1,
-  Service2,
 } from "./mocks/classDependenciesToInject";
 
 describe("Core - Injector - injector", () => {

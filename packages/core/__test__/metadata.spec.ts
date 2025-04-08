@@ -2,9 +2,6 @@ import { expect } from "chai";
 import { Metadata } from "../metadata";
 import { ModuleEmpty } from "./mocks/classModules.mock";
 import { Controller3, Service1 } from "./mocks/classDependencies.mock";
-// import { ModuleTestEmpty, ModuleTest } from "./mocks/classModule.mock";
-// import { ServiceWithDepenParam } from "./mocks/classWithDependeciesInject.mock";
-// import { ControllerWithDepenClass } from "./mocks/classWithDependeciesClass.mock";
 
 describe("Core - metadata", () => {
   class genericClassForTesting {}
@@ -30,9 +27,7 @@ describe("Core - metadata", () => {
       expect(metadata.isTypeModule(ModuleEmpty)).to.be.true;
     });
     it("should respond determine type of service", () => {
-      expect(metadata.determineType(Service1)).to.be.equal(
-        "service",
-      );
+      expect(metadata.determineType(Service1)).to.be.equal("service");
     });
     it("should respond determine type of unknown", () => {
       class ServiceTest {}
