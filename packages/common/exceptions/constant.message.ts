@@ -1,5 +1,5 @@
 export const MODULE_ERROR = () =>
-  `An error has occurred in @Module(), please check the detail field`;
+  "An error has occurred in @Module(), please check the detail field";
 export const MODULE_INVALID_ENTITY = (entity) =>
   `The content of the "${entity}" entity must be type "class".`;
 export const MODULE_INVALID_TYPE_ENTITY = (entity) =>
