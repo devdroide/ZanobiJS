@@ -21,7 +21,6 @@ export function isClass(func: any): boolean {
   return /^class\s/.test(funcAsString);
 }
 
-
 /**
  * Verifica si el valor proporcionado es un objeto.
  *
@@ -55,6 +54,28 @@ export function isArray(value: any): boolean {
  */
 export function isMap(value: any): boolean {
   return value instanceof Map;
+}
+
+/**
+ * Verifica si el valor proporcionado es un posible objeto transformado en cadena.
+ *
+ * @param value - El valor a verificar.
+ * @returns Verdadero si el valor es un posible objeto; falso de lo contrario.
+ */
+export function isObjectString(value: string) {
+  const trimmed = value.trim();
+  return trimmed.startsWith("{") && trimmed.endsWith("}");
+}
+
+/**
+ * Verifica si el valor proporcionado es un posible array transformado en cadena.
+ *
+ * @param value - El valor a verificar.
+ * @returns Verdadero si el valor es un posible array; falso de lo contrario.
+ */
+export function isArrayString(value: string) {
+  const trimmed = value.trim();
+  return trimmed.startsWith("[") && trimmed.endsWith("]");
 }
 
 /**
