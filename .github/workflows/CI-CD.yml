@@ -1,0 +1,118 @@
+name: ZanobiJS CI-CD Validation
+
+on:
+  pull_request:
+    branches: [develop, beta, main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Importante para SonarQube para analizar el historial
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint:fix
+        continue-on-error: false  # Bloquea si hay errores de linting
+
+      - name: Prettier
+        run: npm run prettier:fix
+        continue-on-error: false  # Bloquea si hay errores de formato
+
+      - name: Build
+        run: npm run build
+        continue-on-error: false  # Bloquea si hay errores de compilación
+
+      - name: Run tests with coverage
+        run: npm run test
+        continue-on-error: false  # Bloquea si fallan los tests
+
+      - name: Check test coverage
+        env:
+          MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 90 }}
+        run: |
+          COVERAGE=$(npx nyc report --reporter=text | grep "All files" | awk '{print $3}' | tr -d '%')
+          echo "Test coverage: $COVERAGE%"
+          echo "Minimum required coverage: $MIN_COVERAGE%"
+          if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
+            echo "Error: Test coverage is below $MIN_COVERAGE%. Current coverage: $COVERAGE%"
+            exit 1
+          fi
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        # No need for additional args since sonar-project.properties exists in the repository
+
+      - name: SonarQube Quality Gate check
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  enforce-approval:
+    name: Enforce Owner Approval
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if PR has been approved by repository owner
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            const { data: repo } = await github.rest.repos.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+
+            // Get repository owner
+            const repoOwner = repo.owner.login;
+
+            // Get list of repository collaborators with permission details
+            const { data: collaborators } = await github.rest.repos.listCollaborators({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              permission: 'admin'
+            });
+
+            // Extract admin usernames
+            const admins = collaborators.map(collab => collab.login);
+            console.log('Repository admins:', admins);
+
+            // Check if any review from an admin is an approval
+            let ownerApproved = false;
+            for (const review of reviews) {
+              if (admins.includes(review.user.login) && review.state === 'APPROVED') {
+                ownerApproved = true;
+                console.log(`Approved by admin: ${review.user.login}`);
+                break;
+              }
+            }
+
+            if (!ownerApproved) {
+              core.setFailed('PR requires approval from a repository owner (admin)');
+            } else {
+              console.log('PR has been approved by a repository owner');
+            }
