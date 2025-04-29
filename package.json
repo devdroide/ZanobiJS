@@ -5,7 +5,9 @@
     "packages/*"
   ],
   "scripts": {
+    "lint:check": "npx eslint \"packages/**/*.ts\" --quiet",
     "lint:fix": "npx eslint \"packages/**/*.ts\" --quiet --fix",
+    "prettier:check": "prettier --check \"packages/**/*.ts\"",
     "prettier:fix": "prettier --write \"packages/**/*.ts\"",
     "build": "tsc -b -v packages",
     "clean": "npx gulp clean:ts",

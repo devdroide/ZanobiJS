@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Importante para SonarQube para analizar el historial
+          fetch-depth: 0
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v3
@@ -24,26 +24,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint:fix
-        continue-on-error: false  # Bloquea si hay errores de linting
+      - name: Lint check
+        run: npm run lint:check
+        continue-on-error: false
 
-      - name: Prettier
-        run: npm run prettier:fix
-        continue-on-error: false  # Bloquea si hay errores de formato
-
-      - name: Build
-        run: npm run build
-        continue-on-error: false  # Bloquea si hay errores de compilación
+      - name: Prettier check
+        run: npm run prettier:check
+        continue-on-error: false
 
       - name: Run tests with coverage
         run: npm run test
-        continue-on-error: false  # Bloquea si fallan los tests
+        continue-on-error: false
 
       - name: Check test coverage
         env:
           MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 90 }}
         run: |
+          set -e
           COVERAGE=$(npx nyc report --reporter=text | grep "All files" | awk '{print $3}' | tr -d '%')
           echo "Test coverage: $COVERAGE%"
           echo "Minimum required coverage: $MIN_COVERAGE%"
@@ -57,7 +54,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        # No need for additional args since sonar-project.properties exists in the repository
 
       - name: SonarQube Quality Gate check
         uses: SonarSource/sonarqube-quality-gate-action@master
@@ -65,6 +61,10 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Build
+        run: npm run build
+        continue-on-error: false
 
   enforce-approval:
     name: Enforce Owner Approval
@@ -87,21 +87,15 @@ jobs:
               repo: context.repo.repo
             });
 
-            // Get repository owner
-            const repoOwner = repo.owner.login;
-
-            // Get list of repository collaborators with permission details
             const { data: collaborators } = await github.rest.repos.listCollaborators({
               owner: context.repo.owner,
               repo: context.repo.repo,
               permission: 'admin'
             });
 
-            // Extract admin usernames
             const admins = collaborators.map(collab => collab.login);
             console.log('Repository admins:', admins);
 
-            // Check if any review from an admin is an approval
             let ownerApproved = false;
             for (const review of reviews) {
               if (admins.includes(review.user.login) && review.state === 'APPROVED') {
