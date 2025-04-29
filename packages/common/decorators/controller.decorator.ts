@@ -26,7 +26,7 @@ export const Controller = (): ClassDecorator => {
 
     /** Obtiene los tipos de dependencias de la clase utilizando los metadatos de diseño.*/
     const dependencies: any[] =
-      Reflect.getMetadata(DEPENDENCIES_CONSTRUCTOR, target) || [];
+      Reflect.getMetadata(DEPENDENCIES_CONSTRUCTOR, target) ?? [];
     logger.debug("@Controller dependencies", dependencies);
     /** Obtiene los nombres de los parámetros del constructor de la clase. */
     const paramNames: any[] = getConstructorParamNames(target);

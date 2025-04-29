@@ -21,14 +21,15 @@ export class LoggerUserService implements ILoggerUserService {
    * Instancia única del servicio LoggerService.
    */
   private static instance: LoggerUserService;
-  private options: IOptionsLog = {
+  private readonly options: IOptionsLog = {
     withColor: true,
     activeMasker: false,
     configSchemaMasker: {},
   };
-  private providerPattern: ProviderPatternService =
+  private readonly providerPattern: ProviderPatternService =
     ProviderPatternService.getInstance();
-  private processData: ProcessDataService = ProcessDataService.getInstance();
+  private readonly processData: ProcessDataService =
+    ProcessDataService.getInstance();
   private enableDeselectSchema: boolean = true;
   /**
    * Constructor privado para asegurar que no se pueda instanciar directamente.
@@ -64,7 +65,7 @@ export class LoggerUserService implements ILoggerUserService {
   }
 
   private deselectSchema() {
-    if(this.enableDeselectSchema){
+    if (this.enableDeselectSchema) {
       this.processData.deselectSchema();
     }
   }
@@ -114,30 +115,41 @@ export class LoggerUserService implements ILoggerUserService {
     arg: any,
     ...otherArg: any
   ) {
+    // Si el logger no está activo, salir temprano
+    if (!coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER)) {
+      return;
+    }
+
     let messageProcess = message;
     let argProcess = arg;
-    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER)) {
-      if (this.options.activeMasker) {
-        messageProcess = this.processData.process(messageProcess);
-        argProcess = argProcess ? this.processData.process(argProcess) : "";
-      }
-      if (arg) {
-        console.log(
-          this.options.withColor ? color : "",
-          this.formatMessage(level, messageProcess),
-          this.options.withColor ? colorPrint.white : "",
-          this.formatArg(argProcess),
-          ...otherArg,
-        );
-      } else {
-        console.log(
-          this.options.withColor ? color : "",
-          this.formatMessage(level, messageProcess),
-          ...otherArg,
-        );
-      }
-      this.deselectSchema()
+
+    // Procesar los datos si el enmascarador está activo
+    if (this.options.activeMasker) {
+      messageProcess = this.processData.process(messageProcess);
+      argProcess = arg ? this.processData.process(arg) : "";
     }
+
+    // Determinar el color a usar
+    const colorToUse = this.options.withColor ? color : "";
+    const whiteColor = this.options.withColor ? colorPrint.white : "";
+
+    // Formatear el mensaje principal
+    const formattedMessage = this.formatMessage(level, messageProcess);
+
+    // Imprimir el mensaje con o sin argumentos
+    if (arg) {
+      console.log(
+        colorToUse,
+        formattedMessage,
+        whiteColor,
+        this.formatArg(argProcess),
+        ...otherArg,
+      );
+    } else {
+      console.log(colorToUse, formattedMessage, ...otherArg);
+    }
+
+    this.deselectSchema();
   }
 
   /**

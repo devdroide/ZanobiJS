@@ -18,7 +18,7 @@ export class LoggerService implements ILoggerService {
    * Instancia única del servicio LoggerService.
    */
   private static instance: LoggerService;
-  private options: IOptionsLog = {
+  private readonly options: IOptionsLog = {
     withColor: true,
   };
   /**

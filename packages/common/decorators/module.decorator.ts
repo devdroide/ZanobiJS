@@ -19,7 +19,7 @@ export function Module(config: IModuleConfig): ClassDecorator {
     for (const property in config) {
       Reflect.defineMetadata(
         `module:${property}`,
-        (config as IModuleConfig)[property],
+        (config)[property],
         target,
       );
     }

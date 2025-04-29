@@ -18,5 +18,4 @@ import { modulesSchema } from "../schemas";
 export function validateModuleKey(keys: IModuleConfig) {
   const { error } = modulesSchema.validate(keys);
   if (error) throw new InvalidModuleSchemaException(error.message);
-  return;
 }

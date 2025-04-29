@@ -5,7 +5,6 @@ import { ABSPattern, IPattern } from "../../../interfaces";
  * Utiliza el patrón Singleton para garantizar una única instancia
  */
 class CreditCardPattern implements IPattern {
-  private name: string = "CreditCardMasker";
   private static instance: CreditCardPattern;
 
   private constructor() {}

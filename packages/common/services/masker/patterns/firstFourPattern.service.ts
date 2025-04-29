@@ -1,7 +1,6 @@
 import { ABSPattern, IPattern } from "../../../interfaces";
 
 class FirstFourPattern implements IPattern {
-  private name: string = "FirstFourMasker";
   private static instance: FirstFourPattern;
   private constructor() {}
 

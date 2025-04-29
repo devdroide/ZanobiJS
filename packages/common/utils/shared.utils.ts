@@ -149,8 +149,9 @@ export const unCapitalize = (word: string): string =>
  */
 export const getConstructorParamNames = (func: Function | object): string[] => {
   const ctorString = func.toString();
-  /** Encuentra todo lo que está dentro de los paréntesis d el constructor. */
-  const ctorParamsMatch = ctorString.match(/constructor\s*\(([^)]*)\)/);
+  /** Encuentra lo que está dentro de los paréntesis del constructor. */
+  const ctorRegex = /constructor\s*\(([^)]*)\)/;
+  const ctorParamsMatch = ctorRegex.exec(ctorString);
   /** Verifica si paramsString está vacío */
   if (!ctorParamsMatch) return [];
 
@@ -159,7 +160,7 @@ export const getConstructorParamNames = (func: Function | object): string[] => {
   if (!paramsString) return [];
 
   return paramsString.split(",").map((param) => {
-    /** Elimina todo después e incluyendo ":" o "=" para manejar anotaciones de tipo y valores predeterminados */
+    /** Elimina los catacteres incluyendo ":" o "=" para manejar anotaciones de tipo y valores predeterminados */
     return param.split(":")[0].split("=")[0].trim();
   });
 };
