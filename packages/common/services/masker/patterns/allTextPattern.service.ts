@@ -1,7 +1,7 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 class AllTextPattern implements IPattern {
-  private name: string = "AllTextMasker";
+  private name: string = 'AllTextMasker';
   private static instance: AllTextPattern;
   private constructor() {}
 
@@ -11,7 +11,7 @@ class AllTextPattern implements IPattern {
     return AllTextPattern.instance;
   }
   mask(value: string): string {
-    return "*".repeat(value.length);
+    return '*'.repeat(value.length);
   }
 }
 

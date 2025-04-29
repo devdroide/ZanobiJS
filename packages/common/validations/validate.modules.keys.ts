@@ -1,6 +1,6 @@
-import { InvalidModuleSchemaException } from "../exceptions";
-import { IModuleConfig } from "../interfaces";
-import { modulesSchema } from "../schemas";
+import { InvalidModuleSchemaException } from '../exceptions';
+import { IModuleConfig } from '../interfaces';
+import { modulesSchema } from '../schemas';
 
 /**
  * Valida el nombre de las propiedades (keys) del módulo utilizando el esquema `modulesSchema`.

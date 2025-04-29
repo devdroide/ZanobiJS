@@ -1,14 +1,14 @@
-import "reflect-metadata";
-import { AwilixContainer, InjectionMode, createContainer } from "awilix";
-import { Module } from "./injector/module";
+import 'reflect-metadata';
+import { AwilixContainer, InjectionMode, createContainer } from 'awilix';
+import { Module } from './injector/module';
 import {
   ContainerResolutionEntityException,
   ContainerResolutionException,
-} from "./exceptions/resolution.exception";
-import { ILoggerService } from "@zanobijs/common";
-import { Logger } from "@zanobijs/common/utils";
-import { IFactoryOptions } from "./interfaces";
-import { TClass } from "./interfaces/globals.interface";
+} from './exceptions/resolution.exception';
+import { ILoggerService } from '@zanobijs/common';
+import { Logger } from '@zanobijs/common/utils';
+import { IFactoryOptions } from './interfaces';
+import { TClass } from './interfaces/globals.interface';
 
 /**
  * Factory es una clase que facilita la creación y configuración de
@@ -24,8 +24,8 @@ export class Factory {
   private options: IFactoryOptions;
 
   constructor(appModule: TClass, options: IFactoryOptions = {}) {
-    process.env.ZANOBIJS_LOGGER = "false";
-    process.env.ZANOBIJS_LOGGER_USER = "false";
+    process.env.ZANOBIJS_LOGGER = 'false';
+    process.env.ZANOBIJS_LOGGER_USER = 'false';
     this.options = options;
     this.evaluateOptions();
     this.logger = Logger();
@@ -39,16 +39,16 @@ export class Factory {
    * @private
    */
   private processModule(module: TClass): void {
-    this.logger.debug("Factory - Process - Create module setup:", module.name);
+    this.logger.debug('Factory - Process - Create module setup:', module.name);
     this.moduleHandler.setup(module);
-    this.logger.debug("Factory - Process - Module initialize:", module.name);
+    this.logger.debug('Factory - Process - Module initialize:', module.name);
     this.moduleHandler.initialize();
     Object.assign(
       this.registeredClasses,
       this.moduleHandler.getRegisterClass(),
     );
     this.logger.success(
-      "Factory - Process - Completion of module ",
+      'Factory - Process - Completion of module ',
       module.name,
     );
     const importedModules = this.moduleHandler.getImports();
@@ -57,7 +57,7 @@ export class Factory {
         this.processModule(moduleImport);
       });
     }
-    this.logger.debug("===================================================");
+    this.logger.debug('===================================================');
   }
 
   /**
@@ -68,7 +68,7 @@ export class Factory {
     this.container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     this.container.register(this.registeredClasses);
     this.logger.info(
-      "Factory - classes and providers registered in the container",
+      'Factory - classes and providers registered in the container',
       Object.keys(this.registeredClasses),
     );
     return this;
@@ -84,8 +84,8 @@ export class Factory {
     try {
       return this.container.resolve(className);
     } catch (error) {
-      this.logger.info("Error resolving entity: ", error.message + "\n");
-      const resolutionError = error.message.split("\n");
+      this.logger.info('Error resolving entity: ', error.message + '\n');
+      const resolutionError = error.message.split('\n');
       const classNameFound = resolutionError[0].match(/'([^']+)'/);
       if (classNameFound[1] === className) {
         throw new ContainerResolutionEntityException(className, error.message);
@@ -99,8 +99,8 @@ export class Factory {
   }
 
   private evaluateOptions() {
-    if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = "true";
+    if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = 'true';
     if (this.options.activeLoggerUser)
-      process.env.ZANOBIJS_LOGGER_USER = "true";
+      process.env.ZANOBIJS_LOGGER_USER = 'true';
   }
 }

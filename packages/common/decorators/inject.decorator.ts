@@ -1,5 +1,5 @@
-import { getConstructorParamNames } from "../utils/shared.utils";
-import { DEPENDENCIES_INJECT, HAS_INJECT } from "../utils/constants";
+import { getConstructorParamNames } from '../utils/shared.utils';
+import { DEPENDENCIES_INJECT, HAS_INJECT } from '../utils/constants';
 
 /**
  * Decorador que permite inyectar dependencias en un parámetro de constructor.

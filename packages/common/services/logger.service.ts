@@ -1,6 +1,6 @@
-import * as util from "util";
-import { ILoggerService, IOptionsLog } from "../interfaces";
-import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
+import * as util from 'util';
+import { ILoggerService, IOptionsLog } from '../interfaces';
+import { coerceBooleanProperty, colorPrint } from '../utils/shared.utils';
 
 /**
  * Servicio para manejar el registro de mensajes con diferentes niveles de importancia.
@@ -83,9 +83,9 @@ export class LoggerService implements ILoggerService {
   ) {
     if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER))
       console.log(
-        this.options.withColor ? color : "",
+        this.options.withColor ? color : '',
         this.formatMessage(level, message),
-        this.options.withColor ? colorPrint.white : "",
+        this.options.withColor ? colorPrint.white : '',
         this.formatArg(arg),
         ...otherArg,
       );
@@ -99,7 +99,7 @@ export class LoggerService implements ILoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   info(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.blue, "info", message, arg, ...otherArgs);
+    this.log(colorPrint.blue, 'info', message, arg, ...otherArgs);
   }
 
   /**
@@ -110,7 +110,7 @@ export class LoggerService implements ILoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   warn(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.orange, "warn", message, arg, ...otherArgs);
+    this.log(colorPrint.orange, 'warn', message, arg, ...otherArgs);
   }
 
   /**
@@ -121,7 +121,7 @@ export class LoggerService implements ILoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   error(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.red, "error", message, arg, ...otherArgs);
+    this.log(colorPrint.red, 'error', message, arg, ...otherArgs);
   }
 
   /**
@@ -132,7 +132,7 @@ export class LoggerService implements ILoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   success(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.green, "success", message, arg, ...otherArgs);
+    this.log(colorPrint.green, 'success', message, arg, ...otherArgs);
   }
 
   /**
@@ -143,7 +143,7 @@ export class LoggerService implements ILoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   debug(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.white, "debug", message, arg, ...otherArgs);
+    this.log(colorPrint.white, 'debug', message, arg, ...otherArgs);
   }
 
   /**
@@ -154,6 +154,6 @@ export class LoggerService implements ILoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   important(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.BgRed, "important", message, arg, ...otherArgs);
+    this.log(colorPrint.BgRed, 'important', message, arg, ...otherArgs);
   }
 }

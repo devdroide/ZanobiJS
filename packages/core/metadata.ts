@@ -1,4 +1,4 @@
-import { IModuleConfig } from "@zanobijs/common";
+import { IModuleConfig } from '@zanobijs/common';
 import {
   DEPENDENCIES_CLASS,
   DEPENDENCIES_INJECT,
@@ -12,8 +12,8 @@ import {
   MODULE_EXPORTS,
   MODULE_IMPORTS,
   MODULE_SERVICES,
-} from "@zanobijs/common/utils/constants";
-import { TClass } from "./interfaces";
+} from '@zanobijs/common/utils/constants';
+import { TClass } from './interfaces';
 
 /**
  * La clase `Metadata` proporciona métodos para acceder y manipular
@@ -22,11 +22,11 @@ import { TClass } from "./interfaces";
 export class Metadata {
   private static instance: Metadata;
   private readonly metadataMap: { [key: string]: string } = {
-    [IS_MODULE]: "module",
-    [IS_IMPORTS]: "import",
-    [IS_CONTROLLER]: "controller",
-    [IS_SERVICE]: "service",
-    [IS_EXPORT]: "export",
+    [IS_MODULE]: 'module',
+    [IS_IMPORTS]: 'import',
+    [IS_CONTROLLER]: 'controller',
+    [IS_SERVICE]: 'service',
+    [IS_EXPORT]: 'export',
   };
   private constructor() {}
 

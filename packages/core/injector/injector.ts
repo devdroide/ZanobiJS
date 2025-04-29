@@ -1,9 +1,9 @@
-import { ILoggerService } from "@zanobijs/common";
-import { Metadata } from "../metadata";
-import { Logger } from "@zanobijs/common/utils";
-import { isEmpty } from "@zanobijs/common/utils/shared.utils";
-import { asClass, asFunction, asValue } from "awilix";
-import { TClass } from "../interfaces";
+import { ILoggerService } from '@zanobijs/common';
+import { Metadata } from '../metadata';
+import { Logger } from '@zanobijs/common/utils';
+import { isEmpty } from '@zanobijs/common/utils/shared.utils';
+import { asClass, asFunction, asValue } from 'awilix';
+import { TClass } from '../interfaces';
 
 export type Constructor<T> = { new (...args: any[]): T };
 
@@ -16,7 +16,7 @@ export class Injector {
   private listProviders: Map<string, any>;
   private metadata: Metadata;
   private logger: ILoggerService;
-  private moduleName: string = "";
+  private moduleName: string = '';
 
   /**
    * En Constructor de la clase Injector obtenermos las instancias
@@ -40,13 +40,13 @@ export class Injector {
    * @private
    */
   private scanProviders() {
-    this.logger.debug("Injector - Scan provider to module:", this.moduleName);
+    this.logger.debug('Injector - Scan provider to module:', this.moduleName);
     const { services } = this.metadata.getMetadataModule(this.module);
     services.forEach((service) => {
-      if (typeof service === "object")
+      if (typeof service === 'object')
         this.listProviders.set(service.provider, service.useValue);
     });
-    this.logger.debug("Injector - list provider", this.listProviders);
+    this.logger.debug('Injector - list provider', this.listProviders);
   }
 
   /**
@@ -108,7 +108,7 @@ export class Injector {
   }
 
   getInjectProvider(provider) {
-    return typeof provider.value === "function"
+    return typeof provider.value === 'function'
       ? asFunction(provider.value).scoped()
       : asValue(provider.value);
   }

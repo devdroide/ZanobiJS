@@ -5,7 +5,7 @@
  * @returns Verdadero si el valor es una función; falso de lo contrario.
  */
 export function isFunction(value: any): boolean {
-  return typeof value === "function" && isEmpty(value.prototype);
+  return typeof value === 'function' && isEmpty(value.prototype);
 }
 
 /**
@@ -15,7 +15,7 @@ export function isFunction(value: any): boolean {
  * @returns Verdadero si es una clase; falso de lo contrario.
  */
 export function isClass(func: any): boolean {
-  if (typeof func !== "function") return false;
+  if (typeof func !== 'function') return false;
 
   const funcAsString = Function.prototype.toString.call(func);
   return /^class\s/.test(funcAsString);
@@ -31,7 +31,7 @@ export function isObject(value: any): boolean {
   return (
     value !== null &&
     !Array.isArray(value) &&
-    typeof value === "object" &&
+    typeof value === 'object' &&
     !(value instanceof Map)
   );
 }
@@ -64,7 +64,7 @@ export function isMap(value: any): boolean {
  */
 export function isObjectString(value: string) {
   const trimmed = value.trim();
-  return trimmed.startsWith("{") && trimmed.endsWith("}");
+  return trimmed.startsWith('{') && trimmed.endsWith('}');
 }
 
 /**
@@ -75,7 +75,7 @@ export function isObjectString(value: string) {
  */
 export function isArrayString(value: string) {
   const trimmed = value.trim();
-  return trimmed.startsWith("[") && trimmed.endsWith("]");
+  return trimmed.startsWith('[') && trimmed.endsWith(']');
 }
 
 /**
@@ -95,7 +95,7 @@ export function isNull(value: any): boolean {
  * @returns Verdadero si el valor es undefined; falso de lo contrario.
  */
 export function isUndefined(value: any): boolean {
-  return typeof value === "undefined";
+  return typeof value === 'undefined';
 }
 
 /**
@@ -107,7 +107,7 @@ export function isUndefined(value: any): boolean {
 export const isEmpty = (val: object | any[]): boolean => {
   if (Array.isArray(val)) {
     return val.length === 0;
-  } else if (typeof val === "object") {
+  } else if (typeof val === 'object') {
     return Object.keys(val).length === 0;
   }
   return false;
@@ -120,7 +120,7 @@ export const isEmpty = (val: object | any[]): boolean => {
  * @returns Verdadero si el valor es distinto de null y no es "false"; falso de lo contrario.
  */
 export function coerceBooleanProperty(value: any): boolean {
-  return value != null && `${value}` !== "false";
+  return value != null && `${value}` !== 'false';
 }
 
 /**
@@ -158,9 +158,9 @@ export const getConstructorParamNames = (func: Function | object): string[] => {
   /** Verifica si paramsString está vacío */
   if (!paramsString) return [];
 
-  return paramsString.split(",").map((param) => {
+  return paramsString.split(',').map((param) => {
     /** Elimina todo después e incluyendo ":" o "=" para manejar anotaciones de tipo y valores predeterminados */
-    return param.split(":")[0].split("=")[0].trim();
+    return param.split(':')[0].split('=')[0].trim();
   });
 };
 
@@ -168,14 +168,14 @@ export const getConstructorParamNames = (func: Function | object): string[] => {
  * Objeto con los colores a usar en servicio de registro de logs
  */
 export const colorPrint = Object.freeze({
-  red: "\x1b[31m",
-  green: "\x1b[32m",
-  orange: "\x1b[33m",
-  blue: "\x1b[34m",
-  white: "\x1b[37m",
-  BgRed: "\x1b[41m",
-  BgGreen: "\x1b[42m",
-  BgOrange: "\x1b[43m",
-  BgBlue: "\x1b[44m",
-  BgWhite: "\x1b[47m",
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  orange: '\x1b[33m',
+  blue: '\x1b[34m',
+  white: '\x1b[37m',
+  BgRed: '\x1b[41m',
+  BgGreen: '\x1b[42m',
+  BgOrange: '\x1b[43m',
+  BgBlue: '\x1b[44m',
+  BgWhite: '\x1b[47m',
 });

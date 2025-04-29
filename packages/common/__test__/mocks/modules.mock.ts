@@ -1,5 +1,5 @@
-import { Module } from "../../index";
-import { ControllerOnly } from "./controllers.mock";
+import { Module } from '../../index';
+import { ControllerOnly } from './controllers.mock';
 
 @Module({
   imports: [],

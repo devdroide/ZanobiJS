@@ -1,7 +1,7 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 class LastFourPattern implements IPattern {
-  private name: string = "LasFourMasker";
+  private name: string = 'LasFourMasker';
   private static instance: LastFourPattern;
   private constructor() {}
 
@@ -16,7 +16,7 @@ class LastFourPattern implements IPattern {
       return value;
     }
     const visiblePart = value.slice(-4);
-    const maskedPart = "*".repeat(value.length - 4);
+    const maskedPart = '*'.repeat(value.length - 4);
     return `${maskedPart}${visiblePart}`;
   }
 }

@@ -1,7 +1,7 @@
-import "reflect-metadata";
-import { validateModuleKey } from "../validations";
-import { IModuleConfig } from "../interfaces";
-import { IS_MODULE } from "../utils/constants";
+import 'reflect-metadata';
+import { validateModuleKey } from '../validations';
+import { IModuleConfig } from '../interfaces';
+import { IS_MODULE } from '../utils/constants';
 /**
  * Decorador de clase para marcar una clase como módulo y agregar metadatos relacionados con la configuración del módulo.
  *

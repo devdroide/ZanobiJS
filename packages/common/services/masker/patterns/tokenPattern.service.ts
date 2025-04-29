@@ -1,7 +1,7 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 class TokenPattern implements IPattern {
-  private name: string = "TokenMasker";
+  private name: string = 'TokenMasker';
   private static instance: TokenPattern;
 
   private constructor() {}

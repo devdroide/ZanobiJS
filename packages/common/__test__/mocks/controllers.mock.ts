@@ -1,5 +1,5 @@
-import { Controller, Inject } from "../../index";
-import { ServiceOnly } from "./services.mock";
+import { Controller, Inject } from '../../index';
+import { ServiceOnly } from './services.mock';
 
 @Controller()
 export class ControllerOnly {}
@@ -12,7 +12,7 @@ export class ControllerWithoutArg {
 @Controller()
 export class ControllerWithMethod {
   getHello() {
-    return "Hello ServiceOnly";
+    return 'Hello ServiceOnly';
   }
 }
 
@@ -34,7 +34,7 @@ export class ControllerWithService {
 
 @Controller()
 export class ControllerWithInject {
-  constructor(@Inject("API_KEY") private apiKey: string) {}
+  constructor(@Inject('API_KEY') private apiKey: string) {}
   getApiKey() {
     return this.apiKey;
   }
@@ -42,10 +42,10 @@ export class ControllerWithInject {
 
 @Controller()
 export class ControllerMix {
-  private varTest: string = "1";
+  private varTest: string = '1';
   constructor(
     private serviceOnly: ServiceOnly,
-    @Inject("API_KEY") private apiKey: string,
+    @Inject('API_KEY') private apiKey: string,
     private userName: string,
   ) {}
   getHello() {

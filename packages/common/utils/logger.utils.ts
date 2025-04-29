@@ -1,6 +1,6 @@
-import { ILoggerService, IOptionsLog } from "../interfaces";
-import { LoggerService } from "../services/logger.service";
-import { LoggerUserService } from "../services/logger.user.service";
+import { ILoggerService, IOptionsLog } from '../interfaces';
+import { LoggerService } from '../services/logger.service';
+import { LoggerUserService } from '../services/logger.user.service';
 
 /**
  * Función de fábrica que proporciona acceso a la única instancia del servicio `LoggerService`.
