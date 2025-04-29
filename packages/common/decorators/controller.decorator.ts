@@ -1,16 +1,6 @@
-import "reflect-metadata";
-import { IDependenciesClass } from "../interfaces";
-import { Logger } from "../utils";
-import {
-  unCapitalize,
-  getConstructorParamNames,
-} from "../utils/shared.utils";
-import {
-  DEPENDENCIES_CONSTRUCTOR,
-  DEPENDENCIES_CLASS,
-  IS_CONTROLLER,
-} from "../utils/constants";
-const logger = Logger();
+import { IS_CONTROLLER } from "../utils/constants";
+import { createClassDecorator } from "./create.decorator";
+
 /**
  * Decorador de clase para marcar una clase como controllador.
  *
@@ -20,33 +10,6 @@ const logger = Logger();
  * @decorator
  * @returns {ClassDecorator} Una función de decorador de clase.
  */
-export const Controller = (): ClassDecorator => {
-  return (target: Function) => {
-    logger.debug("@Controller target", target.name);
+export const Controller = (): ClassDecorator =>
+  createClassDecorator("Controller", IS_CONTROLLER);
 
-    /** Obtiene los tipos de dependencias de la clase utilizando los metadatos de diseño.*/
-    const dependencies: any[] =
-      Reflect.getMetadata(DEPENDENCIES_CONSTRUCTOR, target) ?? [];
-    logger.debug("@Controller dependencies", dependencies);
-    /** Obtiene los nombres de los parámetros del constructor de la clase. */
-    const paramNames: any[] = getConstructorParamNames(target);
-    logger.debug("@Controller paramNames", paramNames);
-
-    /** Representa las dependencias de la clase en un formato específico. */
-    const dependenciesClass: Array<IDependenciesClass> = dependencies.map(
-      (dependencie, index) => {
-        return {
-          type: "Controller",
-          TargeName: target.name,
-          nameClass: dependencie.name,
-          nameClassContainer: unCapitalize(dependencie.name),
-          nameParameter: paramNames[index],
-        };
-      },
-    );
-
-    /** Define los metadatos para la clase.*/
-    Reflect.defineMetadata(DEPENDENCIES_CLASS, dependenciesClass, target);
-    Reflect.defineMetadata(IS_CONTROLLER, true, target);
-  };
-};
