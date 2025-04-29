@@ -1,6 +1,9 @@
+/* eslint-disable no-console */
 import * as util from "util";
-import { ILoggerService, IOptionsLog } from "../interfaces";
+import { ILoggerUserService, IOptionsLog } from "../interfaces";
 import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
+import { ProcessDataService } from "./masker/process/processData.service";
+import { ProviderPatternService } from "./masker/process/providerPattern.service";
 
 /**
  * Servicio para manejar el registro de mensajes con diferentes niveles de importancia.
@@ -13,19 +16,28 @@ import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
  * logger.error('Mensaje de error');
  * ```
  */
-export class LoggerUserService implements ILoggerService {
+export class LoggerUserService implements ILoggerUserService {
   /**
    * Instancia única del servicio LoggerService.
    */
   private static instance: LoggerUserService;
   private options: IOptionsLog = {
     withColor: true,
+    activeMasker: false,
+    configSchemaMasker: {},
   };
+  private providerPattern: ProviderPatternService =
+    ProviderPatternService.getInstance();
+  private processData: ProcessDataService = ProcessDataService.getInstance();
+  private enableDeselectSchema: boolean = true;
   /**
    * Constructor privado para asegurar que no se pueda instanciar directamente.
    */
   private constructor(options?: IOptionsLog) {
     this.options.withColor = options?.withColor ?? true;
+    this.options.activeMasker = options?.activeMasker ?? false;
+    this.options.configSchemaMasker = options?.configSchemaMasker ?? {};
+    this.initializeMasker();
   }
 
   /**
@@ -33,11 +45,33 @@ export class LoggerUserService implements ILoggerService {
    * @param options - Listado de opciones para aplicar a la instancia.
    * @returns La única instancia de LoggerService.
    */
-  static getInstance(options?: IOptionsLog): ILoggerService {
+  static getInstance(options?: IOptionsLog): ILoggerUserService {
     if (!this.instance) {
       this.instance = new LoggerUserService(options);
     }
     return this.instance;
+  }
+
+  private initializeMasker() {
+    if (this.options.activeMasker && this.options.configSchemaMasker) {
+      this.providerPattern.setupSchema(this.options.configSchemaMasker);
+      const keys = Object.keys(this.options.configSchemaMasker);
+      if (keys.length === 1) {
+        this.enableDeselectSchema = false;
+        this.masker(keys[0]);
+      }
+    }
+  }
+
+  private deselectSchema() {
+    if(this.enableDeselectSchema){
+      this.processData.deselectSchema();
+    }
+  }
+
+  masker(schemaName: string): this {
+    this.processData.selectSchema(schemaName);
+    return this;
   }
 
   /**
@@ -80,14 +114,30 @@ export class LoggerUserService implements ILoggerService {
     arg: any,
     ...otherArg: any
   ) {
-    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER))
-      console.log(
-        this.options.withColor ? color : "",
-        this.formatMessage(level, message),
-        this.options.withColor ? colorPrint.white : "",
-        this.formatArg(arg),
-        ...otherArg,
-      );
+    let messageProcess = message;
+    let argProcess = arg;
+    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER)) {
+      if (this.options.activeMasker) {
+        messageProcess = this.processData.process(messageProcess);
+        argProcess = argProcess ? this.processData.process(argProcess) : "";
+      }
+      if (arg) {
+        console.log(
+          this.options.withColor ? color : "",
+          this.formatMessage(level, messageProcess),
+          this.options.withColor ? colorPrint.white : "",
+          this.formatArg(argProcess),
+          ...otherArg,
+        );
+      } else {
+        console.log(
+          this.options.withColor ? color : "",
+          this.formatMessage(level, messageProcess),
+          ...otherArg,
+        );
+      }
+      this.deselectSchema()
+    }
   }
 
   /**

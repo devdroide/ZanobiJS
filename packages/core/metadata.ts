@@ -13,6 +13,7 @@ import {
   MODULE_IMPORTS,
   MODULE_SERVICES,
 } from "@zanobijs/common/utils/constants";
+import { TClass } from "./interfaces";
 
 /**
  * La clase `Metadata` proporciona métodos para acceder y manipular
@@ -44,10 +45,11 @@ export class Metadata {
   /**
    * Obtiene los metadatos de un módulo específico.
    *
-   * @param module - El módulo del cual obtener los metadatos.
-   * @returns Un objeto con los metadatos del módulo {imports, controllers ,services, exports }.
+   * @param { IModuleConfig } module - El módulo del cual obtener los metadatos.
+   * @returns Un objeto con los metadatos del módulo
+   * {imports, controllers ,services, exports }.
    */
-  getMetadataModule(module: any): IModuleConfig {
+  getMetadataModule(module: TClass ): IModuleConfig {
     return {
       imports: Reflect.getMetadata(MODULE_IMPORTS, module),
       controllers: Reflect.getMetadata(MODULE_CONTROLLERS, module),
@@ -59,10 +61,10 @@ export class Metadata {
   /**
    * Obtiene todas las dependencias asociadas con una clase.
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Un objeto con las dependencias del target.
    */
-  getAllDependencies(target: Function) {
+  getAllDependencies(target: TClass) {
     return {
       dClass: this.getClassDependencies(target),
       dParam: this.getParameterDependencies(target),
@@ -73,41 +75,41 @@ export class Metadata {
   /**
    * Obtiene las dependencias de clase asociadas con una clase.
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Las dependencias de clase de la clase.
    */
-  getClassDependencies(target: Function) {
+  getClassDependencies(target: TClass) {
     return Reflect.getMetadata(DEPENDENCIES_CLASS, target);
   }
 
   /**
    * Obtiene las dependencias de parámetro asociadas con una clase.
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Las dependencias de parámetro de la clase.
    */
-  getParameterDependencies(target: Function) {
+  getParameterDependencies(target: TClass) {
     return Reflect.getMetadata(DEPENDENCIES_PARAMETERS, target);
   }
 
   /**
    * Obtiene las dependencias a inyectar asociadas con una clase.
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Un Map con las dependencias a inyectar de la clase.
    */
-  getInjectionDependencies(target: Function): Map<string, string> {
+  getInjectionDependencies(target: TClass): Map<string, string> {
     return Reflect.getMetadata(DEPENDENCIES_INJECT, target) || new Map();
   }
 
   /**
    * Determina el tipo de una clase basado en sus metadatos.
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Una cadena de texto que indica el tipo del clase segun el mapa de metadata.
    * @throws {Error} Lanza un error si el tipo de la clase es desconocido.
    */
-  determineType(target: Function): string {
+  determineType(target: TClass): string {
     for (const key in this.metadataMap) {
       if (this.hasMetadata(key, target)) {
         return this.metadataMap[key];
@@ -120,59 +122,59 @@ export class Metadata {
    * Verifica si una clase tiene un metadato específico.
    *
    * @param metadataKey - La llave del metadato a verificar.
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Verdadero si el target tiene el metadato, falso en caso contrario.
    */
-  private hasMetadata(metadataKey: string, target: Function): boolean {
+  private hasMetadata(metadataKey: string, target: TClass): boolean {
     return !!Reflect.getMetadata(metadataKey, target);
   }
   /**
    * Verifica si una clase es de tipo "module".
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Verdadero si el target es de tipo "module", falso en caso contrario.
    */
-  isTypeModule(target: Function): boolean {
+  isTypeModule(target: TClass): boolean {
     return this.hasMetadata(IS_MODULE, target);
   }
 
   /**
    * Verifica si una clase es de tipo "import".
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Verdadero si el target es de tipo "import", falso en caso contrario.
    */
-  isTypeImport(target: Function): boolean {
+  isTypeImport(target: TClass): boolean {
     return this.hasMetadata(IS_IMPORTS, target);
   }
 
   /**
    * Verifica si una clase es de tipo "controller".
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Verdadero si el target es de tipo "controller", falso en caso contrario.
    */
-  isTypeController(target: Function): boolean {
+  isTypeController(target: TClass): boolean {
     return this.hasMetadata(IS_CONTROLLER, target);
   }
 
   /**
    * Verifica si una clase es de tipo "service".
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Verdadero si el target es de tipo "service", falso en caso contrario.
    */
-  isTypeService(target: Function): boolean {
+  isTypeService(target: TClass): boolean {
     return this.hasMetadata(IS_SERVICE, target);
   }
 
   /**
    * Verifica si una clase es de tipo "export".
    *
-   * @param target - La función/clase objetivo.
+   * @param { TClass } target - La función/clase objetivo.
    * @returns Verdadero si el target es de tipo "export", falso en caso contrario.
    */
-  isTypeExports(target: Function): boolean {
+  isTypeExports(target: TClass): boolean {
     return this.hasMetadata(IS_EXPORT, target);
   }
 }

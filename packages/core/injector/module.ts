@@ -10,6 +10,7 @@ import { Logger } from "@zanobijs/common/utils";
 import { Injector } from "./injector";
 import { Metadata } from "../metadata";
 import { InvalidModuleAnnotationException } from "../exceptions";
+import { TClass } from "../interfaces";
 
 /**
  * Módulo para gestionar la configuración y el registro de controladores, servicios y dependencias.
@@ -40,7 +41,7 @@ export class Module {
   setup(module: any): void {
     if (this.metadata.isTypeModule(module)) {
       this.module = module;
-      this.logger.debug("Module - Create Injector to module:", module.name);
+      this.logger.debug("Module - Setup - Create Injector to module:", module.name);
       this.injector = new Injector(module, this.listProviders);
     } else {
       throw new InvalidModuleAnnotationException();
@@ -96,7 +97,7 @@ export class Module {
           );
         })
         .map((target) => {
-          this.logger.debug(`Module - Entity <<< ${target.name} >>>`);
+          this.logger.debug("Module - Entity", `<<< ${target.name} >>>`);
           this.groupDependenciesForAlias(target);
           const targetName = unCapitalize(target.name);
           return {
@@ -126,10 +127,10 @@ export class Module {
    * @private
    * @param {Function} target - La clase objetivo de la cual se quieren obtener las dependencias.
    */
-  private groupDependenciesForAlias(target: Function): void {
+  private groupDependenciesForAlias(target: TClass): void {
     const dependencies: any[] = this.metadata.getClassDependencies(target);
     this.logger.debug(
-      `Module - List dependecies of ${target.name}`,
+      `Module - List dependecies to group by${target.name}`,
       dependencies,
     );
     if (dependencies && !isEmpty(dependencies)) {
@@ -169,15 +170,14 @@ export class Module {
         value,
       });
       this.registerClass[key] = providerInject;
-      // this.registerClass[snakeToCamel(key)] = aliasTo(key);
     });
   }
 
   /**
    * Devuelve las importaciones del módulo.
-   * @returns {any[] | undefined} - Importaciones del módulo.
+   * @returns {TClass[] | undefined} - Importaciones del módulo.
    */
-  getImports(): any[] | undefined {
+  getImports(): TClass[] | undefined {
     return this.config.imports;
   }
 

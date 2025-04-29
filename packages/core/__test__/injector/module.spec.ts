@@ -1,12 +1,7 @@
 import "reflect-metadata";
 import { expect } from "chai";
-import { Injector, Module } from "../../injector";
-// import {
-//   ModuleTestWithImports,
-//   ModuleTestWithInjector,
-//   ModuleTestProviderWithout,
-// } from "../mocks/classModule.mock";
-import { Module1, Module2, Module3, Module4, ModuleTestEmpty } from "./mocks/classModuleToInject";
+import { Module } from "../../injector";
+import { Module1, Module2, Module3, ModuleTestEmpty } from "./mocks/classModuleToInject";
 
 describe("Core - Injector - module", () => {
   let moduleInstance: Module;

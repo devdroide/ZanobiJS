@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { Module } from "@zanobijs/common";
 import { Factory } from "../index";
 import { Module1, Module2, Module4, Module5, ModuleEmpty } from "./mocks/classModules.mock";
 import { Controller1, Controller6 } from "./mocks/classDependencies.mock";

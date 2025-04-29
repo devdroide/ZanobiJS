@@ -10,7 +10,7 @@ import { MODULE_INVALID_ANNOTATION_ERROR } from "./constant.message";
  * para proporcionar detalles adicionales específicos a esquemas de módulos inválidos.
  */
 export class InvalidModuleAnnotationException extends RuntimeException {
-  constructor(detail: any = ``) {
+  constructor(detail: any = "") {
     super(MODULE_INVALID_ANNOTATION_ERROR(), detail);
   }
 }

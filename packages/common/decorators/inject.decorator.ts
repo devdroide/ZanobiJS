@@ -17,7 +17,7 @@ import { DEPENDENCIES_INJECT, HAS_INJECT } from "../utils/constants";
  */
 export function Inject(token: string): ParameterDecorator {
   return (
-    target: Object,
+    target: object,
     propertyKey: string | symbol,
     parameterIndex: number,
   ) => {
