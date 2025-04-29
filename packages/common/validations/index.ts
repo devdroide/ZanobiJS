@@ -1,1 +1,1 @@
-export * from "./validate.modules.keys"
+export * from "./validate.modules.keys";

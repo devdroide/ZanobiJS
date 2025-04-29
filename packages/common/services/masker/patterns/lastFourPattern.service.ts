@@ -21,7 +21,6 @@ class LastFourPattern implements IPattern {
   }
 }
 
-
 export class LastFourPatternFactory extends ABSPattern {
   override createPattern(): IPattern {
     return LastFourPattern.getInstance();

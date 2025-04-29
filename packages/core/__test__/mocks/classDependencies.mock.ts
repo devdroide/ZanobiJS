@@ -34,7 +34,7 @@ export class Service3 {
   }
 
   getDataService2() {
-    return this.sev2.getDataService()
+    return this.sev2.getDataService();
   }
 }
 
@@ -90,12 +90,9 @@ export class Controller5 {
   }
 }
 
-
 @Controller()
 export class Controller6 {
-  constructor(
-    private serv2: Service2,
-  ) {}
+  constructor(private serv2: Service2) {}
 
   geData() {
     return this.serv2.getDataService();
@@ -108,7 +105,8 @@ export class Controller7 {
   private varTestString: string = "Esto es una cadena";
   constructor(
     @Inject("SOME_INJECT") private someInj: string,
-    private serv2: Service2) {}
+    private serv2: Service2,
+  ) {}
 
   geData() {
     return this.serv2.getDataService();

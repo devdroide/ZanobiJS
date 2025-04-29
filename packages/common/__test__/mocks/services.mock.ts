@@ -2,7 +2,9 @@ import { Inject, Injectable } from "../../index";
 
 @Injectable()
 export class ServiceOnly {
-  getHello(){ return "Hello ServiceOnly"}
+  getHello() {
+    return "Hello ServiceOnly";
+  }
 }
 @Injectable()
 export class ServiceWithParameter {
@@ -45,4 +47,3 @@ export class ServiceMix {
     return this.userName;
   }
 }
-

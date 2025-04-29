@@ -24,7 +24,6 @@ class TokenPattern implements IPattern {
   }
 }
 
-
 export class TokenPatternFactory extends ABSPattern {
   override createPattern(): IPattern {
     return TokenPattern.getInstance();

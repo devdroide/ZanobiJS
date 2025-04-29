@@ -1,10 +1,7 @@
 import "reflect-metadata";
 import { IDependenciesClass } from "../interfaces";
 import { Logger } from "../utils";
-import {
-  unCapitalize,
-  getConstructorParamNames,
-} from "../utils/shared.utils";
+import { unCapitalize, getConstructorParamNames } from "../utils/shared.utils";
 import {
   DEPENDENCIES_CONSTRUCTOR,
   DEPENDENCIES_CLASS,

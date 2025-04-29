@@ -11,7 +11,9 @@ export class ControllerWithoutArg {
 
 @Controller()
 export class ControllerWithMethod {
-  getHello() { return "Hello ServiceOnly"}
+  getHello() {
+    return "Hello ServiceOnly";
+  }
 }
 
 @Controller()
@@ -40,7 +42,7 @@ export class ControllerWithInject {
 
 @Controller()
 export class ControllerMix {
-  private varTest: string = "1"
+  private varTest: string = "1";
   constructor(
     private serviceOnly: ServiceOnly,
     @Inject("API_KEY") private apiKey: string,

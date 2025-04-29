@@ -16,4 +16,3 @@ export class ModuleEmpty {}
   exports: [],
 })
 export class ModuleWithController {}
-

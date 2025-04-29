@@ -15,7 +15,6 @@ class AllTextPattern implements IPattern {
   }
 }
 
-
 export class AllTextPatternFactory extends ABSPattern {
   override createPattern(): IPattern {
     return AllTextPattern.getInstance();

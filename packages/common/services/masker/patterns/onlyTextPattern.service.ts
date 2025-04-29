@@ -15,7 +15,6 @@ class OnlyTextPattern implements IPattern {
   }
 }
 
-
 export class OnlyTextPatternFactory extends ABSPattern {
   override createPattern(): IPattern {
     return OnlyTextPattern.getInstance();

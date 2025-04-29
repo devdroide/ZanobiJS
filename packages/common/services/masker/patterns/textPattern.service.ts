@@ -6,8 +6,7 @@ class TextPattern implements IPattern {
   private constructor() {}
 
   public static getInstance(): TextPattern {
-    if (!TextPattern.instance)
-      TextPattern.instance = new TextPattern();
+    if (!TextPattern.instance) TextPattern.instance = new TextPattern();
     return TextPattern.instance;
   }
   mask(value: string): string {
@@ -29,7 +28,6 @@ class TextPattern implements IPattern {
     return maskedWords.join(" ");
   }
 }
-
 
 export class TextPatternFactory extends ABSPattern {
   override createPattern(): IPattern {

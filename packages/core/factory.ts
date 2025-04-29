@@ -47,7 +47,10 @@ export class Factory {
       this.registeredClasses,
       this.moduleHandler.getRegisterClass(),
     );
-    this.logger.success("Factory - Process - Completion of module ", module.name);
+    this.logger.success(
+      "Factory - Process - Completion of module ",
+      module.name,
+    );
     const importedModules = this.moduleHandler.getImports();
     if (importedModules && importedModules.length) {
       importedModules.forEach((moduleImport) => {

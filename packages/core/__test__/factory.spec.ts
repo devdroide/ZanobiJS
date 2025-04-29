@@ -1,6 +1,12 @@
 import { expect } from "chai";
 import { Factory } from "../index";
-import { Module1, Module2, Module4, Module5, ModuleEmpty } from "./mocks/classModules.mock";
+import {
+  Module1,
+  Module2,
+  Module4,
+  Module5,
+  ModuleEmpty,
+} from "./mocks/classModules.mock";
 import { Controller1, Controller6 } from "./mocks/classDependencies.mock";
 
 describe("Core - factory options", () => {
@@ -28,7 +34,7 @@ describe("Core - factory options", () => {
 
 describe("Core - factory - Entities", () => {
   it("It should respond with an error because the controller is not in the module.", () => {
-    const factory = new Factory(ModuleEmpty, { activeLoggerSystem: false, });
+    const factory = new Factory(ModuleEmpty, { activeLoggerSystem: false });
     const app = factory.create();
     try {
       app.get("SomeController");
@@ -60,7 +66,7 @@ describe("Core - factory - Entities", () => {
     const app = factory.create();
     try {
       const controller6: Controller6 = app.get("controller6");
-      controller6.geData()
+      controller6.geData();
     } catch (error) {
       expect(error.message).to.be.equal(
         "Could not resolve 'service2'. please review 'controller6' and its dependencies.",
@@ -82,7 +88,6 @@ describe("Core - factory - Entities", () => {
     const textInject: string = app.get("TEXT_INJECT");
     expect(textInject).to.be.equal("Hello world inject");
   });
-
 });
 
 describe("Core - factory - Module to Module", () => {

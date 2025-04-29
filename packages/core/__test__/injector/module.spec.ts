@@ -1,7 +1,12 @@
 import "reflect-metadata";
 import { expect } from "chai";
 import { Module } from "../../injector";
-import { Module1, Module2, Module3, ModuleTestEmpty } from "./mocks/classModuleToInject";
+import {
+  Module1,
+  Module2,
+  Module3,
+  ModuleTestEmpty,
+} from "./mocks/classModuleToInject";
 
 describe("Core - Injector - module", () => {
   let moduleInstance: Module;
@@ -33,7 +38,6 @@ describe("Core - Injector - module", () => {
       let registerAllProviders = false;
       let registerDependencies = false;
       let registerDependenciesToAlias = false;
-
 
       moduleInstance.setup(ModuleTestEmpty);
       moduleInstance.initialize();
@@ -70,7 +74,7 @@ describe("Core - Injector - module", () => {
     it("Should respond imports of module", () => {
       moduleInstance.setup(Module2);
       moduleInstance.initialize();
-      expect(moduleInstance.getImports()).to.not.empty
+      expect(moduleInstance.getImports()).to.not.empty;
     });
     it("Should respond empty register class", () => {
       moduleInstance.setup(Module3);

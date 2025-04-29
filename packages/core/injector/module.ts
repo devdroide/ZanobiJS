@@ -41,7 +41,10 @@ export class Module {
   setup(module: any): void {
     if (this.metadata.isTypeModule(module)) {
       this.module = module;
-      this.logger.debug("Module - Setup - Create Injector to module:", module.name);
+      this.logger.debug(
+        "Module - Setup - Create Injector to module:",
+        module.name,
+      );
       this.injector = new Injector(module, this.listProviders);
     } else {
       throw new InvalidModuleAnnotationException();

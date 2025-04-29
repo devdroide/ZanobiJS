@@ -49,7 +49,7 @@ export class Metadata {
    * @returns Un objeto con los metadatos del módulo
    * {imports, controllers ,services, exports }.
    */
-  getMetadataModule(module: TClass ): IModuleConfig {
+  getMetadataModule(module: TClass): IModuleConfig {
     return {
       imports: Reflect.getMetadata(MODULE_IMPORTS, module),
       controllers: Reflect.getMetadata(MODULE_CONTROLLERS, module),

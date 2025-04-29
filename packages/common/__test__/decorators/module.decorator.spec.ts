@@ -19,7 +19,7 @@ describe("Commons - Decorators - module", () => {
         "An error has occurred in @Module(), please check the detail field",
       );
       expect(error.detail).to.be.equal(
-        "The content of the \"controllers\" entity must be type \"class\".",
+        'The content of the "controllers" entity must be type "class".',
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }
@@ -38,7 +38,7 @@ describe("Commons - Decorators - module", () => {
         "An error has occurred in @Module(), please check the detail field",
       );
       expect(error.detail).to.be.equal(
-        "The content of the \"controllers\" entity must be type \"class\".",
+        'The content of the "controllers" entity must be type "class".',
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }
@@ -75,7 +75,7 @@ describe("Commons - Decorators - module", () => {
         "An error has occurred in @Module(), please check the detail field",
       );
       expect(error.detail).to.be.equal(
-        "There are services that do not match the allowed types \"class\" or \"object with provider and use value\".",
+        'There are services that do not match the allowed types "class" or "object with provider and use value".',
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }
@@ -94,7 +94,7 @@ describe("Commons - Decorators - module", () => {
         "An error has occurred in @Module(), please check the detail field",
       );
       expect(error.detail).to.be.equal(
-        "There are services that do not match the allowed types \"class\" or \"object with provider and use value\".",
+        'There are services that do not match the allowed types "class" or "object with provider and use value".',
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }

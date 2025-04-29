@@ -15,7 +15,6 @@ class CustomTestPatternMock implements IPattern {
   }
 }
 
-
 export class CustomTestPatternMockFactory extends ABSPattern {
   override createPattern(): IPattern {
     return CustomTestPatternMock.getInstance();

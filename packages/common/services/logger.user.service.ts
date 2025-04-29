@@ -64,7 +64,7 @@ export class LoggerUserService implements ILoggerUserService {
   }
 
   private deselectSchema() {
-    if(this.enableDeselectSchema){
+    if (this.enableDeselectSchema) {
       this.processData.deselectSchema();
     }
   }
@@ -136,7 +136,7 @@ export class LoggerUserService implements ILoggerUserService {
           ...otherArg,
         );
       }
-      this.deselectSchema()
+      this.deselectSchema();
     }
   }
 
