@@ -1,18 +1,15 @@
-import "reflect-metadata";
-import { IDependenciesClass } from "../interfaces";
-import { Logger } from "../utils";
-import {
-  unCapitalize,
-  getConstructorParamNames,
-} from "../utils/shared.utils";
+import 'reflect-metadata';
+import { IDependenciesClass } from '../interfaces';
+import { Logger } from '../utils';
+import { unCapitalize, getConstructorParamNames } from '../utils/shared.utils';
 import {
   DEPENDENCIES_CONSTRUCTOR,
   DEPENDENCIES_CLASS,
-} from "../utils/constants";
+} from '../utils/constants';
 const logger = Logger();
 // Función auxiliar que contiene la lógica común
 export function createClassDecorator(
-  type: "Service" | "Controller",
+  type: 'Service' | 'Controller',
   metadataKey: string,
 ): ClassDecorator {
   return (target: Function) => {

@@ -1,6 +1,6 @@
-import * as util from "util";
-import { IOptionsLog } from "../interfaces";
-import { colorPrint } from "../utils/shared.utils";
+import * as util from 'util';
+import { IOptionsLog } from '../interfaces';
+import { colorPrint } from '../utils/shared.utils';
 
 /**
  * Clase base abstracta para implementaciones de loggers
@@ -66,7 +66,7 @@ export abstract class ABSBaseLoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   info(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.blue, "info", message, arg, ...otherArgs);
+    this.log(colorPrint.blue, 'info', message, arg, ...otherArgs);
   }
 
   /**
@@ -77,7 +77,7 @@ export abstract class ABSBaseLoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   warn(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.orange, "warn", message, arg, ...otherArgs);
+    this.log(colorPrint.orange, 'warn', message, arg, ...otherArgs);
   }
 
   /**
@@ -88,7 +88,7 @@ export abstract class ABSBaseLoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   error(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.red, "error", message, arg, ...otherArgs);
+    this.log(colorPrint.red, 'error', message, arg, ...otherArgs);
   }
 
   /**
@@ -99,7 +99,7 @@ export abstract class ABSBaseLoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   success(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.green, "success", message, arg, ...otherArgs);
+    this.log(colorPrint.green, 'success', message, arg, ...otherArgs);
   }
 
   /**
@@ -110,7 +110,7 @@ export abstract class ABSBaseLoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   debug(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.white, "debug", message, arg, ...otherArgs);
+    this.log(colorPrint.white, 'debug', message, arg, ...otherArgs);
   }
 
   /**
@@ -121,6 +121,6 @@ export abstract class ABSBaseLoggerService {
    * @param otherArgs - Argumentos adicionales.
    */
   important(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.BgRed, "important", message, arg, ...otherArgs);
+    this.log(colorPrint.BgRed, 'important', message, arg, ...otherArgs);
   }
 }
