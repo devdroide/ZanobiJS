@@ -20,10 +20,10 @@ import { TextPatternFactory } from '../patterns/textPattern.service';
 import { TokenPatternFactory } from '../patterns/tokenPattern.service';
 
 export class ProviderPatternService {
-  private listPattern: TPattern = new Map();
-  private configSchema: TPatternBySchema = new Map();
+  private readonly listPattern: TPattern = new Map();
+  private readonly configSchema: TPatternBySchema = new Map();
   private static instance: ProviderPatternService;
-  private patternDefault: string[] = [];
+  private readonly patternDefault: string[] = [];
 
   private constructor() {
     this.initialize();
@@ -55,7 +55,7 @@ export class ProviderPatternService {
     classPatternFactory: TClass,
     ispatternDefault: boolean,
   ): void {
-    if (this.listPattern.has(namePattern as string)) {
+    if (this.listPattern.has(namePattern)) {
       throw new PatternException(MSG_PATTERN_EXIST(namePattern));
     }
     this.listPattern.set(namePattern, new classPatternFactory());
@@ -64,7 +64,7 @@ export class ProviderPatternService {
 
   setupSchema(configSchema: TConfigSchemaMasker): void {
     for (const schemaName in configSchema) {
-      if (this.configSchema.has(schemaName as string)) {
+      if (this.configSchema.has(schemaName)) {
         throw new PatternException(MSG_SCHEMA_PATTERN_EXIST(schemaName, true));
       }
       this.configSchema.set(schemaName, configSchema[schemaName]);
@@ -72,7 +72,7 @@ export class ProviderPatternService {
   }
 
   getSchema(schemaName: string) {
-    if (!this.configSchema.has(schemaName as string)) {
+    if (!this.configSchema.has(schemaName)) {
       throw new PatternException(MSG_SCHEMA_PATTERN_EXIST(schemaName, false));
     }
     return this.configSchema.get(schemaName);
@@ -90,8 +90,8 @@ export class ProviderPatternService {
     try {
       let resultMasker: string = text;
       patterns.forEach((patternName: string) => {
-        if (this.listPattern.has(patternName as string)) {
-          const pattern = this.listPattern.get(patternName as string)!;
+        if (this.listPattern.has(patternName)) {
+          const pattern = this.listPattern.get(patternName)!;
           resultMasker = pattern.apply(resultMasker);
         }
       });

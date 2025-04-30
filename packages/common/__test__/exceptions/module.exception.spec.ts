@@ -7,7 +7,7 @@ import {
 describe('Commons - Exception - module', () => {
   it('should respond RuntimeException empty paramters', () => {
     try {
-      new RuntimeException();
+      throw new RuntimeException();
     } catch (error) {
       expect(error.message).to.be.equal('');
       expect(error.detail).to.be.equal('');
@@ -15,7 +15,7 @@ describe('Commons - Exception - module', () => {
   });
   it('should respond RuntimeException ', () => {
     try {
-      new RuntimeException('Message to error', 'Detail error');
+      throw new RuntimeException('Message to error', 'Detail error');
     } catch (error) {
       expect(error.message).to.be.equal('Message to error');
       expect(error.detail).to.be.equal('Detail error');
@@ -29,9 +29,11 @@ describe('Commons - Exception - module', () => {
   });
   it('should respond InvalidModuleSchemaException ', () => {
     try {
-      new InvalidModuleSchemaException('Detail error');
+      throw new InvalidModuleSchemaException('Detail error');
     } catch (error) {
-      expect(error.message).to.be.equal('An error has occurred in @Module()');
+      expect(error.message).to.be.equal(
+        'An error has occurred in @Module(), please check the detail field',
+      );
       expect(error.detail).to.be.equal('Detail error');
     }
   });

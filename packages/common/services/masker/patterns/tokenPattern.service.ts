@@ -1,7 +1,6 @@
 import { ABSPattern, IPattern } from '../../../interfaces';
 
 class TokenPattern implements IPattern {
-  private name: string = 'TokenMasker';
   private static instance: TokenPattern;
 
   private constructor() {}
@@ -15,7 +14,7 @@ class TokenPattern implements IPattern {
 
   public mask(value: string): string {
     // Regex que busca tokens Bearer o Basic
-    const tokenRegex = /\b(Bearer|Basic)\s+([a-zA-Z0-9_\-.=+/]{6,})/gi;
+    const tokenRegex = /\b(Bearer|Basic)\s+([a-z0-9_\-.=+/]{6,})/gi;
 
     return value.replace(tokenRegex, (match, scheme, token) => {
       const visible = token.slice(-2);

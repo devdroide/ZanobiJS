@@ -1,7 +1,6 @@
 import { ABSPattern, IPattern } from '../../../interfaces';
 
 class EmailPattern implements IPattern {
-  private name: string = 'EmailMasker';
   private static instance: EmailPattern;
 
   private constructor() {}
@@ -14,7 +13,8 @@ class EmailPattern implements IPattern {
   }
 
   public mask(text: string): string {
-    const emailRegex = /([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+    const emailRegex =
+      /([a-zA-Z0-9._%+-]{1,64})@([a-zA-Z0-9.-]{1,255}\.[a-zA-Z]{2,})/g;
 
     return text.replace(emailRegex, (match, local, domain) => {
       const domainParts = domain.split('.');
@@ -30,7 +30,7 @@ class EmailPattern implements IPattern {
       }
 
       // ---- DOMINIO ----
-      let maskedDomain = '*';
+      let maskedDomain: string;
       if (domainReal.length >= 2) {
         const first = domainBody[0];
         maskedDomain = `${first}${'*'.repeat(domainBody.length - 1)}`;

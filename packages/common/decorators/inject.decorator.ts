@@ -23,7 +23,7 @@ export function Inject(token: string): ParameterDecorator {
   ) => {
     /** Intentar obtener el Map existente o crear uno nuevo si no existe */
     const existingParameters: Map<string, string> =
-      Reflect.getMetadata(DEPENDENCIES_INJECT, target) || new Map();
+      Reflect.getMetadata(DEPENDENCIES_INJECT, target) ?? new Map();
 
     /** Obtener el nombre del parámetro */
     const paramNames = getConstructorParamNames(target);

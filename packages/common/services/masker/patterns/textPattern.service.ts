@@ -1,7 +1,6 @@
 import { ABSPattern, IPattern } from '../../../interfaces';
 
 class TextPattern implements IPattern {
-  private name: string = 'textMasker';
   private static instance: TextPattern;
   private constructor() {}
 
