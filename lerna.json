@@ -1,14 +1,29 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "version": "1.0.2",
+  "npmClient": "npm",
   "command": {
     "version": {
-      "allowBranch": ["main", "beta"],
+      "exact": true,
       "conventionalCommits": true,
-      "message": ":bookmark: chore(release@zanobijs): publish %s"
+      "changelogPreset": "angular",
+      "message": ":bookmark: chore(release): publish v%s",
+      "private": false,
+      "push": false,
+      "gitTagVersion": false,
+      "allowBranch": ["develop", "beta", "main"],
+      "ignoreChanges": [
+        "**/*.md",
+        "**/*.test.js",
+        "**/*.spec.js",
+        "**/__tests__/**",
+        "**/__mocks__/**"
+      ]
     },
     "publish": {
-      "access": "public"
+      "conventionalCommits": true,
+      "message": ":bookmark: chore(release): publish v%s"
     }
-  }
+  },
+  "packages": ["packages/*"]
 }
