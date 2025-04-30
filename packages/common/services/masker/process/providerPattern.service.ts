@@ -2,22 +2,22 @@ import {
   PatternException,
   MSG_PATTERN_EXIST,
   MSG_SCHEMA_PATTERN_EXIST,
-} from "../../../exceptions";
+} from '../../../exceptions';
 import {
   TClass,
   TConfigSchemaMasker,
   TPattern,
   TPatternBySchema,
-} from "../../../interfaces";
-import { AllTextPatternFactory } from "../patterns/allTextPattern.service";
-import { AlternatePatternFactory } from "../patterns/alternatePattern.service";
-import { CreditCardPatternFactory } from "../patterns/creditCardPattern.service";
-import { EmailPatternFactory } from "../patterns/emailPattern.service";
-import { FirstFourPatternFactory } from "../patterns/firstFourPattern.service";
-import { LastFourPatternFactory } from "../patterns/lastFourPattern.service";
-import { OnlyTextPatternFactory } from "../patterns/onlyTextPattern.service";
-import { TextPatternFactory } from "../patterns/textPattern.service";
-import { TokenPatternFactory } from "../patterns/tokenPattern.service";
+} from '../../../interfaces';
+import { AllTextPatternFactory } from '../patterns/allTextPattern.service';
+import { AlternatePatternFactory } from '../patterns/alternatePattern.service';
+import { CreditCardPatternFactory } from '../patterns/creditCardPattern.service';
+import { EmailPatternFactory } from '../patterns/emailPattern.service';
+import { FirstFourPatternFactory } from '../patterns/firstFourPattern.service';
+import { LastFourPatternFactory } from '../patterns/lastFourPattern.service';
+import { OnlyTextPatternFactory } from '../patterns/onlyTextPattern.service';
+import { TextPatternFactory } from '../patterns/textPattern.service';
+import { TokenPatternFactory } from '../patterns/tokenPattern.service';
 
 export class ProviderPatternService {
   private listPattern: TPattern = new Map();
@@ -36,18 +36,18 @@ export class ProviderPatternService {
   }
 
   private initialize() {
-    this.listPattern.set("AllText", new AllTextPatternFactory());
-    this.listPattern.set("Alternate", new AlternatePatternFactory());
-    this.listPattern.set("Email", new EmailPatternFactory());
-    this.listPattern.set("FirstFour", new FirstFourPatternFactory());
-    this.listPattern.set("LastFour", new LastFourPatternFactory());
-    this.listPattern.set("OnlyText", new OnlyTextPatternFactory());
-    this.listPattern.set("Text", new TextPatternFactory());
-    this.listPattern.set("Token", new TokenPatternFactory());
-    this.listPattern.set("CreditCard", new CreditCardPatternFactory());
-    this.patternDefault.push("Token");
-    this.patternDefault.push("Email");
-    this.patternDefault.push("CreditCard");
+    this.listPattern.set('AllText', new AllTextPatternFactory());
+    this.listPattern.set('Alternate', new AlternatePatternFactory());
+    this.listPattern.set('Email', new EmailPatternFactory());
+    this.listPattern.set('FirstFour', new FirstFourPatternFactory());
+    this.listPattern.set('LastFour', new LastFourPatternFactory());
+    this.listPattern.set('OnlyText', new OnlyTextPatternFactory());
+    this.listPattern.set('Text', new TextPatternFactory());
+    this.listPattern.set('Token', new TokenPatternFactory());
+    this.listPattern.set('CreditCard', new CreditCardPatternFactory());
+    this.patternDefault.push('Token');
+    this.patternDefault.push('Email');
+    this.patternDefault.push('CreditCard');
   }
 
   setupCustomPattern(

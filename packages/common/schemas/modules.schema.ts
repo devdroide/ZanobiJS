@@ -1,8 +1,8 @@
-import * as Joi from "joi";
-import { importsSchema } from "./imports.schema";
-import { controllersSchema } from "./controllers.schema";
-import { servicesSchema } from "./services.schema";
-import { exportsSchema } from "./exports.schema";
+import * as Joi from 'joi';
+import { importsSchema } from './imports.schema';
+import { controllersSchema } from './controllers.schema';
+import { servicesSchema } from './services.schema';
+import { exportsSchema } from './exports.schema';
 
 /**
  * Esquema de validación para un módulo usando Joi.

@@ -1,5 +1,5 @@
-import { getConstructorParamNames } from "../utils/shared.utils";
-import { DEPENDENCIES_INJECT, HAS_INJECT } from "../utils/constants";
+import { getConstructorParamNames } from '../utils/shared.utils';
+import { DEPENDENCIES_INJECT, HAS_INJECT } from '../utils/constants';
 
 /**
  * Decorador que permite inyectar dependencias en un parámetro de constructor.
@@ -28,7 +28,6 @@ export function Inject(token: string): ParameterDecorator {
     /** Obtener el nombre del parámetro */
     const paramNames = getConstructorParamNames(target);
     const paramName = paramNames[parameterIndex];
-
 
     /** Agregar o actualizar el valor en el Map */
     existingParameters.set(token, paramName);

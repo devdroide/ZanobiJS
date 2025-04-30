@@ -1,4 +1,4 @@
-import { Module } from "@zanobijs/common";
+import { Module } from '@zanobijs/common';
 import {
   Controller1,
   Controller2,
@@ -6,7 +6,7 @@ import {
   Controller4,
   Controller5,
   Service1,
-} from "./classDependenciesToInject";
+} from './classDependenciesToInject';
 
 // ==================================================
 // ========= Module to Test Injector ================
@@ -18,8 +18,8 @@ import {
   services: [
     Service1,
     {
-      provider: "TEXT_INJECT",
-      useValue: "Hello world inject",
+      provider: 'TEXT_INJECT',
+      useValue: 'Hello world inject',
     },
   ],
   exports: [],
@@ -60,8 +60,8 @@ export class Module3 {}
   services: [
     Service1,
     {
-      provider: "TEXT_INJECT",
-      useValue: "Hello world inject",
+      provider: 'TEXT_INJECT',
+      useValue: 'Hello world inject',
     },
   ],
   exports: [],

@@ -1,4 +1,4 @@
-import { TConfigSchemaMasker } from "./patternService.interface";
+import { TConfigSchemaMasker } from './patternService.interface';
 
 export interface IOptionsLog {
   withColor: boolean;
