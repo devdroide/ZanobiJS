@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-import { ABSBaseLoggerService } from "./base.logger.service";
-import { ProcessDataService } from "./masker/process/processData.service";
-import { ProviderPatternService } from "./masker/process/providerPattern.service";
-import { ILoggerUserService, IOptionsLog } from "../interfaces";
-import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
+import { ABSBaseLoggerService } from './base.logger.service';
+import { ProcessDataService } from './masker/process/processData.service';
+import { ProviderPatternService } from './masker/process/providerPattern.service';
+import { ILoggerUserService, IOptionsLog } from '../interfaces';
+import { coerceBooleanProperty, colorPrint } from '../utils/shared.utils';
 
 /**
  * Servicio para manejar el registro de mensajes con diferentes niveles de importancia.
@@ -97,12 +97,12 @@ export class LoggerUserService
     // Procesar los datos si el enmascarador está activo
     if (this.options.activeMasker) {
       messageProcess = this.processData.process(messageProcess);
-      argProcess = arg ? this.processData.process(arg) : "";
+      argProcess = arg ? this.processData.process(arg) : '';
     }
 
     // Determinar el color a usar
-    const colorToUse = this.options.withColor ? color : "";
-    const whiteColor = this.options.withColor ? colorPrint.white : "";
+    const colorToUse = this.options.withColor ? color : '';
+    const whiteColor = this.options.withColor ? colorPrint.white : '';
 
     // Formatear el mensaje principal
     const formattedMessage = this.formatMessage(level, messageProcess);
@@ -122,5 +122,4 @@ export class LoggerUserService
 
     this.deselectSchema();
   }
-
 }

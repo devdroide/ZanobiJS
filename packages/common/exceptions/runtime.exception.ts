@@ -18,7 +18,7 @@ export class RuntimeException extends Error {
    * @param message - El mensaje principal de la excepción.
    * @param detail - Mensaje adicional que detallada mejor la causa la excepción.
    */
-  constructor(message = "", detail = "") {
+  constructor(message = '', detail = '') {
     super(message);
     this.detail = detail;
   }

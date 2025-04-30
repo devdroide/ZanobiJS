@@ -1,7 +1,7 @@
-import { ABSPattern, IPattern } from "../../interfaces";
+import { ABSPattern, IPattern } from '../../interfaces';
 
 class CustomTestPatternMock implements IPattern {
-  private name: string = "CustomTestMasker";
+  private name: string = 'CustomTestMasker';
   private static instance: CustomTestPatternMock;
   private constructor() {}
 
@@ -11,10 +11,9 @@ class CustomTestPatternMock implements IPattern {
     return CustomTestPatternMock.instance;
   }
   mask(value: string): string {
-    return "CustomPattern*".repeat(value.length);
+    return 'CustomPattern*'.repeat(value.length);
   }
 }
-
 
 export class CustomTestPatternMockFactory extends ABSPattern {
   override createPattern(): IPattern {

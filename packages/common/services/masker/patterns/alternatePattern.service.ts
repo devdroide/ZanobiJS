@@ -1,4 +1,4 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 class AlternatePattern implements IPattern {
   private static instance: AlternatePattern;
@@ -10,7 +10,7 @@ class AlternatePattern implements IPattern {
     return AlternatePattern.instance;
   }
   mask(value: string): string {
-    let result = "";
+    let result = '';
     let i = 0;
 
     while (i < value.length) {
@@ -22,7 +22,7 @@ class AlternatePattern implements IPattern {
       // Ocultar 4 caracteres o lo que quede
       const charsToMask = Math.min(4, value.length - i);
       if (charsToMask > 0) {
-        result += "*".repeat(charsToMask);
+        result += '*'.repeat(charsToMask);
         i += charsToMask;
       }
     }

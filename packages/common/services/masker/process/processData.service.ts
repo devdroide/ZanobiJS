@@ -3,8 +3,8 @@ import {
   isObjectString,
   isArrayString,
   isObject,
-} from "../../../utils/shared.utils";
-import { ProviderPatternService } from "./providerPattern.service";
+} from '../../../utils/shared.utils';
+import { ProviderPatternService } from './providerPattern.service';
 
 /**
  * Servicio para procesasar y enmascarar datos según diferentes patrones

@@ -1,5 +1,5 @@
-import { IS_CONTROLLER } from "../utils/constants";
-import { createClassDecorator } from "./create.decorator";
+import { IS_CONTROLLER } from '../utils/constants';
+import { createClassDecorator } from './create.decorator';
 
 /**
  * Decorador de clase para marcar una clase como controllador.
@@ -11,5 +11,4 @@ import { createClassDecorator } from "./create.decorator";
  * @returns {ClassDecorator} Una función de decorador de clase.
  */
 export const Controller = (): ClassDecorator =>
-  createClassDecorator("Controller", IS_CONTROLLER);
-
+  createClassDecorator('Controller', IS_CONTROLLER);

@@ -1,0 +1,67 @@
+name: ZanobiJS CI-CD Validation
+
+on:
+  pull_request:
+    branches: [develop, beta, main]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate:
+    name: Validate Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint check
+        run: npm run lint:check
+        continue-on-error: false
+
+      - name: Prettier check
+        run: npm run prettier:check
+        continue-on-error: false
+
+      - name: Run tests with coverage
+        run: npm run test
+        continue-on-error: false
+
+      - name: Check test coverage
+        env:
+          MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 90 }}
+        run: |
+          set -e
+          COVERAGE=$(npx nyc report --reporter=text | grep "All files" | awk '{print $3}' | tr -d '%')
+          echo "Test coverage: $COVERAGE%"
+          echo "Minimum required coverage: $MIN_COVERAGE%"
+          if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
+            echo "Error: Test coverage is below $MIN_COVERAGE%. Current coverage: $COVERAGE%"
+            exit 1
+          fi
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: SonarQube Quality Gate check
+        uses: SonarSource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Build
+        run: npm run build
+        continue-on-error: false

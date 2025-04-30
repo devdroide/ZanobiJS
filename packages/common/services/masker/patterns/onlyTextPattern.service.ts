@@ -1,4 +1,4 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 class OnlyTextPattern implements IPattern {
   private static instance: OnlyTextPattern;
@@ -10,10 +10,9 @@ class OnlyTextPattern implements IPattern {
     return OnlyTextPattern.instance;
   }
   mask(value: string): string {
-    return value.replace(/[^a-zA-Z]/g, "*");
+    return value.replace(/[^a-zA-Z]/g, '*');
   }
 }
-
 
 export class OnlyTextPatternFactory extends ABSPattern {
   override createPattern(): IPattern {

@@ -1,6 +1,6 @@
-import { ILoggerService, IOptionsLog } from "../interfaces";
-import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
-import { ABSBaseLoggerService } from "./base.logger.service";
+import { ILoggerService, IOptionsLog } from '../interfaces';
+import { coerceBooleanProperty, colorPrint } from '../utils/shared.utils';
+import { ABSBaseLoggerService } from './base.logger.service';
 
 /**
  * Servicio para manejar el registro de mensajes con diferentes niveles de importancia.
@@ -13,7 +13,10 @@ import { ABSBaseLoggerService } from "./base.logger.service";
  * logger.error('Mensaje de error');
  * ```
  */
-export class LoggerService extends ABSBaseLoggerService implements ILoggerService {
+export class LoggerService
+  extends ABSBaseLoggerService
+  implements ILoggerService
+{
   /**
    * Instancia única del servicio LoggerService.
    */
@@ -57,8 +60,8 @@ export class LoggerService extends ABSBaseLoggerService implements ILoggerServic
     if (!coerceBooleanProperty(process.env.ZANOBIJS_LOGGER)) {
       return;
     }
-    const colorToUse = this.options.withColor ? color : "";
-    const whiteColor = this.options.withColor ? colorPrint.white : "";
+    const colorToUse = this.options.withColor ? color : '';
+    const whiteColor = this.options.withColor ? colorPrint.white : '';
     const formattedMessage = this.formatMessage(level, message);
 
     if (arg) {
@@ -74,4 +77,3 @@ export class LoggerService extends ABSBaseLoggerService implements ILoggerServic
     }
   }
 }
-

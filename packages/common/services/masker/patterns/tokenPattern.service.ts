@@ -1,4 +1,4 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 class TokenPattern implements IPattern {
   private static instance: TokenPattern;
@@ -22,7 +22,6 @@ class TokenPattern implements IPattern {
     });
   }
 }
-
 
 export class TokenPatternFactory extends ABSPattern {
   override createPattern(): IPattern {

@@ -1,4 +1,4 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 class AllTextPattern implements IPattern {
   private static instance: AllTextPattern;
@@ -10,10 +10,9 @@ class AllTextPattern implements IPattern {
     return AllTextPattern.instance;
   }
   mask(value: string): string {
-    return "*".repeat(value.length);
+    return '*'.repeat(value.length);
   }
 }
-
 
 export class AllTextPatternFactory extends ABSPattern {
   override createPattern(): IPattern {

@@ -1,4 +1,4 @@
-import { RuntimeException } from "./runtime.exception";
+import { RuntimeException } from './runtime.exception';
 
 /**
  * Excepción lanzada cuando un esquema de módulo es inválido.
@@ -13,6 +13,6 @@ export class PatternException extends RuntimeException {
    */
   constructor(message: any, cause?: any) {
     super(message);
-    this.cause = cause ?? "";
+    this.cause = cause ?? '';
   }
 }

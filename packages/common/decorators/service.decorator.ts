@@ -1,5 +1,5 @@
-import { IS_SERVICE } from "../utils/constants";
-import { createClassDecorator } from "./create.decorator";
+import { IS_SERVICE } from '../utils/constants';
+import { createClassDecorator } from './create.decorator';
 
 /**
  * Decorador de clase para marcar una clase como inyectable.
@@ -11,4 +11,4 @@ import { createClassDecorator } from "./create.decorator";
  * @returns {ClassDecorator} Una función de decorador de clase.
  */
 export const Injectable = (): ClassDecorator =>
-  createClassDecorator("Service", IS_SERVICE);
+  createClassDecorator('Service', IS_SERVICE);

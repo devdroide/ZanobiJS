@@ -1,10 +1,10 @@
-import { MODULE_INVALID_ENTITY, MODULE_MISSING_ENTITY } from "../exceptions";
-import { baseSchema } from "./base.schema";
+import { MODULE_INVALID_ENTITY, MODULE_MISSING_ENTITY } from '../exceptions';
+import { baseSchema } from './base.schema';
 
 /**
  * Mensajes que se usaran para explicar la falla del esquema
  */
 export const controllersSchema = baseSchema.messages({
-  "object.base": MODULE_INVALID_ENTITY("controllers"),
-  "any.required": MODULE_MISSING_ENTITY("controllers"),
+  'object.base': MODULE_INVALID_ENTITY('controllers'),
+  'any.required': MODULE_MISSING_ENTITY('controllers'),
 });

@@ -1,4 +1,4 @@
-import { ABSPattern, IPattern } from "../../../interfaces";
+import { ABSPattern, IPattern } from '../../../interfaces';
 
 /**
  * Implementación de patrón para enmascarar números de tarjetas de crédito en textos
@@ -28,7 +28,7 @@ class CreditCardPattern implements IPattern {
 
     return text.replace(cardRegex, (match) => {
       // Eliminar todos los caracteres no numéricos
-      const digitsOnly = match.replace(/\D/g, "");
+      const digitsOnly = match.replace(/\D/g, '');
       // Validar cantidad de dígitos y algoritmo de Luhn
       if (digitsOnly.length < 13 || digitsOnly.length > 19) {
         return match; // No es una tarjeta válida, no enmascarar
@@ -36,7 +36,7 @@ class CreditCardPattern implements IPattern {
 
       // Preservar los últimos 4 dígitos
       const visiblePart = digitsOnly.slice(-4);
-      const maskedPart = "*".repeat(digitsOnly.length - 4);
+      const maskedPart = '*'.repeat(digitsOnly.length - 4);
       const maskedDigits = maskedPart + visiblePart;
 
       // Reconstruir el formato original
