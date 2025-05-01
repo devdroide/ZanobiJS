@@ -78,14 +78,23 @@ jobs:
             echo "Error: Test coverage is below $MIN_COVERAGE%. Current coverage: $COVERAGE%"
             exit 1
           fi
-      - name: Check if changes are inside packages/*
+      - name: Check if changes are inside packages
         id: check_changes
         run: |
-          echo "Checking for changes inside packages/"
+          echo "🔍 Checking for changes inside packages"
           git fetch origin ${{ github.base_ref }} --depth=1
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
+          echo "Changed files:"
           echo "$CHANGED_FILES"
-          echo "$CHANGED_FILES" | grep -q '^packages/' && echo "changed=true" >> $GITHUB_OUTPUT || echo "changed=false" >> $GITHUB_OUTPUT
+
+          if echo "$CHANGED_FILES" | grep -q '^packages/'; then
+            echo "✅ Changes detected inside packages"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "🟡 No changes inside packages"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
 
       - name: SonarQube Scan
         if: steps.check_changes.outputs.changed == 'true'
