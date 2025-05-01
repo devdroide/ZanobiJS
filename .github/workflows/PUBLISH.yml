@@ -1,0 +1,105 @@
+name: Publish Package
+
+on:
+  push:
+    branches:
+      - beta
+      - main
+
+jobs:
+  publish-beta:
+    name: Publish Beta Version to NPM
+    if: github.ref == 'refs/heads/beta'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+      - name: Lerna Version (Beta)
+        run: |
+          npx lerna version --conventional-commits --conventional-prerelease --preid beta --yes --no-push
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "Nueva versión beta: $VERSION"
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Push Tags and Changes
+        run: |
+          git push origin beta --follow-tags
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Publish to NPM
+        run: npx lerna publish from-git --yes
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ZANOBIJS_31122025 }}
+
+  publish-release:
+    name: Publish Release Version to NPM and GitHub
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+      - name: Lerna Version (Release)
+        run: |
+          npx lerna version --conventional-commits --conventional-graduate --yes --no-push
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "Nueva versión: $VERSION"
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Push Tags and Changes
+        run: |
+          git push origin main --follow-tags
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Create GitHub Release
+        run: |
+          VERSION=$(node -p "require('./lerna.json').version")
+          gh release create v$VERSION --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Publish to NPM
+        run: npx lerna publish from-git --yes
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ZANOBIJS_31122025 }}
