@@ -1,9 +1,9 @@
-import { Module } from "@zanobijs/common";
+import { Module } from '@zanobijs/common';
 import {
   Controller1,
   Controller6,
   Controller7,
-} from "./classDependencies.mock";
+} from './classDependencies.mock';
 
 @Module({
   imports: [],
@@ -18,8 +18,8 @@ export class ModuleEmpty {}
   controllers: [Controller1],
   services: [
     {
-      provider: "TEXT_INJECT",
-      useValue: "Hello world inject",
+      provider: 'TEXT_INJECT',
+      useValue: 'Hello world inject',
     },
   ],
   exports: [],

@@ -1,6 +1,9 @@
-import * as util from "util";
-import { ILoggerService, IOptionsLog } from "../interfaces";
-import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
+/* eslint-disable no-console */
+import { ABSBaseLoggerService } from './base.logger.service';
+import { ProcessDataService } from './masker/process/processData.service';
+import { ProviderPatternService } from './masker/process/providerPattern.service';
+import { ILoggerUserService, IOptionsLog } from '../interfaces';
+import { coerceBooleanProperty, colorPrint } from '../utils/shared.utils';
 
 /**
  * Servicio para manejar el registro de mensajes con diferentes niveles de importancia.
@@ -13,56 +16,59 @@ import { coerceBooleanProperty, colorPrint } from "../utils/shared.utils";
  * logger.error('Mensaje de error');
  * ```
  */
-export class LoggerUserService implements ILoggerService {
+export class LoggerUserService
+  extends ABSBaseLoggerService
+  implements ILoggerUserService
+{
   /**
-   * Instancia única del servicio LoggerService.
+   * Instancia única del servicio LoggerUserService.
    */
   private static instance: LoggerUserService;
-  private options: IOptionsLog = {
-    withColor: true,
-  };
+  private readonly providerPattern: ProviderPatternService =
+    ProviderPatternService.getInstance();
+  private readonly processData: ProcessDataService =
+    ProcessDataService.getInstance();
+  private enableDeselectSchema: boolean = true;
   /**
    * Constructor privado para asegurar que no se pueda instanciar directamente.
    */
   private constructor(options?: IOptionsLog) {
-    this.options.withColor = options?.withColor ?? true;
+    super(options);
+    this.initializeMasker();
   }
 
   /**
-   * Obtiene la única instancia de LoggerService.
+   * Obtiene la única instancia de LoggerUserService.
    * @param options - Listado de opciones para aplicar a la instancia.
-   * @returns La única instancia de LoggerService.
+   * @returns La única instancia de LoggerUserService.
    */
-  static getInstance(options?: IOptionsLog): ILoggerService {
+  static getInstance(options?: IOptionsLog): ILoggerUserService {
     if (!this.instance) {
       this.instance = new LoggerUserService(options);
     }
     return this.instance;
   }
 
-  /**
-   * Formatea el mensaje a ser registrado.
-   *
-   * @param level - Nivel del mensaje (info, error, etc.).
-   * @param message - Mensaje a ser formateado.
-   * @returns Mensaje formateado.
-   */
-  private formatMessage(level: string, message: any) {
-    return `[${level.toUpperCase()}]: ${message}`;
+  protected initializeMasker() {
+    if (this.options.activeMasker && this.options.configSchemaMasker) {
+      this.providerPattern.setupSchema(this.options.configSchemaMasker);
+      const keys = Object.keys(this.options.configSchemaMasker);
+      if (keys.length === 1) {
+        this.enableDeselectSchema = false;
+        this.masker(keys[0]);
+      }
+    }
   }
 
-  /**
-   * Formatea el argumento que se va a imprimir.
-   *
-   * @param arg - argumento a formatear para imprimir.
-   * @returns argumentos formateado.
-   */
-  private formatArg(arg: any) {
-    return util.inspect(arg, {
-      showHidden: false,
-      depth: null,
-      colors: this.options.withColor,
-    });
+  protected deselectSchema() {
+    if (this.enableDeselectSchema) {
+      this.processData.deselectSchema();
+    }
+  }
+
+  masker(schemaName: string): this {
+    this.processData.selectSchema(schemaName);
+    return this;
   }
 
   /**
@@ -73,86 +79,47 @@ export class LoggerUserService implements ILoggerService {
    * @param message - Mensaje a ser registrado.
    * @param arg - Argumentos adicionales.
    */
-  private log(
+  protected log(
     color: string,
     level: string,
     message: any,
     arg: any,
     ...otherArg: any
-  ) {
-    if (coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER))
+  ): void {
+    // Si el logger no está activo, salir temprano
+    if (!coerceBooleanProperty(process.env.ZANOBIJS_LOGGER_USER)) {
+      return;
+    }
+
+    let messageProcess = message;
+    let argProcess = arg;
+
+    // Procesar los datos si el enmascarador está activo
+    if (this.options.activeMasker) {
+      messageProcess = this.processData.process(messageProcess);
+      argProcess = arg ? this.processData.process(arg) : '';
+    }
+
+    // Determinar el color a usar
+    const colorToUse = this.options.withColor ? color : '';
+    const whiteColor = this.options.withColor ? colorPrint.white : '';
+
+    // Formatear el mensaje principal
+    const formattedMessage = this.formatMessage(level, messageProcess);
+
+    // Imprimir el mensaje con o sin argumentos
+    if (arg) {
       console.log(
-        this.options.withColor ? color : "",
-        this.formatMessage(level, message),
-        this.options.withColor ? colorPrint.white : "",
-        this.formatArg(arg),
+        colorToUse,
+        formattedMessage,
+        whiteColor,
+        this.formatArg(argProcess),
         ...otherArg,
       );
-  }
+    } else {
+      console.log(colorToUse, formattedMessage, ...otherArg);
+    }
 
-  /**
-   * Registra un mensaje informativo.
-   *
-   * @param message - Mensaje informativo.
-   * @param arg - Argumentos principal a imprimir.
-   * @param otherArgs - Argumentos adicionales.
-   */
-  info(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.blue, "info", message, arg, ...otherArgs);
-  }
-
-  /**
-   * Registra una advertencia.
-   *
-   * @param message - Mensaje de advertencia.
-   * @param arg - Argumentos principal a imprimir.
-   * @param otherArgs - Argumentos adicionales.
-   */
-  warn(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.orange, "warn", message, arg, ...otherArgs);
-  }
-
-  /**
-   * Registra un mensaje de error.
-   *
-   * @param message - Mensaje de error.
-   * @param arg - Argumentos principal a imprimir.
-   * @param otherArgs - Argumentos adicionales.
-   */
-  error(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.red, "error", message, arg, ...otherArgs);
-  }
-
-  /**
-   * Registra un mensaje de éxito.
-   *
-   * @param message - Mensaje de éxito.
-   * @param arg - Argumentos principal a imprimir.
-   * @param otherArgs - Argumentos adicionales.
-   */
-  success(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.green, "success", message, arg, ...otherArgs);
-  }
-
-  /**
-   * Registra un mensaje de depuración.
-   *
-   * @param message - Mensaje de depuración.
-   * @param arg - Argumentos principal a imprimir.
-   * @param otherArgs - Argumentos adicionales.
-   */
-  debug(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.white, "debug", message, arg, ...otherArgs);
-  }
-
-  /**
-   * Registra un mensaje de depuración.
-   *
-   * @param message - Mensaje de depuración.
-   * @param arg - Argumentos principal a imprimir.
-   * @param otherArgs - Argumentos adicionales.
-   */
-  important(message: string, arg: any, ...otherArgs: any) {
-    this.log(colorPrint.BgRed, "important", message, arg, ...otherArgs);
+    this.deselectSchema();
   }
 }

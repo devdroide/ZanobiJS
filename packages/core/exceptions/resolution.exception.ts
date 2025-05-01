@@ -1,8 +1,8 @@
-import { RuntimeException } from "@zanobijs/common/exceptions/runtime.exception";
+import { RuntimeException } from '@zanobijs/common/exceptions/runtime.exception';
 import {
   CONTAINER_RESOLUTION_ENTITY_ERROR,
   CONTAINER_RESOLUTION_ERROR,
-} from "./constant.message";
+} from './constant.message';
 
 /**
  * Excepción lanzada cuando se intenta obtener una dependencia

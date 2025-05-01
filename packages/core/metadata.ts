@@ -1,4 +1,4 @@
-import { IModuleConfig } from "@zanobijs/common";
+import { IModuleConfig } from '@zanobijs/common';
 import {
   DEPENDENCIES_CLASS,
   DEPENDENCIES_INJECT,
@@ -12,8 +12,8 @@ import {
   MODULE_EXPORTS,
   MODULE_IMPORTS,
   MODULE_SERVICES,
-} from "@zanobijs/common/utils/constants";
-import { TClass } from "./interfaces";
+} from '@zanobijs/common/utils/constants';
+import { TClass } from './interfaces';
 
 /**
  * La clase `Metadata` proporciona métodos para acceder y manipular
@@ -22,11 +22,11 @@ import { TClass } from "./interfaces";
 export class Metadata {
   private static instance: Metadata;
   private readonly metadataMap: { [key: string]: string } = {
-    [IS_MODULE]: "module",
-    [IS_IMPORTS]: "import",
-    [IS_CONTROLLER]: "controller",
-    [IS_SERVICE]: "service",
-    [IS_EXPORT]: "export",
+    [IS_MODULE]: 'module',
+    [IS_IMPORTS]: 'import',
+    [IS_CONTROLLER]: 'controller',
+    [IS_SERVICE]: 'service',
+    [IS_EXPORT]: 'export',
   };
   private constructor() {}
 
@@ -49,7 +49,7 @@ export class Metadata {
    * @returns Un objeto con los metadatos del módulo
    * {imports, controllers ,services, exports }.
    */
-  getMetadataModule(module: TClass ): IModuleConfig {
+  getMetadataModule(module: TClass): IModuleConfig {
     return {
       imports: Reflect.getMetadata(MODULE_IMPORTS, module),
       controllers: Reflect.getMetadata(MODULE_CONTROLLERS, module),

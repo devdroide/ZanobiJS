@@ -1,0 +1,194 @@
+name: Publish Package
+
+on:
+  push:
+    branches:
+      - develop
+      - beta
+      - main
+
+jobs:
+  simulate-version-dev:
+    name: Simulate Versioning on Dev
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+      - name: Simulate Lerna Version (Beta) from Develop
+        run: |
+          npx lerna version --conventional-commits --conventional-prerelease --preid beta --yes --no-push --loglevel verbose
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "👷 BETA Simulated Version (not applied): $VERSION"
+
+      - name: Simulate Lerna Version (Main) from Develop
+        run: |
+          npx lerna version --conventional-commits --conventional-graduate --yes --no-push --loglevel verbose
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "👷 MAIN Simulated Version (not applied): $VERSION"
+
+  publish-beta:
+    name: Publish Beta Version to NPM
+    if: github.ref == 'refs/heads/beta'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+      - name: Lerna Version (Beta)
+        run: |
+          npx lerna version --conventional-commits --conventional-prerelease --preid beta --yes --no-push
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "Nueva versión beta: $VERSION"
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Push Tags and Changes
+        run: |
+          git push origin beta --follow-tags
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Check if Lerna would version
+        id: lerna_check
+        run: |
+          CHANGES=$(npx lerna changed)
+          if [ -z "$CHANGES" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "👷 No changes to version"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "🎉 There was a change of version"
+          fi
+
+      - name: Build packages
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          npm run build
+          echo "📦 Build completed! "
+
+      - name: Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          npx lerna publish from-git --yes
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "🚀 Version v$VERSION Published to NPM!"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ZANOBIJS_31122025 }}
+
+      - name: Without Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'false'
+        run: echo "👷 There are no changes to publish on NPM."
+
+  publish-release:
+    name: Publish Release Version to NPM and GitHub
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git Identity
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions@users.noreply.github.com"
+
+      - name: Lerna Version (Release)
+        run: |
+          npx lerna version --conventional-commits --conventional-graduate --yes --no-push
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "Nueva versión: $VERSION"
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Push Tags and Changes
+        run: |
+          git push origin main --follow-tags
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Create GitHub Release
+        run: |
+          VERSION=$(node -p "require('./lerna.json').version")
+          gh release create v$VERSION --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Check if Lerna would version
+        id: lerna_check
+        run: |
+          CHANGES=$(npx lerna changed)
+          if [ -z "$CHANGES" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "👷 No changes to version"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "🎉 There was a change of version"
+          fi
+
+      - name: Build packages
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          npm run build
+          echo "📦 Build completed! "
+
+      - name: Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          npx lerna publish from-git --yes
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "🚀 Version v$VERSION Published to NPM!"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ZANOBIJS_31122025 }}
+
+      - name: Without Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'false'
+        run: echo "👷 There are no changes to publish on NPM."
