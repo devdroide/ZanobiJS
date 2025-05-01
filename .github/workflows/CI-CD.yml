@@ -7,7 +7,7 @@ on:
 
 jobs:
   validate-branch:
-    name: Validate Branch Naming Convention
+    name: Validate Branch and Commits
     runs-on: ubuntu-latest
     if: github.base_ref == 'develop'
     steps:
@@ -27,12 +27,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Conventional Commits Checker
-        uses: netodevel/convetional-commits-checker@v1.0.1
-        id: commits-check
-        with: # do not change the order of params
-          target-branch: ${{ github.event.pull_request.base.ref }}  #required
-          current-branch: ${{ github.event.pull_request.head.ref }} #required
+      - name: Check Conventional Commits
+        uses: gentleseal/action-conventional-commits@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   validate:
     name: Validate Code Quality
