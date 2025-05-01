@@ -32,12 +32,19 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "github-actions@users.noreply.github.com"
 
-      - name: Simulate Lerna Version (Dev)
+      - name: Simulate Lerna Version (Beta) from Develop
         run: |
-          echo "Simulando versión sin aplicar cambios..."
+          echo "Simulando versión sin aplicar cambios... BETA"
           npx lerna version --conventional-commits --conventional-prerelease --preid beta --yes --no-push --loglevel verbose
           VERSION=$(node -p "require('./lerna.json').version")
-          echo "Versión simulada (sin aplicar): $VERSION"
+          echo "Versión simulada BETA (sin aplicar): $VERSION"
+
+      - name: Simulate Lerna Version (Beta) from Develop
+        run: |
+          echo "Simulando versión sin aplicar cambios... MAIN"
+          npx lerna version --conventional-commits --conventional-graduate --yes --no-push --loglevel verbose
+          VERSION=$(node -p "require('./lerna.json').version")
+          echo "Versión simulada MAIN (sin aplicar): $VERSION"
 
   publish-beta:
     name: Publish Beta Version to NPM
