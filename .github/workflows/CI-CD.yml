@@ -3,13 +3,46 @@ name: ZanobiJS CI-CD Validation
 on:
   pull_request:
     branches: [develop, beta, main]
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
+  validate-branch:
+    name: Validate Branch Naming Convention
+    runs-on: ubuntu-latest
+    if: github.base_ref == 'develop'
+    steps:
+      - name: Check branch name pattern
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ "$BRANCH_NAME" =~ ^(chore|ci|docs|feat|fix|style|refactor|test|sample)\/.+ ]]; then
+            echo "Branch name $BRANCH_NAME follows the required naming convention"
+          else
+            echo "Error: Branch name $BRANCH_NAME does not follow the required naming convention"
+            echo "Branch must follow naming conventions defined in CONTRIBUTING.md"
+            exit 1
+          fi
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Conventional Commits Checker
+        uses: netodevel/convetional-commits-checker@v1.0.1
+        id: commits-check
+        with: # do not change the order of params
+          target-branch: ${{ github.event.pull_request.base.ref }}  #required
+          current-branch: ${{ github.event.pull_request.head.ref }} #required
+
   validate:
     name: Validate Code Quality
     runs-on: ubuntu-latest
+    needs: [validate-branch ]
     steps:
+      - name: Chevk name branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Checkout code
         uses: actions/checkout@v3
         with:
