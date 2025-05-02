@@ -104,7 +104,7 @@ jobs:
       - name: Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
-          npx lerna publish from-package --yes --git-head=beta
+          npx lerna publish from-package --yes --no-git-checks
           VERSION=$(node -p "require('./lerna.json').version")
           echo "🚀 Version v$VERSION Published to NPM!"
         env:
@@ -181,7 +181,7 @@ jobs:
       - name: Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
-          npx lerna publish from-package --yes --git-head=main
+          npx lerna publish from-package --yes --no-git-checks
           VERSION=$(node -p "require('./lerna.json').version")
           echo "🚀 Version v$VERSION Published to NPM!"
         env:
