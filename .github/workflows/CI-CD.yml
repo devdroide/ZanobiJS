@@ -10,10 +10,11 @@ jobs:
     name: Validate Branch and Commits
     runs-on: ubuntu-latest
     steps:
-      - name: Check branch name pattern in develop
+      - name: Check branch name pattern
+        if: github.head_ref == 'develop'
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
-          if [[ "$BRANCH_NAME" =~ ^(chore|ci|docs|feat|fix|style|refactor|test|sample|develop|beta)\/.+ ]]; then
+          if [[ "$BRANCH_NAME" =~ ^(chore|ci|docs|feat|fix|style|refactor|test|sample)\/.+ ]]; then
             echo "Branch name $BRANCH_NAME follows the required naming convention"
           else
             echo "Error: Branch name $BRANCH_NAME does not follow the required naming convention"
