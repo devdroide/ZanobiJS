@@ -106,7 +106,7 @@ jobs:
         run: |
           git add .
           git commit -m "chore: commit the build files for publication"
-          npx lerna publish from-package --yes --no-git-checks
+          npx lerna publish from-package --yes
           VERSION=$(node -p "require('./lerna.json').version")
           echo "🚀 Version v$VERSION Published to NPM!"
         env:
@@ -185,7 +185,7 @@ jobs:
         run: |
           git add .
           git commit -m "chore: commit the build files for publication"
-          npx lerna publish from-package --yes --no-git-checks
+          npx lerna publish from-package --yes
           VERSION=$(node -p "require('./lerna.json').version")
           echo "🚀 Version v$VERSION Published to NPM!"
         env:
