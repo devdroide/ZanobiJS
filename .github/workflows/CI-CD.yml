@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check branch name pattern
-        if: github.head_ref == 'develop'
+        if: github.base_ref == 'develop'
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
           if [[ "$BRANCH_NAME" =~ ^(chore|ci|docs|feat|fix|style|refactor|test|sample)\/.+ ]]; then
