@@ -9,9 +9,9 @@ jobs:
   validate-branch:
     name: Validate Branch and Commits
     runs-on: ubuntu-latest
+    if: github.head_ref == 'develop'
     steps:
       - name: Check branch name pattern
-        if: github.head_ref == 'develop'
         run: |
           BRANCH_NAME="${{ github.head_ref }}"
           if [[ "$BRANCH_NAME" =~ ^(chore|ci|docs|feat|fix|style|refactor|test|sample)\/.+ ]]; then
