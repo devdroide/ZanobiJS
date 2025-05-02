@@ -104,6 +104,8 @@ jobs:
       - name: Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
+          git add .
+          git commit -m "chore: commit the build files for publication"
           npx lerna publish from-package --yes --no-git-checks
           VERSION=$(node -p "require('./lerna.json').version")
           echo "🚀 Version v$VERSION Published to NPM!"
@@ -181,6 +183,8 @@ jobs:
       - name: Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
+          git add .
+          git commit -m "chore: commit the build files for publication"
           npx lerna publish from-package --yes --no-git-checks
           VERSION=$(node -p "require('./lerna.json').version")
           echo "🚀 Version v$VERSION Published to NPM!"
