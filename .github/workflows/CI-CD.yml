@@ -9,7 +9,7 @@ jobs:
   validate-branch:
     name: Validate Branch and Commits
     runs-on: ubuntu-latest
-    if: github.head_ref == 'develop'
+    if: github.base_ref == 'develop'
     steps:
       - name: Check branch name pattern
         run: |
