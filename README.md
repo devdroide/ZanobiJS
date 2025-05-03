@@ -46,9 +46,7 @@ If you want to contribute, read the following [Contributors' guide](https://gith
 
 ZanobiJS is heavily inspired by [NestJS](https://nestjs.com/) and [AngularJS](https://angularjs.org/).
 
-Additionally, it is used [Awilix](https://github.com/jeffijoe/awilix#readme) which is a container for Extremely powerful and effective dependency injection.
-
-Finally, it is an effort that we make and that we hope can help in the construction of projects.
+Additionally, it is used [Awilix](https://github.com/jeffijoe/awilix#readme) which is a container for Extremely powerful and effective dependency injection. Finally, it is an effort that we make and that we hope can help in the construction of projects.
 
 ## License
 
