@@ -11,15 +11,17 @@ jobs:
     name: Publish Package to NPM and GitHub
     if: github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           registry-url: 'https://registry.npmjs.org/'
@@ -28,15 +30,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build packages
-        run: |
-          npm run build
-          echo "📦 Build completed!"
-
       - name: Configure Git Identity
         run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "github-actions@users.noreply.github.com"
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions"
 
       - name: Set Release Type Variables
         id: set_vars
@@ -78,8 +75,12 @@ jobs:
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
           git push origin ${{ steps.set_vars.outputs.BRANCH }} --follow-tags
-        env:
-          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Build packages
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          npm run build
+          echo "📦 Build completed!"
 
       - name: Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'true'
