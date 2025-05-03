@@ -74,6 +74,8 @@ jobs:
       - name: Push Tags and Changes
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
+          git add .
+          git commit -m "chore: generated new version $VERSION"
           git push origin ${{ steps.set_vars.outputs.BRANCH }} --follow-tags
 
       - name: Build packages
