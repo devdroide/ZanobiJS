@@ -3,47 +3,10 @@ name: Publish Package
 on:
   push:
     branches:
-      - develop
       - beta
       - main
 
 jobs:
-  simulate-version-dev:
-    name: Simulate Versioning on Dev
-    if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Configure Git Identity
-        run: |
-          git config --global user.name "GitHub Actions Bot"
-          git config --global user.email "github-actions@users.noreply.github.com"
-
-      - name: Simulate Lerna Version (Beta) from Develop
-        run: |
-          npx lerna version --conventional-commits --conventional-prerelease --preid beta --yes --no-push --loglevel verbose
-          VERSION=$(node -p "require('./lerna.json').version")
-          echo "👷 BETA Simulated Version (not applied): $VERSION"
-
-      - name: Simulate Lerna Version (Main) from Develop
-        run: |
-          npx lerna version --conventional-commits --conventional-graduate --yes --no-push --loglevel verbose
-          VERSION=$(node -p "require('./lerna.json').version")
-          echo "👷 MAIN Simulated Version (not applied): $VERSION"
-
   publish-package:
     name: Publish Package to NPM and GitHub
     if: github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/main'
