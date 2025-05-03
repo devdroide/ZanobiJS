@@ -62,19 +62,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
 
-      - name: Push Tags and Changes
-        run: |
-          git push origin ${{ steps.set_vars.outputs.BRANCH }} --follow-tags
-        env:
-          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
-
-      - name: Create GitHub Release
-        if: steps.set_vars.outputs.CREATE_GITHUB_RELEASE == 'true'
-        run: |
-          gh release create v$VERSION --generate-notes
-        env:
-          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
-
       - name: Check for Changes
         id: lerna_check
         run: |
@@ -87,12 +74,25 @@ jobs:
             echo "🎉 There was a change of version"
           fi
 
-      - name: Publish to NPM
+      - name: Push Tags and Changes
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
           git add .
-          git commit -m "chore: commit the build files for publication"
+          git commit -m "chore: commit the build files for publication and version"
+          git push origin ${{ steps.set_vars.outputs.BRANCH }} --follow-tags
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
 
+      - name: Create GitHub Release
+        if: steps.lerna_check.outputs.has_changes == 'true' && steps.set_vars.outputs.CREATE_GITHUB_RELEASE == 'true'
+        run: |
+          gh release create v$VERSION --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
           if [[ ${{ steps.set_vars.outputs.BRANCH }} == 'beta' ]]; then
             npx lerna publish from-package --yes --dist-tag beta
           else
