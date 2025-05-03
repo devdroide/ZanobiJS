@@ -48,7 +48,7 @@ jobs:
             echo "CREATE_GITHUB_RELEASE=false" >> $GITHUB_OUTPUT
           else
             echo "BRANCH=main" >> $GITHUB_OUTPUT
-            echo "VERSION_ARGS=--conventional-commits --conventional-graduate" >> $GITHUB_OUTPUT
+            echo "VERSION_ARGS=--conventional-commits --conventional-graduate --create-release github" >> $GITHUB_OUTPUT
             echo "DIST_TAG=latest" >> $GITHUB_OUTPUT
             echo "CREATE_GITHUB_RELEASE=true" >> $GITHUB_OUTPUT
           fi
@@ -71,8 +71,15 @@ jobs:
             echo "👷 No changes to version"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "🎉 There was a change of version"
+            echo "🎉 New version"
           fi
+
+      - name: Push Tags and Changes
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          git push origin ${{ steps.set_vars.outputs.BRANCH }} --follow-tags
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
 
       - name: Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'true'
@@ -82,7 +89,7 @@ jobs:
           if [[ ${{ steps.set_vars.outputs.BRANCH }} == 'beta' ]]; then
             npx lerna publish from-package --yes --pre-dist-tag beta
           else
-            npx lerna publish from-package --yes --create-release github
+            npx lerna publish from-package --yes
           fi
 
           echo "🚀 Version v$VERSION Published to NPM with tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
