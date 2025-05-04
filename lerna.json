@@ -7,7 +7,7 @@
       "exact": true,
       "conventionalCommits": true,
       "changelogPreset": "angular",
-      "message": ":bookmark: chore(release): publish v%s",
+      "message": ":bookmark: chore(release): publish %s",
       "private": false,
       "allowBranch": ["develop", "beta", "main"],
       "ignoreChanges": [
@@ -20,7 +20,7 @@
     },
     "publish": {
       "conventionalCommits": true,
-      "message": ":bookmark: chore(release): publish v%s"
+      "message": ":bookmark: chore(release): publish %s"
     }
   },
   "packages": ["packages/*"]
