@@ -18,7 +18,15 @@
         "**/__mocks__/**",
         ".github/**",
         ".lang/**",
-        "gulp/**"
+        "gulp/**",
+        ".*",
+        "eslint.config.js",
+        "gulpfile.mjs",
+        "CONTRIBUTING.md",
+        "README.md",
+        "sonar-project.properties",
+        "tsconfig.json",
+        "tsconfig.test.json"
       ]
     },
     "publish": {
