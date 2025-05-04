@@ -11,11 +11,22 @@
       "private": false,
       "allowBranch": ["develop", "beta", "main"],
       "ignoreChanges": [
+        ".github/**",
+        ".lang/**",
         "**/*.md",
         "**/*.test.js",
         "**/*.spec.js",
         "**/__tests__/**",
-        "**/__mocks__/**"
+        "**/__mocks__/**",
+        "gulp/**",
+        ".*",
+        "eslint.config.js",
+        "gulpfile.mjs",
+        "CONTRIBUTING.md",
+        "README.md",
+        "sonar-project.properties",
+        "tsconfig.json",
+        "tsconfig.test.json"
       ]
     },
     "publish": {

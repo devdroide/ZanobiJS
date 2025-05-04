@@ -57,7 +57,6 @@ jobs:
           npx lerna version ${{ steps.set_vars.outputs.VERSION_ARGS }} --yes
           VERSION_NEW=$(node -p "require('./lerna.json').version")
           echo "VERSION_NEW=$VERSION_NEW" >> $GITHUB_ENV
-          echo "Nueva versión (${{ steps.set_vars.outputs.BRANCH }}): $VERSION_NEW"
         env:
           GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
 
@@ -66,10 +65,10 @@ jobs:
         run: |
           if [[ "${{ env.VERSION_OLD }}" == "${{ env.VERSION_NEW }}" ]]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "👷 No changes to version"
+            echo "👷 No changes to version: ${{ env.VERSION_OLD }}"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "🎉 New version"
+            echo "🎉 New version (${{ steps.set_vars.outputs.BRANCH }}): ${{ env.VERSION_NEW }}"
           fi
 
       - name: Build packages
@@ -77,6 +76,11 @@ jobs:
         run: |
           npm run build
           echo "📦 Build completed!"
+
+      - name: Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          echo "🚀 Version v$VERSION Published to NPM with tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
 
       - name: Without Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'false'
