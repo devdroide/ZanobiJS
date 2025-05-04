@@ -53,9 +53,10 @@ jobs:
       - name: Lerna Version
         run: |
           VERSION_OLD=$(node -p "require('./lerna.json').version")
+          echo "VERSION_OLD=$VERSION_OLD" >> $GITHUB_ENV
           npx lerna version ${{ steps.set_vars.outputs.VERSION_ARGS }} --yes
           VERSION_NEW=$(node -p "require('./lerna.json').version")
-          echo "VERSION=$VERSION_NEW" >> $GITHUB_ENV
+          echo "VERSION_NEW=$VERSION_NEW" >> $GITHUB_ENV
           echo "Nueva versión (${{ steps.set_vars.outputs.BRANCH }}): $VERSION_NEW"
         env:
           GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
@@ -63,7 +64,7 @@ jobs:
       - name: Check for Changes
         id: lerna_check
         run: |
-          if [[ $VERSION_OLD == VERSION_NEW ]]; then
+          if [[ "${{ env.VERSION_OLD }}" == "${{ env.VERSION_NEW }}" ]]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "👷 No changes to version"
           else
