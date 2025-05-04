@@ -9,8 +9,6 @@
       "changelogPreset": "angular",
       "message": ":bookmark: chore(release): publish v%s",
       "private": false,
-      "push": false,
-      "gitTagVersion": false,
       "allowBranch": [
         "develop",
         "beta",
