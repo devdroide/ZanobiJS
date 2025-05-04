@@ -1,13 +1,13 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "1.1.0-beta.73",
+  "version": "1.1.0-beta.0",
   "npmClient": "npm",
   "command": {
     "version": {
       "exact": true,
       "conventionalCommits": true,
       "changelogPreset": "angular",
-      "message": ":bookmark: chore(release): publish v%s",
+      "message": ":bookmark: chore(release): publish %s",
       "private": false,
       "allowBranch": ["develop", "beta", "main"],
       "ignoreChanges": [
@@ -20,7 +20,7 @@
     },
     "publish": {
       "conventionalCommits": true,
-      "message": ":bookmark: chore(release): publish v%s"
+      "message": ":bookmark: chore(release): publish %s"
     }
   },
   "packages": ["packages/*"]

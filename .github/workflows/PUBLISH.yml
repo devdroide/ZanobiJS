@@ -52,31 +52,25 @@ jobs:
 
       - name: Lerna Version
         run: |
+          VERSION_OLD=$(node -p "require('./lerna.json').version")
+          echo "VERSION_OLD=$VERSION_OLD" >> $GITHUB_ENV
           npx lerna version ${{ steps.set_vars.outputs.VERSION_ARGS }} --yes
-          VERSION=$(node -p "require('./lerna.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Nueva versión (${{ steps.set_vars.outputs.BRANCH }}): $VERSION"
+          VERSION_NEW=$(node -p "require('./lerna.json').version")
+          echo "VERSION_NEW=$VERSION_NEW" >> $GITHUB_ENV
+          echo "Nueva versión (${{ steps.set_vars.outputs.BRANCH }}): $VERSION_NEW"
         env:
           GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
 
       - name: Check for Changes
         id: lerna_check
         run: |
-          CHANGES=$(npx lerna changed)
-          if [ -z "$CHANGES" ]; then
+          if [[ "${{ env.VERSION_OLD }}" == "${{ env.VERSION_NEW }}" ]]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "👷 No changes to version"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "🎉 New version"
           fi
-
-      - name: Push Tags and Changes
-        if: steps.lerna_check.outputs.has_changes == 'true'
-        run: |
-          git add .
-          git commit -m "chore: generated new version $VERSION"
-          git push origin ${{ steps.set_vars.outputs.BRANCH }} --follow-tags
 
       - name: Build packages
         if: steps.lerna_check.outputs.has_changes == 'true'
