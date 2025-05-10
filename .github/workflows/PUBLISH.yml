@@ -80,6 +80,13 @@ jobs:
       - name: Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
+          git add .
+          git commit -m "chore: commit the build files for publication and version"
+          if [[ ${{ steps.set_vars.outputs.BRANCH }} == 'beta' ]]; then
+            npx lerna publish from-package --yes --pre-dist-tag beta
+          else
+            npx lerna publish from-package --yes
+          fi
           echo "🚀 Version v$VERSION Published to NPM with tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
 
       - name: Without Publish to NPM
