@@ -108,7 +108,35 @@ export class Module {
             [targetName]: aliasTo(target.name),
           };
         });
+      const registerProviderWithEntities = entities
+        .filter((target) => {
+          return (
+            typeof target === 'object' &&
+            isClass(target.provider) &&
+            isClass(target.useClass)
+          );
+        })
+        .map((target) => {
+          this.logger.debug(
+            'Module - Entity provider',
+            `<<< ${target.provider.name} >>>`,
+            'change to',
+            `<<< ${target.useClass.name} >>>`,
+          );
+          this.groupDependenciesForAlias(target.useClass);
+          const targetName = unCapitalize(target.useClass.name);
+          const targetProviderName = unCapitalize(target.provider.name);
+          return {
+            [target.useClass.name]: this.injector.getInjectorClass(
+              target.useClass,
+            ),
+            [targetName]: aliasTo(target.useClass.name),
+            [target.provider.name]: aliasTo(target.useClass.name),
+            [targetProviderName]: aliasTo(target.useClass.name),
+          };
+        });
 
+      Object.assign(this.registerClass, ...registerProviderWithEntities);
       Object.assign(this.registerClass, ...registeredEntities);
     } else {
       this.logger.debug(
@@ -168,11 +196,7 @@ export class Module {
     this.logger.debug('Module - Register list provider:', this.module.name);
     const listProviders = this.injector.getAllProvider();
     listProviders.forEach((value, key) => {
-      const providerInject = this.injector.getInjectProvider({
-        key,
-        value,
-      });
-      this.registerClass[key] = providerInject;
+      this.registerClass[key] = value;
     });
   }
 

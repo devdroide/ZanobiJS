@@ -42,16 +42,27 @@ export class Injector {
   private scanProviders() {
     this.logger.debug('Injector - Scan provider to module:', this.moduleName);
     const { services } = this.metadata.getMetadataModule(this.module);
+
     services.forEach((service) => {
-      if (typeof service === 'object')
-        this.listProviders.set(service.provider, service.useValue);
+      if (typeof service === 'object' && typeof service.provider === 'string') {
+        const key = service.provider;
+        let value: any;
+        if (service.useValue) {
+          value = asValue(service.useValue);
+        } else if (service.useFactory) {
+          value = asFunction(service.useFactory).scoped();
+        }
+
+        this.listProviders.set(key, value);
+      }
     });
+
     this.logger.debug('Injector - list provider', this.listProviders);
   }
 
   /**
-   * Método para obtener un objeto con los parámetros(key) y valores(useValue)
-   * que se inyectarán en la clase (target) mediante asClass().inject().
+   * Método para obtener un objeto con los parámetros(key) y valores(useValue, useClass, useFactory)
+   * que se inyectarán en la clase (target).
    *
    * @param { TClass} target - La clase objetivo.
    * @returns {object} - Objeto con datos a inyectar.
@@ -63,8 +74,8 @@ export class Injector {
       for (const key of dInject.keys()) {
         if (this.listProviders.has(key)) {
           const paramName = dInject.get(key);
-          const useValue = this.listProviders.get(key);
-          injectData[paramName] = useValue;
+          const provider = this.listProviders.get(key);
+          injectData[paramName] = provider;
         } else {
           this.logger.important(
             `You are trying to inject @INJECT('${key}') into '${target.name}'`,
@@ -86,7 +97,7 @@ export class Injector {
    * @param {any} target - La clase objetivo.
    * @returns - El injector configurado.
    */
-  getInjectorClass(target) {
+  getInjectorClass(target: TClass) {
     const injectData = this.getInjectData(target);
     let injector = asClass(target).scoped();
     if (!isEmpty(injectData)) {
@@ -94,7 +105,7 @@ export class Injector {
         `Inject - list dependencies to inject of ${target.name}:`,
         injectData,
       );
-      injector = injector.inject(this.funtionInjectData(injectData));
+      injector = injector.inject(() => injectData);
     }
 
     return {
@@ -105,15 +116,5 @@ export class Injector {
 
   getAllProvider() {
     return this.listProviders;
-  }
-
-  getInjectProvider(provider) {
-    return typeof provider.value === 'function'
-      ? asFunction(provider.value).scoped()
-      : asValue(provider.value);
-  }
-
-  funtionInjectData(injectData) {
-    return () => injectData;
   }
 }

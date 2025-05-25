@@ -75,7 +75,7 @@ describe('Commons - Decorators - module', () => {
         'An error has occurred in @Module(), please check the detail field',
       );
       expect(error.detail).to.be.equal(
-        'There are services that do not match the allowed types "class" or "object with provider and use value".',
+        'There are services that do not match the allowed types "class" or "object with provider and use value, use class or use factory".',
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }
@@ -94,7 +94,7 @@ describe('Commons - Decorators - module', () => {
         'An error has occurred in @Module(), please check the detail field',
       );
       expect(error.detail).to.be.equal(
-        'There are services that do not match the allowed types "class" or "object with provider and use value".',
+        'There are services that do not match the allowed types "class" or "object with provider and use value, use class or use factory".',
       );
       expect(error).to.be.an.instanceof(InvalidModuleSchemaException);
     }

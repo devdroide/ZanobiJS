@@ -29,6 +29,27 @@ export class Service2 {
   }
 }
 
+@Injectable()
+export abstract class ABSServiceRepository {
+  abstract getDataService(): string;
+}
+
+@Injectable()
+export class RepositoryImplements implements ABSServiceRepository {
+  getDataService() {
+    return 'Hello from repository implementation';
+  }
+}
+
+@Injectable()
+export class ServiceUseCase {
+  constructor(private repositoryImp: ABSServiceRepository) {}
+
+  getDataImp() {
+    return this.repositoryImp.getDataService();
+  }
+}
+
 // ==================================================
 // =========== Controller to Inject =================
 // ==================================================

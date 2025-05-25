@@ -42,29 +42,4 @@ describe('Core - Injector - injector', () => {
     const allProvider = injector.getAllProvider();
     expect(allProvider.has('TEXT_INJECT')).to.be.equal(true);
   });
-  it('Should be get a function as a provider', () => {
-    function getTrue() {
-      return true;
-    }
-    const getProvider = injector.getInjectProvider({
-      key: 'getTrueFunction',
-      value: getTrue,
-    });
-    expect(getProvider).to.have.property('resolve');
-  });
-  it('Should be set a object as a provider', () => {
-    const getProvider = injector.getInjectProvider({
-      key: 'getTrue',
-      value: 'true',
-    });
-    expect(getProvider).to.have.property('resolve');
-  });
-
-  it('should return the function that returns the given injection data', () => {
-    const injectData = {
-      Some: 'some some',
-    };
-    const resultFunction = injector.funtionInjectData(injectData);
-    expect(resultFunction()).to.be.equal(injectData);
-  });
 });

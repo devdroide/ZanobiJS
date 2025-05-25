@@ -1,11 +1,14 @@
 import { Module } from '@zanobijs/common';
 import {
+  ABSServiceRepository,
   Controller1,
   Controller2,
   Controller3,
   Controller4,
   Controller5,
+  RepositoryImplements,
   Service1,
+  ServiceUseCase,
 } from './classDependenciesToInject';
 
 // ==================================================
@@ -25,6 +28,20 @@ import {
   exports: [],
 })
 export class Module1 {}
+
+@Module({
+  imports: [],
+  controllers: [],
+  services: [
+    ServiceUseCase,
+    {
+      provider: ABSServiceRepository,
+      useClass: RepositoryImplements,
+    },
+  ],
+  exports: [],
+})
+export class ModuleRepository {}
 
 // ==================================================
 // ===========Module to Test Module =================
