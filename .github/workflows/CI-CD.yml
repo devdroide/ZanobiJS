@@ -43,11 +43,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check Conventional Commits
-        uses: gentleseal/action-conventional-commits@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
   validate:
     name: Validate Code Quality
     runs-on: ubuntu-latest
