@@ -8,6 +8,7 @@ We would love for you to contribute and help us make ZanobiJS even better! As a 
 - [Feature Requests](#feature)
 - [Pull Requests](#branches)
 - [Commit Message Guidelines](#commits)
+- [PR Guidelines](#PRTitle)
 - [NPM Scripts](#scripts)
 
 
@@ -45,6 +46,9 @@ $ git checkout -b feat/obfuscating-logs-for-users
 
 # Ejemplo 2
 $ git checkout -b fix/obfuscating-email-logs
+
+# Ejemplo 3
+$ git checkout -b ci/adjust-CI-publish
 ```
 
 ### <a name="commits"></a>Scope and Commits
@@ -53,23 +57,40 @@ We have the following scopes, which must be taken into account for commits:
 
 - **commons**: for changes made in the `packages/common` directory
 - **core**: for changes made in the `packages/core` directory
+- **test**: for changes made in the `packages/**/__test__` directory
+- **deps**: for changes made in the dependencies
 
 ```bash
 # Example 1 - scope / package common
 $ git commit -a -m "feat(core): ✨ Added log obfuscation for email and credit cards"
 
 # Example 2 - scope / package core
-$ git commit -a -m "fix(core): 🐛 Fixed log obfuscation for 16-character credit card numbers"
+$ git commit -a -m "fix(commons): 🐛 Fixed log obfuscation for 16-character credit card numbers"
 
-# Example 3 - general scope
+# Example 3 - various scopes
+$ git commit -a -m "feat(core,commons,test): Support for using Class in the service as a provider"
+
+# Example 4 - general scope
 $ git commit -a -m "docs: 📚 Added readme.md for the spanish language"
 
-# Example 4 - scope / package core
+# Example 5 - scope / package core
 $ git commit -a -m "refactor(core): :hammer: The inject was refactored by code smell"
 
-# Example 5 - scope / package core
+# Example 6 - scope / package core
 $ git commit -a -m "test(core): :white_check_mark: New test cases were added for injector coverage"
+
+# Example 7 - scope / dependencies
+$ git commit -a -m "fix(deps): update dependency typescript to v5.8.3"
 ```
+
+### <a name="PRGuide"></a>PR Guidelines
+
+You must use the same commit convention with their respective scopes. example: 
+
+Branch: **ci/adjust-CI-publish**
+
+Title: **ci: PR title validation was added with conventional commits**
+
 
 ## <a name="CICD"></a>Automation
 
