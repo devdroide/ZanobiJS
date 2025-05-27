@@ -18,7 +18,7 @@ jobs:
             echo "✅ PR title is valid: $PR_TITLE"
           else
             echo "❌ Error: PR title does not follow Conventional Commits format."
-            echo "Example: feat(parser): add ability to parse arrays"
+            echo "Example: feat(core): add ability to parse arrays"
             exit 1
           fi
 

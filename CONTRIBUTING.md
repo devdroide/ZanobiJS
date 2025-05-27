@@ -8,6 +8,7 @@ We would love for you to contribute and help us make ZanobiJS even better! As a 
 - [Feature Requests](#feature)
 - [Pull Requests](#branches)
 - [Commit Message Guidelines](#commits)
+- [PR Guidelines](#PRTitle)
 - [NPM Scripts](#scripts)
 
 
@@ -82,7 +83,7 @@ $ git commit -a -m "test(core): :white_check_mark: New test cases were added for
 $ git commit -a -m "fix(deps): update dependency typescript to v5.8.3"
 ```
 
-### <a name="PRTitle"></a>PR Title
+### <a name="PRGuide"></a>PR Guidelines
 
 You must use the same commit convention with their respective scopes. example: 
 
