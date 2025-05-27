@@ -88,6 +88,8 @@ jobs:
             npx lerna publish from-package --yes
           fi
           echo "🚀 Version v$VERSION Published to NPM with tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ZANOBIJS_31122025 }}
 
       - name: Without Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'false'
