@@ -1,0 +1,94 @@
+name: Publish Package
+
+on:
+  push:
+    branches:
+      - beta
+      - main
+
+jobs:
+  publish-package:
+    name: Publish Package to NPM and GitHub
+    if: github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Configure Git Identity
+        run: |
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions"
+
+      - name: Set Release Type Variables
+        id: set_vars
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/beta' ]]; then
+            echo "BRANCH=beta" >> $GITHUB_OUTPUT
+            echo "VERSION_ARGS=--conventional-commits --conventional-prerelease --preid beta" >> $GITHUB_OUTPUT
+            echo "DIST_TAG=beta" >> $GITHUB_OUTPUT
+            echo "CREATE_GITHUB_RELEASE=false" >> $GITHUB_OUTPUT
+          else
+            echo "BRANCH=main" >> $GITHUB_OUTPUT
+            echo "VERSION_ARGS=--conventional-commits --conventional-graduate --create-release github" >> $GITHUB_OUTPUT
+            echo "DIST_TAG=latest" >> $GITHUB_OUTPUT
+            echo "CREATE_GITHUB_RELEASE=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Lerna Version
+        run: |
+          VERSION_OLD=$(node -p "require('./lerna.json').version")
+          echo "VERSION_OLD=$VERSION_OLD" >> $GITHUB_ENV
+          npx lerna version ${{ steps.set_vars.outputs.VERSION_ARGS }} --yes
+          VERSION_NEW=$(node -p "require('./lerna.json').version")
+          echo "VERSION_NEW=$VERSION_NEW" >> $GITHUB_ENV
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_BRANCHES_BLOCKED }}
+
+      - name: Check for Changes
+        id: lerna_check
+        run: |
+          if [[ "${{ env.VERSION_OLD }}" == "${{ env.VERSION_NEW }}" ]]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "👷 No changes to version: ${{ env.VERSION_OLD }}"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "🎉 New version (${{ steps.set_vars.outputs.BRANCH }}): ${{ env.VERSION_NEW }}"
+          fi
+
+      - name: Build packages
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          npm run build
+          echo "📦 Build completed!"
+
+      - name: Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'true'
+        run: |
+          git add .
+          git commit -m "chore: commit the build files for publication and version"
+          if [[ ${{ steps.set_vars.outputs.BRANCH }} == 'beta' ]]; then
+            npx lerna publish from-package --yes --pre-dist-tag beta
+          else
+            npx lerna publish from-package --yes
+          fi
+          echo "🚀 Version v$VERSION Published to NPM with tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
+
+      - name: Without Publish to NPM
+        if: steps.lerna_check.outputs.has_changes == 'false'
+        run: echo "👷 There are no changes to publish on NPM."

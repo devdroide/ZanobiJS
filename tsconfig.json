@@ -16,10 +16,10 @@
     "baseUrl": ".",
     "types": ["node", "mocha", "sinon"],
     "paths": {
-      "zanobijs-common": ["./packages/common/src"],
-      "zanobijs-common/*": ["./packages/common/src/*"],
-      "zanobijs-core": ["./packages/core/src"],
-      "zanobijs-core/*": ["./packages/core/src/*"]
+      "zanobijs-common": ["./packages/common"],
+      "zanobijs-common/*": ["./packages/common/*"],
+      "zanobijs-core": ["./packages/core"],
+      "zanobijs-core/*": ["./packages/core/*"]
     }
   },
   "include": ["packages/**/*"],

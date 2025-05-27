@@ -1,4 +1,4 @@
-import { Controller, Inject, Injectable } from "@zanobijs/common";
+import { Controller, Inject, Injectable } from '@zanobijs/common';
 
 // ==================================================
 // ============= Service to Inject ==================
@@ -6,7 +6,7 @@ import { Controller, Inject, Injectable } from "@zanobijs/common";
 
 @Injectable()
 export class Service1 {
-  constructor(@Inject("TEXT_INJECT") private textInj: string) {}
+  constructor(@Inject('TEXT_INJECT') private textInj: string) {}
 
   getDataService() {
     return this.textInj;
@@ -18,7 +18,7 @@ export class Service2 {
   constructor() {}
 
   getDataService() {
-    return "Hello from service 2";
+    return 'Hello from service 2';
   }
 }
 
@@ -26,7 +26,7 @@ export class Service2 {
 export class Service3 {
   constructor(
     private sev2: Service2,
-    @Inject("TEXT_INJECT") private textInj: string,
+    @Inject('TEXT_INJECT') private textInj: string,
   ) {}
 
   getDataTextInject() {
@@ -34,7 +34,7 @@ export class Service3 {
   }
 
   getDataService2() {
-    return this.sev2.getDataService()
+    return this.sev2.getDataService();
   }
 }
 
@@ -47,16 +47,16 @@ export class Controller1 {
   constructor() {}
 
   getData() {
-    return "Hello world";
+    return 'Hello world';
   }
 }
 
 @Controller()
 export class Controller2 {
-  constructor(@Inject("SOME_INJECT") private someInj: string) {}
+  constructor(@Inject('SOME_INJECT') private someInj: string) {}
 
   geData() {
-    return "Hello world";
+    return 'Hello world';
   }
 }
 
@@ -65,7 +65,7 @@ export class Controller3 {
   constructor(private serv1: Service1) {}
 
   geData() {
-    return "Hello world";
+    return 'Hello world';
   }
 }
 
@@ -74,7 +74,7 @@ export class Controller4 {
   constructor(private serv1: Service1) {}
 
   geData() {
-    return "Hello world";
+    return 'Hello world';
   }
 }
 
@@ -82,7 +82,7 @@ export class Controller4 {
 export class Controller5 {
   constructor(
     private serv1: Service1,
-    @Inject("TEXT_INJECT") private textInject: string,
+    @Inject('TEXT_INJECT') private textInject: string,
   ) {}
 
   geData() {
@@ -90,12 +90,9 @@ export class Controller5 {
   }
 }
 
-
 @Controller()
 export class Controller6 {
-  constructor(
-    private serv2: Service2,
-  ) {}
+  constructor(private serv2: Service2) {}
 
   geData() {
     return this.serv2.getDataService();
@@ -105,10 +102,11 @@ export class Controller6 {
 @Controller()
 export class Controller7 {
   private varTestNumber: number = 10;
-  private varTestString: string = "Esto es una cadena";
+  private varTestString: string = 'Esto es una cadena';
   constructor(
-    @Inject("SOME_INJECT") private someInj: string,
-    private serv2: Service2) {}
+    @Inject('SOME_INJECT') private someInj: string,
+    private serv2: Service2,
+  ) {}
 
   geData() {
     return this.serv2.getDataService();

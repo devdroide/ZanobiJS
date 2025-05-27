@@ -1,14 +1,38 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "1.0.2",
+  "version": "1.1.0-beta.74",
+  "npmClient": "npm",
   "command": {
     "version": {
-      "allowBranch": ["main", "beta"],
+      "exact": true,
       "conventionalCommits": true,
-      "message": ":bookmark: chore(release@zanobijs): publish %s"
+      "changelogPreset": "angular",
+      "message": ":bookmark: chore(release): publish %s",
+      "private": false,
+      "allowBranch": ["develop", "beta", "main"],
+      "ignoreChanges": [
+        ".github/**",
+        ".lang/**",
+        "**/*.md",
+        "**/*.test.js",
+        "**/*.spec.js",
+        "**/__tests__/**",
+        "**/__mocks__/**",
+        "gulp/**",
+        ".*",
+        "eslint.config.js",
+        "gulpfile.mjs",
+        "CONTRIBUTING.md",
+        "README.md",
+        "sonar-project.properties",
+        "tsconfig.json",
+        "tsconfig.test.json"
+      ]
     },
     "publish": {
-      "access": "public"
+      "conventionalCommits": true,
+      "message": ":bookmark: chore(release): publish %s"
     }
-  }
+  },
+  "packages": ["packages/*"]
 }

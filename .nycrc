@@ -1,0 +1,30 @@
+{
+  "all": true,
+  "include": ["packages/**/*.ts"],
+  "exclude": [
+    "gulp/**",
+    "coverage/**",
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "packages/**/coverage/**",
+    "packages/**/__test__/**/*.ts",
+    "packages/**/__test__/**/*mock.ts",
+    "packages/**/*.spec.ts",
+    "packages/**/*.test.ts",
+    "packages/**/*.e2e.ts",
+    "packages/**/node_modules/**",
+    "packages/**/dist/**",
+    "packages/**/build/**"
+  ],
+  "per-file": true,
+  "cache": false,
+  "check-coverage": true,
+  "lines": 90,
+  "functions": 90,
+  "branches": 90,
+  "statements": 90,
+  "reporter": ["lcov", "html", "text-summary"],
+  "extension": [".ts"],
+  "require": ["ts-node/register"]
+}

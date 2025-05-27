@@ -1,17 +1,20 @@
-import "reflect-metadata";
-import { AwilixContainer, InjectionMode, createContainer } from "awilix";
-import { Module } from "./injector/module";
-import { unCapitalize } from "@zanobijs/common/utils/shared.utils";
-import { ContainerResolutionEntityException, ContainerResolutionException } from "./exceptions/resolution.exception";
-import { ILoggerService } from "@zanobijs/common";
-import { Logger } from "@zanobijs/common/utils";
-import { IFactoryOptions } from "./interfaces";
+import 'reflect-metadata';
+import { AwilixContainer, InjectionMode, createContainer } from 'awilix';
+import { Module } from './injector/module';
+import {
+  ContainerResolutionEntityException,
+  ContainerResolutionException,
+} from './exceptions/resolution.exception';
+import { ILoggerService } from '@zanobijs/common';
+import { Logger } from '@zanobijs/common/utils';
+import { IFactoryOptions } from './interfaces';
+import { TClass } from './interfaces/globals.interface';
 
 /**
  * Factory es una clase que facilita la creación y configuración de
  * contenedores de inyección de dependencias utilizando metadatos y
- * la librería `awilix` para registrar y resolver controladores y
- * servicios.
+ * la librería `awilix` para registrar y resolver entidades como:
+ * controladores y servicios.
  */
 export class Factory {
   private moduleHandler: Module;
@@ -20,49 +23,41 @@ export class Factory {
   private logger: ILoggerService;
   private options: IFactoryOptions;
 
-  constructor(appModule: any, options: IFactoryOptions  = {}) {
-    process.env.ZANOBIJS_LOGGER = "false";
-    process.env.ZANOBIJS_LOGGER_USER = "false";
+  constructor(appModule: TClass, options: IFactoryOptions = {}) {
+    process.env.ZANOBIJS_LOGGER = 'false';
+    process.env.ZANOBIJS_LOGGER_USER = 'false';
     this.options = options;
     this.evaluateOptions();
     this.logger = Logger();
     this.moduleHandler = new Module();
-    this.registerClassesFromModule(appModule);
-  }
-
-  /**
-   * Este método registra clases desde el módulo proporcionado
-   * y recorre sus importaciones de forma recursiva para registrar
-   * las clases necesarias de importación.
-   * @private
-   */
-  private registerClassesFromModule(module: any): void {
-    this.logger.debug("Factory - Registering classes for module:", module.name);
-    this.registerFromModule(module);
-    const importedModules = this.moduleHandler.getImports();
-    if (importedModules && importedModules.length) {
-      importedModules.forEach((moduleImport) => {
-        this.registerClassesFromModule(moduleImport);
-      });
-    }
+    this.processModule(appModule);
   }
 
   /**
    * Registra clases desde un módulo específico.
-   * @param {any} module - Módulo desde el que se registrarán las clases.
+   * @param {TClass} module - Módulo desde el que se registrarán las clases.
    * @private
    */
-  private registerFromModule(module: any): void {
-    this.logger.debug("Factory - Setup:", module.name);
+  private processModule(module: TClass): void {
+    this.logger.debug('Factory - Process - Create module setup:', module.name);
     this.moduleHandler.setup(module);
-    this.logger.debug("Factory - Initialize:", module.name);
+    this.logger.debug('Factory - Process - Module initialize:', module.name);
     this.moduleHandler.initialize();
     Object.assign(
       this.registeredClasses,
       this.moduleHandler.getRegisterClass(),
     );
-    this.logger.success("Factory - Completion of module ", module.name);
-    this.logger.debug("===================================================");
+    this.logger.success(
+      'Factory - Process - Completion of module ',
+      module.name,
+    );
+    const importedModules = this.moduleHandler.getImports();
+    if (importedModules && importedModules.length) {
+      importedModules.forEach((moduleImport) => {
+        this.processModule(moduleImport);
+      });
+    }
+    this.logger.debug('===================================================');
   }
 
   /**
@@ -73,37 +68,39 @@ export class Factory {
     this.container = createContainer({ injectionMode: InjectionMode.CLASSIC });
     this.container.register(this.registeredClasses);
     this.logger.info(
-      "Factory - classes and providers registered in the container",
+      'Factory - classes and providers registered in the container',
       Object.keys(this.registeredClasses),
     );
     return this;
   }
 
   /**
-   * Resuelve y devuelve una instancia del contenedor basado en la entidad proporcionada.
-   * @param {string} entity - Nombre de la entidad a resolver.
-   * @returns {any} - Instancia resuelta.
+   * Resuelve y devuelve una instancia del contenedor
+   * teniendo en cuenta el nombre de la entidad proporcionada.
+   * @param {string} className - Nombre de la entidad a resolver.
+   * @returns {T} - Instancia resuelta.
    */
-  get<T>(entity: string): T {
+  get<T>(className: string): T {
     try {
-      return this.container.resolve(entity);
+      return this.container.resolve(className);
     } catch (error) {
-      this.logger.info("Error resolving entity: ", error.message + "\n");
-      const resolutionError = error.message.split("\n");
-      const EntityFound = resolutionError[0].match(/'([^']+)'/);
-      if (EntityFound[1] === entity) {
-        throw new ContainerResolutionEntityException(entity, error.message);
+      this.logger.info('Error resolving entity: ', error.message + '\n');
+      const resolutionError = error.message.split('\n');
+      const classNameFound = resolutionError[0].match(/'([^']+)'/);
+      if (classNameFound[1] === className) {
+        throw new ContainerResolutionEntityException(className, error.message);
       }
       throw new ContainerResolutionException(
-        entity,
+        className,
         resolutionError[0],
         error.message,
       );
     }
   }
 
-  private evaluateOptions(){
-    if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = "true";
-    if (this.options.activeLoggerUser) process.env.ZANOBIJS_LOGGER_USER = "true";
+  private evaluateOptions() {
+    if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = 'true';
+    if (this.options.activeLoggerUser)
+      process.env.ZANOBIJS_LOGGER_USER = 'true';
   }
 }

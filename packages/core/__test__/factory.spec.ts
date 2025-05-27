@@ -1,11 +1,16 @@
-import { expect } from "chai";
-import { Module } from "@zanobijs/common";
-import { Factory } from "../index";
-import { Module1, Module2, Module4, Module5, ModuleEmpty } from "./mocks/classModules.mock";
-import { Controller1, Controller6 } from "./mocks/classDependencies.mock";
+import { expect } from 'chai';
+import { Factory } from '../index';
+import {
+  Module1,
+  Module2,
+  Module4,
+  Module5,
+  ModuleEmpty,
+} from './mocks/classModules.mock';
+import { Controller1, Controller6 } from './mocks/classDependencies.mock';
 
-describe("Core - factory options", () => {
-  it("should respond error to create factory by error @Module", () => {
+describe('Core - factory options', () => {
+  it('should respond error to create factory by error @Module', () => {
     class ModuleWithoutDecorator {}
     try {
       new Factory(ModuleWithoutDecorator, {
@@ -14,11 +19,11 @@ describe("Core - factory options", () => {
       });
     } catch (error) {
       expect(error.message).to.be.equal(
-        "The class must have an annotation @Module()",
+        'The class must have an annotation @Module()',
       );
     }
   });
-  it("should respond create factory", () => {
+  it('should respond create factory', () => {
     const factory = new Factory(ModuleEmpty, {
       activeLoggerSystem: false,
     });
@@ -27,12 +32,12 @@ describe("Core - factory options", () => {
   });
 });
 
-describe("Core - factory - Entities", () => {
-  it("It should respond with an error because the controller is not in the module.", () => {
-    const factory = new Factory(ModuleEmpty, { activeLoggerSystem: false, });
+describe('Core - factory - Entities', () => {
+  it('It should respond with an error because the controller is not in the module.', () => {
+    const factory = new Factory(ModuleEmpty, { activeLoggerSystem: false });
     const app = factory.create();
     try {
-      app.get("SomeController");
+      app.get('SomeController');
     } catch (error) {
       expect(error.message).to.be.equal(
         "Please check that the entity 'SomeController' exists and is registered in @modulo",
@@ -42,11 +47,11 @@ describe("Core - factory - Entities", () => {
       );
     }
   });
-  it("It should respond with an error because the provider is not in the module.", () => {
+  it('It should respond with an error because the provider is not in the module.', () => {
     const factory = new Factory(ModuleEmpty, { activeLoggerSystem: false });
     const app = factory.create();
     try {
-      app.get("TEXT_PROVIDER");
+      app.get('TEXT_PROVIDER');
     } catch (error) {
       expect(error.message).to.be.equal(
         "Please check that the entity 'TEXT_PROVIDER' exists and is registered in @modulo",
@@ -56,12 +61,12 @@ describe("Core - factory - Entities", () => {
       );
     }
   });
-  it("It should respond with an error because the controller is not in the module.", () => {
+  it('It should respond with an error because the controller is not in the module.', () => {
     const factory = new Factory(Module4, { activeLoggerSystem: true });
     const app = factory.create();
     try {
-      const controller6: Controller6 = app.get("controller6");
-      controller6.geData()
+      const controller6: Controller6 = app.get('controller6');
+      controller6.geData();
     } catch (error) {
       expect(error.message).to.be.equal(
         "Could not resolve 'service2'. please review 'controller6' and its dependencies.",
@@ -71,38 +76,37 @@ describe("Core - factory - Entities", () => {
       );
     }
   });
-  it("It should respond getData of controller.", () => {
+  it('It should respond getData of controller.', () => {
     const factory = new Factory(Module1);
     const app = factory.create();
-    const controller1: Controller1 = app.get("controller1");
-    expect(controller1.getData()).to.be.equal("Hello world");
+    const controller1: Controller1 = app.get('controller1');
+    expect(controller1.getData()).to.be.equal('Hello world');
   });
-  it("It should respond the useValue of provider.", () => {
+  it('It should respond the useValue of provider.', () => {
     const factory = new Factory(Module1);
     const app = factory.create();
-    const textInject: string = app.get("TEXT_INJECT");
-    expect(textInject).to.be.equal("Hello world inject");
+    const textInject: string = app.get('TEXT_INJECT');
+    expect(textInject).to.be.equal('Hello world inject');
   });
-
 });
 
-describe("Core - factory - Module to Module", () => {
-  it("It should respond getData of controller.", () => {
+describe('Core - factory - Module to Module', () => {
+  it('It should respond getData of controller.', () => {
     const factory = new Factory(Module2, {
       activeLoggerSystem: true,
       activeLoggerUser: true,
     });
     const app = factory.create();
-    const controller1: Controller1 = app.get("controller1");
-    expect(controller1.getData()).to.be.equal("Hello world");
+    const controller1: Controller1 = app.get('controller1');
+    expect(controller1.getData()).to.be.equal('Hello world');
   });
-  it("It should respond getData of controller.", () => {
+  it('It should respond getData of controller.', () => {
     const factory = new Factory(Module5, {
       activeLoggerSystem: true,
       activeLoggerUser: true,
     });
     const app = factory.create();
-    const controller1: Controller1 = app.get("controller1");
-    expect(controller1.getData()).to.be.equal("Hello world");
+    const controller1: Controller1 = app.get('controller1');
+    expect(controller1.getData()).to.be.equal('Hello world');
   });
 });

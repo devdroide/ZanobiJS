@@ -1,5 +1,5 @@
-import { MODULE_ERROR } from "./constant.message";
-import { RuntimeException } from "./runtime.exception";
+import { MODULE_ERROR } from './constant.message';
+import { RuntimeException } from './runtime.exception';
 
 /**
  * Excepción lanzada cuando un esquema de módulo es inválido.
