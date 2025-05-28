@@ -139,3 +139,16 @@ export class ModuleProviderError {}
   exports: [],
 })
 export class ModuleProviderWithoutInjectable {}
+
+@Module({
+  imports: [],
+  controllers: [],
+  services: [
+    {
+      provider: 'MyService1',
+      useClass: ModuleFactory,
+    },
+  ],
+  exports: [],
+})
+export class ModuleProviderHaveModule {}

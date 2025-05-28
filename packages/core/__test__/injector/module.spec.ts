@@ -5,6 +5,7 @@ import {
   Module1,
   Module2,
   Module3,
+  ModuleProviderHaveModule,
   ModuleProviderWithoutInjectable,
   ModuleTestEmpty,
 } from './mocks/classModuleToInject';
@@ -90,6 +91,22 @@ describe('Core - Injector - module', () => {
       } catch (error) {
         expect(error.message).to.equal(
           'Please check that ServiceWithoutInjectable located in the @module ModuleProviderWithoutInjectable exists and is @Injectable().',
+        );
+        expect(error.detail).to.equal(
+          'ServiceWithoutInjectable type is unknown',
+        );
+      }
+    });
+    it('Should respond with an error because a provider have module and is poorly defined.', () => {
+      try {
+        moduleInstance.setup(ModuleProviderHaveModule);
+        moduleInstance.initialize();
+      } catch (error) {
+        expect(error.message).to.equal(
+          'Please check that ModuleFactory located in the @module ModuleProviderHaveModule exists and is @Injectable().',
+        );
+        expect(error.detail).to.equal(
+          'The type used in the provider useClass property is not valid',
         );
       }
     });

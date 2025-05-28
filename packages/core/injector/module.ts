@@ -25,8 +25,8 @@ export class Module {
   private dependenciesClass: any[] = [];
   private metadata: Metadata;
   private types: string[] = ['controller', 'service'];
-  private listProviders: Map<string, any> = new Map();
-  private listProvidersClass: Map<string, any> = new Map();
+  private readonly listProviders: Map<string, any> = new Map();
+  private readonly listProvidersClass: Map<string, any> = new Map();
 
   /**
    * Constructor del módulo.
@@ -128,10 +128,14 @@ export class Module {
   private registerEntitiesFromProvider(): void {
     this.logger.debug('Module - searching for entities from provider');
     for (const [key, value] of this.listProvidersClass) {
-      this.logger.debug('Module - Entity provider', `<<< ${key} >>>`);
-      this.logger.debug('Module - Entity provider class', `<<< ${value} >>>`);
       try {
-        this.types.includes(this.metadata.determineType(value));
+        this.logger.debug('Module - Entity provider', `<<< ${key} >>>`);
+        const type = this.metadata.determineType(value);
+        if (!this.types.includes(type)) {
+          throw new Error(
+            'The type used in the provider useClass property is not valid',
+          );
+        }
         this.groupDependenciesForAlias(value);
         const targetName = unCapitalize(value.name);
         const targetProviderName = unCapitalize(key);

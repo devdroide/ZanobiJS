@@ -13,8 +13,8 @@ export type Constructor<T> = { new (...args: any[]): T };
  */
 export class Injector {
   private module: TClass;
-  private listProviders: Map<string, any>;
-  private listProvidersClass: Map<string, any>;
+  private readonly listProviders: Map<string, any>;
+  private readonly listProvidersClass: Map<string, any>;
   private metadata: Metadata;
   private logger: ILoggerService;
   private moduleName: string = '';
