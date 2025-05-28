@@ -1,6 +1,10 @@
 import { expect } from 'chai';
 import { Injector } from '../../injector';
-import { Module1 } from './mocks/classModuleToInject';
+import {
+  Module1,
+  ModuleFactory,
+  ModuleProviderError,
+} from './mocks/classModuleToInject';
 import {
   Controller1,
   Controller2,
@@ -10,7 +14,8 @@ import {
 
 describe('Core - Injector - injector', () => {
   const listProvider = new Map();
-  const injector = new Injector(Module1, listProvider);
+  const listProviderClass = new Map();
+  const injector = new Injector(Module1, listProvider, listProviderClass);
 
   it('Should respond an object without paramters to inject', () => {
     const getInjectData = injector.getInjectData(Controller1);
@@ -42,29 +47,23 @@ describe('Core - Injector - injector', () => {
     const allProvider = injector.getAllProvider();
     expect(allProvider.has('TEXT_INJECT')).to.be.equal(true);
   });
-  it('Should be get a function as a provider', () => {
-    function getTrue() {
-      return true;
-    }
-    const getProvider = injector.getInjectProvider({
-      key: 'getTrueFunction',
-      value: getTrue,
-    });
-    expect(getProvider).to.have.property('resolve');
-  });
-  it('Should be set a object as a provider', () => {
-    const getProvider = injector.getInjectProvider({
-      key: 'getTrue',
-      value: 'true',
-    });
-    expect(getProvider).to.have.property('resolve');
-  });
 
-  it('should return the function that returns the given injection data', () => {
-    const injectData = {
-      Some: 'some some',
-    };
-    const resultFunction = injector.funtionInjectData(injectData);
-    expect(resultFunction()).to.be.equal(injectData);
+  it('Should respond an number type asFunction without injector', () => {
+    const injectorWithFactory = new Injector(
+      ModuleFactory,
+      listProvider,
+      listProviderClass,
+    );
+    const allProvider = injectorWithFactory.getAllProvider();
+    expect(allProvider.has('NUMBER_FACTORY')).to.be.equal(true);
+  });
+  it('Should respond only one supplier because the others are not valid.', () => {
+    const injectorWithFactory = new Injector(
+      ModuleProviderError,
+      listProvider,
+      listProviderClass,
+    );
+    const allProviderClass = injectorWithFactory['listProvidersClass'];
+    expect(allProviderClass.size).to.be.equal(1);
   });
 });

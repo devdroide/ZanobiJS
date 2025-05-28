@@ -6,8 +6,13 @@ import {
   Module4,
   Module5,
   ModuleEmpty,
+  ModuleRepository,
 } from './mocks/classModules.mock';
-import { Controller1, Controller6 } from './mocks/classDependencies.mock';
+import {
+  Controller1,
+  Controller6,
+  ControllerUser,
+} from './mocks/classDependencies.mock';
 
 describe('Core - factory options', () => {
   it('should respond error to create factory by error @Module', () => {
@@ -108,5 +113,14 @@ describe('Core - factory - Module to Module', () => {
     const app = factory.create();
     const controller1: Controller1 = app.get('controller1');
     expect(controller1.getData()).to.be.equal('Hello world');
+  });
+  it('It should respond to the class value that was changed or overridden.', () => {
+    const factory = new Factory(ModuleRepository, {
+      activeLoggerSystem: true,
+      activeLoggerUser: true,
+    });
+    const app = factory.create();
+    const controllerUser: ControllerUser = app.get('ControllerUser');
+    expect(controllerUser.register()).to.be.equal('Created');
   });
 });
