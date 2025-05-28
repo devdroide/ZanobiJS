@@ -1,7 +1,7 @@
 import { ILoggerService } from '@zanobijs/common';
 import { Metadata } from '../metadata';
 import { Logger } from '@zanobijs/common/utils';
-import { isEmpty } from '@zanobijs/common/utils/shared.utils';
+import { isClass, isEmpty } from '@zanobijs/common/utils/shared.utils';
 import { asClass, asFunction, asValue } from 'awilix';
 import { TClass } from '../interfaces';
 
@@ -14,6 +14,7 @@ export type Constructor<T> = { new (...args: any[]): T };
 export class Injector {
   private module: TClass;
   private listProviders: Map<string, any>;
+  private listProvidersClass: Map<string, any>;
   private metadata: Metadata;
   private logger: ILoggerService;
   private moduleName: string = '';
@@ -24,12 +25,17 @@ export class Injector {
    * @param {Module} module - El módulo debe tener el decorador `@Module`
    * para poderlo procesar.
    */
-  constructor(module: TClass, listProviders: Map<string, any>) {
+  constructor(
+    module: TClass,
+    listProviders: Map<string, any>,
+    listProvidersClass: Map<string, any>,
+  ) {
     this.metadata = Metadata.getInstance();
     this.logger = Logger();
     this.moduleName = module.name;
     this.module = module;
     this.listProviders = listProviders;
+    this.listProvidersClass = listProvidersClass;
     this.scanProviders();
   }
 
@@ -46,18 +52,53 @@ export class Injector {
     services.forEach((service) => {
       if (typeof service === 'object' && typeof service.provider === 'string') {
         const key = service.provider;
-        let value: any;
-        if (service.useValue) {
-          value = asValue(service.useValue);
+        if (service.useClass) {
+          this.listProvidersClass.set(key, service.useClass);
         } else if (service.useFactory) {
-          value = asFunction(service.useFactory).scoped();
+          this.listProviders.set(key, asFunction(service.useFactory).scoped());
+        } else {
+          this.listProviders.set(key, asValue(service.useValue));
         }
+      }
 
-        this.listProviders.set(key, value);
+      if (typeof service === 'object' && isClass(service.provider)) {
+        let useExample: boolean = false;
+        const key = service.provider.name;
+        if (service.useClass && isClass(service.useClass)) {
+          this.listProvidersClass.set(key, service.useClass);
+        } else {
+          useExample = true;
+          this.logger.important(
+            `You are trying to inject the ${key} provider`,
+            `but it is not possible to add it because using useFactory or useValue`,
+          );
+        }
+        if (useExample) {
+          this.logger.debug(
+            'Example ✅',
+            '{ provider: UserClassRepository, useClass: UserClassImplementation }',
+          );
+          this.logger.debug(
+            'Example ❌',
+            '{ provider: UserClassRepository, useClass: () => { return "text" }}',
+          );
+          this.logger.debug(
+            'Example ❌',
+            '{ provider: UserClassRepository, useFactory: () => { return "text" }}',
+          );
+          this.logger.debug(
+            'Example ❌',
+            '{ provider: UserClassRepository, useValue: "Text" }',
+          );
+        }
       }
     });
 
     this.logger.debug('Injector - list provider', this.listProviders);
+    this.logger.debug(
+      'Injector - list provider type class',
+      this.listProvidersClass,
+    );
   }
 
   /**

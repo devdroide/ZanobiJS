@@ -9,6 +9,8 @@ import {
   RepositoryImplements,
   Service1,
   ServiceUseCase,
+  ServiceUseFactory,
+  ServiceWithoutInjectable,
 } from './classDependenciesToInject';
 
 // ==================================================
@@ -84,3 +86,56 @@ export class Module3 {}
   exports: [],
 })
 export class Module4 {}
+
+@Module({
+  imports: [],
+  controllers: [Controller5],
+  services: [
+    ServiceUseFactory,
+    {
+      provider: 'NUMBER_FACTORY',
+      useFactory: () => {
+        return 45;
+      },
+    },
+  ],
+  exports: [],
+})
+export class ModuleFactory {}
+
+@Module({
+  imports: [],
+  controllers: [Controller5],
+  services: [
+    ServiceUseFactory,
+    {
+      provider: Service1,
+      useFactory: () => {
+        return 45;
+      },
+    },
+    {
+      provider: Service1,
+      useValue: 'SOME TEXT',
+    },
+    {
+      provider: 'MyService1',
+      useClass: Service1,
+    },
+  ],
+  exports: [],
+})
+export class ModuleProviderError {}
+
+@Module({
+  imports: [],
+  controllers: [Controller5],
+  services: [
+    {
+      provider: 'MyService1',
+      useClass: ServiceWithoutInjectable,
+    },
+  ],
+  exports: [],
+})
+export class ModuleProviderWithoutInjectable {}

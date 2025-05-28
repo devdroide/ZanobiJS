@@ -11,6 +11,7 @@ import { Injector } from './injector';
 import { Metadata } from '../metadata';
 import { InvalidModuleAnnotationException } from '../exceptions';
 import { TClass } from '../interfaces';
+import { InvalidProviderModuleException } from '../exceptions/invalidProvider.module.exception';
 
 /**
  * Módulo para gestionar la configuración y el registro de controladores, servicios y dependencias.
@@ -25,6 +26,7 @@ export class Module {
   private metadata: Metadata;
   private types: string[] = ['controller', 'service'];
   private listProviders: Map<string, any> = new Map();
+  private listProvidersClass: Map<string, any> = new Map();
 
   /**
    * Constructor del módulo.
@@ -45,7 +47,11 @@ export class Module {
         'Module - Setup - Create Injector to module:',
         module.name,
       );
-      this.injector = new Injector(module, this.listProviders);
+      this.injector = new Injector(
+        module,
+        this.listProviders,
+        this.listProvidersClass,
+      );
     } else {
       throw new InvalidModuleAnnotationException();
     }
@@ -59,6 +65,7 @@ export class Module {
     this.registerAllProviders();
     this.getMetadataModule();
     this.registerDependencies();
+    this.registerEntitiesFromProvider();
     this.registerDependenciesToAlias();
   }
 
@@ -86,10 +93,7 @@ export class Module {
    */
   private registerEntities(entityType: 'controllers' | 'services'): void {
     const entities = this.config[entityType];
-    this.logger.debug(
-      'Module - ..... searching for entities type ',
-      entityType,
-    );
+    this.logger.debug('Module - searching for entities type:', entityType);
 
     if (entities && entities.length > 0) {
       const registeredEntities = entities
@@ -108,41 +112,43 @@ export class Module {
             [targetName]: aliasTo(target.name),
           };
         });
-      const registerProviderWithEntities = entities
-        .filter((target) => {
-          return (
-            typeof target === 'object' &&
-            isClass(target.provider) &&
-            isClass(target.useClass)
-          );
-        })
-        .map((target) => {
-          this.logger.debug(
-            'Module - Entity provider',
-            `<<< ${target.provider.name} >>>`,
-            'change to',
-            `<<< ${target.useClass.name} >>>`,
-          );
-          this.groupDependenciesForAlias(target.useClass);
-          const targetName = unCapitalize(target.useClass.name);
-          const targetProviderName = unCapitalize(target.provider.name);
-          return {
-            [target.useClass.name]: this.injector.getInjectorClass(
-              target.useClass,
-            ),
-            [targetName]: aliasTo(target.useClass.name),
-            [target.provider.name]: aliasTo(target.useClass.name),
-            [targetProviderName]: aliasTo(target.useClass.name),
-          };
-        });
-
-      Object.assign(this.registerClass, ...registerProviderWithEntities);
       Object.assign(this.registerClass, ...registeredEntities);
     } else {
       this.logger.debug(
         'Module - Does not have entities of that type',
         entityType,
       );
+    }
+  }
+
+  /**
+   * Registra entidades que se escanearon en dentro de proveedores para se reemplazar otra clase.
+   * @private
+   */
+  private registerEntitiesFromProvider(): void {
+    this.logger.debug('Module - searching for entities from provider');
+    for (const [key, value] of this.listProvidersClass) {
+      this.logger.debug('Module - Entity provider', `<<< ${key} >>>`);
+      this.logger.debug('Module - Entity provider class', `<<< ${value} >>>`);
+      try {
+        this.types.includes(this.metadata.determineType(value));
+        this.groupDependenciesForAlias(value);
+        const targetName = unCapitalize(value.name);
+        const targetProviderName = unCapitalize(key);
+        const registerProviderWithEntities: any = {
+          [value.name]: this.injector.getInjectorClass(value),
+          [targetName]: aliasTo(value.name),
+          [key]: aliasTo(value.name),
+          [targetProviderName]: aliasTo(value.name),
+        };
+        Object.assign(this.registerClass, registerProviderWithEntities);
+      } catch (error) {
+        throw new InvalidProviderModuleException(
+          value.name,
+          this.module.name,
+          error.message,
+        );
+      }
     }
   }
 
@@ -161,7 +167,7 @@ export class Module {
   private groupDependenciesForAlias(target: TClass): void {
     const dependencies: any[] = this.metadata.getClassDependencies(target);
     this.logger.debug(
-      `Module - List dependecies to group by${target.name}`,
+      `Module - List dependecies to group by ${target.name}`,
       dependencies,
     );
     if (dependencies && !isEmpty(dependencies)) {

@@ -1,6 +1,10 @@
 import { expect } from 'chai';
 import { Injector } from '../../injector';
-import { Module1 } from './mocks/classModuleToInject';
+import {
+  Module1,
+  ModuleFactory,
+  ModuleProviderError,
+} from './mocks/classModuleToInject';
 import {
   Controller1,
   Controller2,
@@ -10,7 +14,8 @@ import {
 
 describe('Core - Injector - injector', () => {
   const listProvider = new Map();
-  const injector = new Injector(Module1, listProvider);
+  const listProviderClass = new Map();
+  const injector = new Injector(Module1, listProvider, listProviderClass);
 
   it('Should respond an object without paramters to inject', () => {
     const getInjectData = injector.getInjectData(Controller1);
@@ -41,5 +46,24 @@ describe('Core - Injector - injector', () => {
   it('Should respond an object type asClass without injector', () => {
     const allProvider = injector.getAllProvider();
     expect(allProvider.has('TEXT_INJECT')).to.be.equal(true);
+  });
+
+  it('Should respond an number type asFunction without injector', () => {
+    const injectorWithFactory = new Injector(
+      ModuleFactory,
+      listProvider,
+      listProviderClass,
+    );
+    const allProvider = injectorWithFactory.getAllProvider();
+    expect(allProvider.has('NUMBER_FACTORY')).to.be.equal(true);
+  });
+  it('Should respond only one supplier because the others are not valid.', () => {
+    const injectorWithFactory = new Injector(
+      ModuleProviderError,
+      listProvider,
+      listProviderClass,
+    );
+    const allProviderClass = injectorWithFactory['listProvidersClass'];
+    expect(allProviderClass.size).to.be.equal(1);
   });
 });

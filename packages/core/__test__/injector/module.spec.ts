@@ -5,6 +5,7 @@ import {
   Module1,
   Module2,
   Module3,
+  ModuleProviderWithoutInjectable,
   ModuleTestEmpty,
 } from './mocks/classModuleToInject';
 
@@ -81,6 +82,16 @@ describe('Core - Injector - module', () => {
       moduleInstance.initialize();
       expect(moduleInstance.getRegisterClass()).to.not.empty;
       expect(moduleInstance.getRegisterClass()).to.have.property('serv1');
+    });
+    it('Should respond with an error because a provider is poorly defined.', () => {
+      try {
+        moduleInstance.setup(ModuleProviderWithoutInjectable);
+        moduleInstance.initialize();
+      } catch (error) {
+        expect(error.message).to.equal(
+          'Please check that ServiceWithoutInjectable located in the @module ModuleProviderWithoutInjectable exists and is @Injectable().',
+        );
+      }
     });
   });
 });
