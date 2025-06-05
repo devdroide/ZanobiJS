@@ -30,7 +30,26 @@ export class Factory {
     this.evaluateOptions();
     this.logger = Logger();
     this.moduleHandler = new Module();
-    this.processModule(appModule);
+    this.scanProviderModule(appModule);
+    this.registerProviderScanedModules();
+    this.processClassModule(appModule);
+  }
+
+  private scanProviderModule(module: TClass): void {
+    this.logger.debug('Factory - Scan Module:', module.name);
+    this.moduleHandler.setup(module);
+    this.moduleHandler.scan();
+    this.logger.debug('===================================================');
+    const importedModules = this.moduleHandler.getImports();
+    if (importedModules && importedModules.length) {
+      importedModules.forEach((moduleImport) => {
+        this.scanProviderModule(moduleImport);
+      });
+    }
+  }
+
+  private registerProviderScanedModules() {
+    this.moduleHandler.registerAllProviders();
   }
 
   /**
@@ -38,23 +57,22 @@ export class Factory {
    * @param {TClass} module - Módulo desde el que se registrarán las clases.
    * @private
    */
-  private processModule(module: TClass): void {
-    this.logger.debug('Factory - Process - Create module setup:', module.name);
+  private processClassModule(module: TClass): void {
+    this.logger.debug('Factory - Process Class Module:', module.name);
     this.moduleHandler.setup(module);
-    this.logger.debug('Factory - Process - Module initialize:', module.name);
     this.moduleHandler.initialize();
     Object.assign(
       this.registeredClasses,
       this.moduleHandler.getRegisterClass(),
     );
     this.logger.success(
-      'Factory - Process - Completion of module ',
+      'Factory - Process Class Module - Completion!!!',
       module.name,
     );
     const importedModules = this.moduleHandler.getImports();
     if (importedModules && importedModules.length) {
       importedModules.forEach((moduleImport) => {
-        this.processModule(moduleImport);
+        this.processClassModule(moduleImport);
       });
     }
     this.logger.debug('===================================================');

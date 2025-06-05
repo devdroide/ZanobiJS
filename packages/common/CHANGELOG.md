@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.1.1-beta.0...v1.2.0-beta.0) (2025-05-28)
+
+### Features
+
+- **core:** ✨ new provider with useClass ([668d981](https://github.com/devdroide/ZanobiJS/commit/668d981890e2a43f615ae8f78f025e3c33db9707))
+
 ## [1.1.1-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.1.0...v1.1.1-beta.0) (2025-05-27)
 
 **Note:** Version bump only for package @zanobijs/common

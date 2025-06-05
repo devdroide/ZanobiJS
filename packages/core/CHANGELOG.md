@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.1.1-beta.0...v1.2.0-beta.0) (2025-05-28)
+
+### Features
+
+- **core,test:** Added the ability to use useClass and useFactory as providers ([bff63e2](https://github.com/devdroide/ZanobiJS/commit/bff63e2d73fa03ef72f38b3c7c6f5a51ad9ddf80))
+- **core,test:** Added type validation to prevent errors in providers with useClass ([6e64d3b](https://github.com/devdroide/ZanobiJS/commit/6e64d3b6a46965ad9affa697980b6862b1ae8be0))
+- **core:** ✨ new provider with useClass ([668d981](https://github.com/devdroide/ZanobiJS/commit/668d981890e2a43f615ae8f78f025e3c33db9707))
+
 ## [1.1.1-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.1.0...v1.1.1-beta.0) (2025-05-27)
 
 **Note:** Version bump only for package @zanobijs/core

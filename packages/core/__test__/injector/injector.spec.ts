@@ -16,6 +16,7 @@ describe('Core - Injector - injector', () => {
   const listProvider = new Map();
   const listProviderClass = new Map();
   const injector = new Injector(Module1, listProvider, listProviderClass);
+  injector.scanProviders();
 
   it('Should respond an object without paramters to inject', () => {
     const getInjectData = injector.getInjectData(Controller1);
@@ -54,6 +55,7 @@ describe('Core - Injector - injector', () => {
       listProvider,
       listProviderClass,
     );
+    injectorWithFactory.scanProviders();
     const allProvider = injectorWithFactory.getAllProvider();
     expect(allProvider.has('NUMBER_FACTORY')).to.be.equal(true);
   });
@@ -63,6 +65,7 @@ describe('Core - Injector - injector', () => {
       listProvider,
       listProviderClass,
     );
+    injectorWithFactory.scanProviders();
     const allProviderClass = injectorWithFactory['listProvidersClass'];
     expect(allProviderClass.size).to.be.equal(1);
   });
