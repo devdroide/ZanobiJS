@@ -36,7 +36,6 @@ export class Injector {
     this.module = module;
     this.listProviders = listProviders;
     this.listProvidersClass = listProvidersClass;
-    this.scanProviders();
   }
 
   /**
@@ -45,7 +44,7 @@ export class Injector {
    * lista de proveedores.
    * @private
    */
-  private scanProviders() {
+  scanProviders() {
     this.logger.debug('Injector - Scan provider to module:', this.moduleName);
     const { services } = this.metadata.getMetadataModule(this.module);
 

@@ -66,6 +66,7 @@ export class Module5 {}
   imports: [],
   controllers: [ControllerUser],
   services: [
+    RegisterUserUseCase,
     {
       provider: 'TEXT_INJECT',
       useValue: 'Hello world inject',
@@ -74,7 +75,6 @@ export class Module5 {}
       provider: AbsUserRepository,
       useClass: UserImplements,
     },
-    RegisterUserUseCase,
   ],
   exports: [],
 })
