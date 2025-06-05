@@ -48,7 +48,7 @@ export class Module {
         module.name,
       );
       this.injector = new Injector(
-        module,
+        this.module,
         this.listProviders,
         this.listProvidersClass,
       );
@@ -57,12 +57,16 @@ export class Module {
     }
   }
 
+  scan() {
+    this.injector.scanProviders();
+    this.getMetadataModule();
+  }
+
   /**
    * Inicializa el módulo extrayendo metadatos y registrando las entidades.
    */
   initialize(): void {
     this.logger.debug('Module - Initialize:', this.module.name);
-    this.registerAllProviders();
     this.getMetadataModule();
     this.registerDependencies();
     this.registerEntitiesFromProvider();
@@ -202,7 +206,7 @@ export class Module {
     });
   }
 
-  private registerAllProviders() {
+  registerAllProviders() {
     this.logger.debug('Module - Register list provider:', this.module.name);
     const listProviders = this.injector.getAllProvider();
     listProviders.forEach((value, key) => {
@@ -224,7 +228,7 @@ export class Module {
    */
   getRegisterClass(): any {
     this.logger.debug(
-      'Module - List of candidate classes to register in container.',
+      `Module ${this.module.name} - List of candidate classes to register in container.`,
       this.registerClass,
     );
     return this.registerClass;

@@ -37,7 +37,6 @@ describe('Core - Injector - module', () => {
   describe('Module initialize', () => {
     it('should respond that call getMetadataModule and register on Module', () => {
       let metadataCalled = false;
-      let registerAllProviders = false;
       let registerDependencies = false;
       let registerDependenciesToAlias = false;
 
@@ -46,9 +45,6 @@ describe('Core - Injector - module', () => {
 
       moduleInstance['getMetadataModule'] = () => {
         metadataCalled = true;
-      };
-      moduleInstance['registerAllProviders'] = () => {
-        registerAllProviders = true;
       };
       moduleInstance['registerDependencies'] = () => {
         registerDependencies = true;
@@ -60,7 +56,7 @@ describe('Core - Injector - module', () => {
       moduleInstance.initialize();
 
       expect(metadataCalled).to.be.true;
-      expect(registerAllProviders).to.be.true;
+      // expect(registerAllProviders).to.be.true;
       expect(registerDependencies).to.be.true;
       expect(registerDependenciesToAlias).to.be.true;
     });
