@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0-beta.1](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.0...v1.2.0-beta.1) (2025-06-05)
+
+### Bug Fixes
+
+- **core,test:** Change in provider scanning and dependency search ([cd0858b](https://github.com/devdroide/ZanobiJS/commit/cd0858b1437c4470003f574baa34bc7a4f3db817))
+
 # [1.2.0-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.1.1-beta.0...v1.2.0-beta.0) (2025-05-28)
 
 ### Features
