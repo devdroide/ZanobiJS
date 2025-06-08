@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0-beta.2](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-06-08)
+
+### Bug Fixes
+
+- **core,test:** The injection of provider asValue and asFunction that is done in entities was corrected ([83ae3c1](https://github.com/devdroide/ZanobiJS/commit/83ae3c164b28cdc9747c524b8595a1b86257a957))
+
 # [1.2.0-beta.1](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.0...v1.2.0-beta.1) (2025-06-05)
 
 ### Bug Fixes
