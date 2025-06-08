@@ -114,8 +114,8 @@ export class Injector {
       for (const key of dInject.keys()) {
         if (this.listProviders.has(key)) {
           const paramName = dInject.get(key);
-          const provider = this.listProviders.get(key);
-          injectData[paramName] = provider;
+          const providerValue = this.listProviders.get(key);
+          injectData[paramName] = providerValue.resolve();
         } else {
           this.logger.important(
             `You are trying to inject @INJECT('${key}') into '${target.name}'`,
