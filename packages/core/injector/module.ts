@@ -14,14 +14,15 @@ import { TClass } from '../interfaces';
 import { InvalidProviderModuleException } from '../exceptions/invalidProvider.module.exception';
 
 /**
- * Módulo para gestionar la configuración y el registro de controladores, servicios y dependencias.
+ * Módulo para gestionar la configuración y el registro de
+ * controladores, servicios, proveedores y dependencias.
  */
 export class Module {
   private config: IModuleConfig;
   private module: any;
   private logger: ILoggerService;
   private injector: Injector;
-  private registerClass = {};
+  private registerClass: any = {};
   private dependenciesClass: any[] = [];
   private metadata: Metadata;
   private types: string[] = ['controller', 'service'];
@@ -57,18 +58,27 @@ export class Module {
     }
   }
 
+  /** Metodo de exposicion para escarnear proveedores y obtener
+   * la metadata del modulo que esta confirgurado(Setup) en ese momento
+   * @public
+   */
   scan() {
     this.injector.scanProviders();
     this.getMetadataModule();
   }
 
   /**
-   * Inicializa el módulo extrayendo metadatos y registrando las entidades.
+   * Este metodo incializa una serie de pasos dentro de los cuales son:
+   * obtener la metada del modulo configurado actualmente, busca y registra
+   * las dependencias de las entidades (controladores y servicios), registra
+   * las dependencias de los proveedores que son tipo entidad (clase abst a clase)
+   * y registra las dependecias con alias cuando sus nombres no son iguales
+   * @public
    */
   initialize(): void {
     this.logger.debug('Module - Initialize:', this.module.name);
     this.getMetadataModule();
-    this.registerDependencies();
+    this.registerDependenciesFromEntity();
     this.registerEntitiesFromProvider();
     this.registerDependenciesToAlias();
   }
@@ -85,13 +95,15 @@ export class Module {
    * Registra las entidades de configuración en el módulo.
    * @private
    */
-  private registerDependencies(): void {
+  private registerDependenciesFromEntity(): void {
     this.registerEntities('controllers');
     this.registerEntities('services');
   }
 
   /**
-   * Registra entidades de configuración (controladores o servicios) del módulo.
+   * se encarga de filtrar los metadatos del modulo buscando si es controlador o servicio
+   * para luego buscar en los metadatos el nombre de la dependecia y de quien depende
+   * para se agrupado y agregarlos a la lista de clases a registrar en el contenedor.
    * @param {('controllers' | 'services')} entityType - Tipo de entidad a registrar.
    * @private
    */
@@ -126,7 +138,11 @@ export class Module {
   }
 
   /**
-   * Registra entidades que se escanearon en dentro de proveedores para se reemplazar otra clase.
+   * Se encarga de recorrer la lista de proveedores que son tipo clase para
+   * luego buscar en los metadatos el nombre de la dependecia y de quien depende
+   * para se agrupado y agregarlos a la lista de clases a registrar en el contenedor.
+   * toma el proveedor que es nombre la clase o un token (nombre de pendencia)
+   * que va ser sustituida por la clase de useClass
    * @private
    */
   private registerEntitiesFromProvider(): void {
@@ -206,7 +222,11 @@ export class Module {
     });
   }
 
-  registerAllProviders() {
+  /**
+   * Toma el listado proveedores y los une al listado de clases que van
+   * a registrar en el contenedor (asValue y asFunction) para ser resueltos
+   */
+  registerAllProviders(): void {
     this.logger.debug('Module - Register list provider:', this.module.name);
     const listProviders = this.injector.getAllProvider();
     listProviders.forEach((value, key) => {

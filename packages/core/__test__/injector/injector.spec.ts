@@ -13,11 +13,19 @@ import {
 } from './mocks/classDependenciesToInject';
 
 describe('Core - Injector - injector', () => {
-  const listProvider = new Map();
-  const listProviderClass = new Map();
-  const injector = new Injector(Module1, listProvider, listProviderClass);
-  injector.scanProviders();
-
+  let listProvider;
+  let listProviderClass;
+  let injector: Injector;
+  beforeEach(() => {
+    listProvider = new Map();
+    listProviderClass = new Map();
+    injector = null;
+    injector = new Injector(Module1, listProvider, listProviderClass);
+    injector.scanProviders();
+  });
+  after(() => {
+    injector = null;
+  });
   it('Should respond an object without paramters to inject', () => {
     const getInjectData = injector.getInjectData(Controller1);
     expect(getInjectData).to.is.empty;
