@@ -38,6 +38,27 @@ export class Service3 {
   }
 }
 
+@Injectable()
+export abstract class AbsUserRepository {
+  abstract create(): string;
+}
+
+@Injectable()
+export class UserImplements implements AbsUserRepository {
+  create() {
+    return 'Created';
+  }
+}
+
+@Injectable()
+export class RegisterUserUseCase {
+  constructor(private repositoryImp: AbsUserRepository) {}
+
+  execute() {
+    return this.repositoryImp.create();
+  }
+}
+
 // ==================================================
 // =========== Controller to Inject =================
 // ==================================================
@@ -110,5 +131,17 @@ export class Controller7 {
 
   geData() {
     return this.serv2.getDataService();
+  }
+}
+
+@Controller()
+export class ControllerUser {
+  constructor(
+    private regUserUseCase: RegisterUserUseCase,
+    @Inject('TEXT_INJECT') private someInj: string,
+  ) {}
+
+  register() {
+    return this.regUserUseCase.execute();
   }
 }

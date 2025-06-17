@@ -1,8 +1,12 @@
 import { Module } from '@zanobijs/common';
 import {
+  AbsUserRepository,
   Controller1,
   Controller6,
   Controller7,
+  ControllerUser,
+  RegisterUserUseCase,
+  UserImplements,
 } from './classDependencies.mock';
 
 @Module({
@@ -57,3 +61,21 @@ export class Module4 {}
   exports: [],
 })
 export class Module5 {}
+
+@Module({
+  imports: [],
+  controllers: [ControllerUser],
+  services: [
+    RegisterUserUseCase,
+    {
+      provider: 'TEXT_INJECT',
+      useValue: 'Hello world inject',
+    },
+    {
+      provider: AbsUserRepository,
+      useClass: UserImplements,
+    },
+  ],
+  exports: [],
+})
+export class ModuleRepository {}

@@ -1,7 +1,7 @@
 import { ILoggerService } from '@zanobijs/common';
 import { Metadata } from '../metadata';
 import { Logger } from '@zanobijs/common/utils';
-import { isEmpty } from '@zanobijs/common/utils/shared.utils';
+import { isClass, isEmpty } from '@zanobijs/common/utils/shared.utils';
 import { asClass, asFunction, asValue } from 'awilix';
 import { TClass } from '../interfaces';
 
@@ -13,7 +13,8 @@ export type Constructor<T> = { new (...args: any[]): T };
  */
 export class Injector {
   private module: TClass;
-  private listProviders: Map<string, any>;
+  private readonly listProviders: Map<string, any>;
+  private readonly listProvidersClass: Map<string, any>;
   private metadata: Metadata;
   private logger: ILoggerService;
   private moduleName: string = '';
@@ -24,13 +25,17 @@ export class Injector {
    * @param {Module} module - El módulo debe tener el decorador `@Module`
    * para poderlo procesar.
    */
-  constructor(module: TClass, listProviders: Map<string, any>) {
+  constructor(
+    module: TClass,
+    listProviders: Map<string, any>,
+    listProvidersClass: Map<string, any>,
+  ) {
     this.metadata = Metadata.getInstance();
     this.logger = Logger();
     this.moduleName = module.name;
     this.module = module;
     this.listProviders = listProviders;
-    this.scanProviders();
+    this.listProvidersClass = listProvidersClass;
   }
 
   /**
@@ -39,19 +44,65 @@ export class Injector {
    * lista de proveedores.
    * @private
    */
-  private scanProviders() {
+  scanProviders() {
     this.logger.debug('Injector - Scan provider to module:', this.moduleName);
     const { services } = this.metadata.getMetadataModule(this.module);
+
     services.forEach((service) => {
-      if (typeof service === 'object')
-        this.listProviders.set(service.provider, service.useValue);
+      if (typeof service === 'object' && typeof service.provider === 'string') {
+        const key = service.provider;
+        if (service.useClass) {
+          this.listProvidersClass.set(key, service.useClass);
+        } else if (service.useFactory) {
+          this.listProviders.set(key, asFunction(service.useFactory).scoped());
+        } else {
+          this.listProviders.set(key, asValue(service.useValue));
+        }
+      }
+
+      if (typeof service === 'object' && isClass(service.provider)) {
+        let useExample: boolean = false;
+        const key = service.provider.name;
+        if (service.useClass && isClass(service.useClass)) {
+          this.listProvidersClass.set(key, service.useClass);
+        } else {
+          useExample = true;
+          this.logger.important(
+            `You are trying to inject the ${key} provider`,
+            `but it is not possible to add it because using useFactory or useValue`,
+          );
+        }
+        if (useExample) {
+          this.logger.debug(
+            'Example ✅',
+            '{ provider: UserClassRepository, useClass: UserClassImplementation }',
+          );
+          this.logger.debug(
+            'Example ❌',
+            '{ provider: UserClassRepository, useClass: () => { return "text" }}',
+          );
+          this.logger.debug(
+            'Example ❌',
+            '{ provider: UserClassRepository, useFactory: () => { return "text" }}',
+          );
+          this.logger.debug(
+            'Example ❌',
+            '{ provider: UserClassRepository, useValue: "Text" }',
+          );
+        }
+      }
     });
+
     this.logger.debug('Injector - list provider', this.listProviders);
+    this.logger.debug(
+      'Injector - list provider type class',
+      this.listProvidersClass,
+    );
   }
 
   /**
-   * Método para obtener un objeto con los parámetros(key) y valores(useValue)
-   * que se inyectarán en la clase (target) mediante asClass().inject().
+   * Método para obtener un objeto con los parámetros(key) y valores(useValue, useClass, useFactory)
+   * que se inyectarán en la clase (target).
    *
    * @param { TClass} target - La clase objetivo.
    * @returns {object} - Objeto con datos a inyectar.
@@ -63,8 +114,8 @@ export class Injector {
       for (const key of dInject.keys()) {
         if (this.listProviders.has(key)) {
           const paramName = dInject.get(key);
-          const useValue = this.listProviders.get(key);
-          injectData[paramName] = useValue;
+          const providerValue = this.listProviders.get(key);
+          injectData[paramName] = providerValue.resolve();
         } else {
           this.logger.important(
             `You are trying to inject @INJECT('${key}') into '${target.name}'`,
@@ -86,7 +137,7 @@ export class Injector {
    * @param {any} target - La clase objetivo.
    * @returns - El injector configurado.
    */
-  getInjectorClass(target) {
+  getInjectorClass(target: TClass) {
     const injectData = this.getInjectData(target);
     let injector = asClass(target).scoped();
     if (!isEmpty(injectData)) {
@@ -94,7 +145,7 @@ export class Injector {
         `Inject - list dependencies to inject of ${target.name}:`,
         injectData,
       );
-      injector = injector.inject(this.funtionInjectData(injectData));
+      injector = injector.inject(() => injectData);
     }
 
     return {
@@ -105,15 +156,5 @@ export class Injector {
 
   getAllProvider() {
     return this.listProviders;
-  }
-
-  getInjectProvider(provider) {
-    return typeof provider.value === 'function'
-      ? asFunction(provider.value).scoped()
-      : asValue(provider.value);
-  }
-
-  funtionInjectData(injectData) {
-    return () => injectData;
   }
 }

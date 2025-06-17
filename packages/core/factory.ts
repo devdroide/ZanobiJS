@@ -30,38 +30,69 @@ export class Factory {
     this.evaluateOptions();
     this.logger = Logger();
     this.moduleHandler = new Module();
-    this.processModule(appModule);
+    this.scanProviderModule(appModule);
+    this.registerProviderScanedModules();
+    this.processClassModule(appModule);
+  }
+  /**
+   * Se encarga de escaenear modulo por modulo los proveedores con el fin de luego
+   * poder ser registrados e inyectados en quien depende de ese proveedor
+   * @param {TClass} module - Módulo desde el que se escanearan los proveedores.
+   * @private
+   */
+  private scanProviderModule(module: TClass): void {
+    this.logger.debug('Factory - Scan Module:', module.name);
+    this.moduleHandler.setup(module);
+    this.moduleHandler.scan();
+    this.logger.debug('===================================================');
+    const importedModules = this.moduleHandler.getImports();
+    if (importedModules && importedModules.length) {
+      importedModules.forEach((moduleImport) => {
+        this.scanProviderModule(moduleImport);
+      });
+    }
   }
 
   /**
-   * Registra clases desde un módulo específico.
+   * Se encarga tomar la lista de proveedores y registralos para luego se resueltos
+   * cuando el usuario lo solicite
+   * @private
+   */
+  private registerProviderScanedModules() {
+    this.moduleHandler.registerAllProviders();
+  }
+
+  /**
+   * Procesa modulo por modulos registrando los controladores, servicios y proveedores,
+   * estos se le irá inyectando sus dependecias resueltas para ser usados por el usuario
    * @param {TClass} module - Módulo desde el que se registrarán las clases.
    * @private
    */
-  private processModule(module: TClass): void {
-    this.logger.debug('Factory - Process - Create module setup:', module.name);
+  private processClassModule(module: TClass): void {
+    this.logger.debug('Factory - Process Class Module:', module.name);
     this.moduleHandler.setup(module);
-    this.logger.debug('Factory - Process - Module initialize:', module.name);
     this.moduleHandler.initialize();
     Object.assign(
       this.registeredClasses,
       this.moduleHandler.getRegisterClass(),
     );
     this.logger.success(
-      'Factory - Process - Completion of module ',
+      'Factory - Process Class Module - Completion!!!',
       module.name,
     );
     const importedModules = this.moduleHandler.getImports();
     if (importedModules && importedModules.length) {
       importedModules.forEach((moduleImport) => {
-        this.processModule(moduleImport);
+        this.processClassModule(moduleImport);
       });
     }
     this.logger.debug('===================================================');
   }
 
   /**
-   * Crea el contenedor de inyección de dependencias y registra las clases.
+   * Crea el contenedor de inyección de dependencias y registra el listado de
+   * controladores, servicio y proveedores que se ha venido creando a parti de escaneos
+   * y registros de clases.
    * @returns {Factory} - Instancia actual de la fábrica.
    */
   create(): Factory {
@@ -98,7 +129,10 @@ export class Factory {
     }
   }
 
-  private evaluateOptions() {
+  /**
+   * Se encarga de evaluar las opciones para ver si o no aplica y realizar lo correspondiente
+   */
+  private evaluateOptions(): void {
     if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = 'true';
     if (this.options.activeLoggerUser)
       process.env.ZANOBIJS_LOGGER_USER = 'true';

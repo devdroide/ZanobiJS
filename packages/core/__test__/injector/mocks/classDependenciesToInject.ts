@@ -1,5 +1,13 @@
 import { Controller, Inject, Injectable } from '@zanobijs/common';
 
+export class ServiceWithoutInjectable {
+  constructor(@Inject('TEXT_INJECT') private textInj: string) {}
+
+  getDataService() {
+    return this.textInj;
+  }
+}
+
 // ==================================================
 // ============= Service to Inject ==================
 // ==================================================
@@ -26,6 +34,36 @@ export class Service2 {
 
   getDataServiceDepencies() {
     return this.s1.getDataService();
+  }
+}
+
+@Injectable()
+export abstract class ABSServiceRepository {
+  abstract getDataService(): string;
+}
+
+@Injectable()
+export class RepositoryImplements implements ABSServiceRepository {
+  getDataService() {
+    return 'Hello from repository implementation';
+  }
+}
+
+@Injectable()
+export class ServiceUseCase {
+  constructor(private repositoryImp: ABSServiceRepository) {}
+
+  getDataImp() {
+    return this.repositoryImp.getDataService();
+  }
+}
+
+@Injectable()
+export class ServiceUseFactory {
+  constructor(@Inject('NUMBER_FACTORY') private numFact: number) {}
+
+  getNumber() {
+    return this.numFact;
   }
 }
 
