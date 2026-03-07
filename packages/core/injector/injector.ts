@@ -1,4 +1,4 @@
-import { ILoggerService } from '@zanobijs/common';
+import { ILoggerService, ZanobiModule } from '@zanobijs/common';
 import { Metadata } from '../metadata';
 import { Logger } from '@zanobijs/common/utils';
 import { isClass, isEmpty } from '@zanobijs/common/utils/shared.utils';
@@ -12,7 +12,7 @@ export type Constructor<T> = { new (...args: any[]): T };
  * solo para parametros tipo objecto { provider, useValue }
  */
 export class Injector {
-  private module: TClass;
+  private module: ZanobiModule;
   private readonly listProviders: Map<string, any>;
   private readonly listProvidersClass: Map<string, any>;
   private metadata: Metadata;
@@ -26,13 +26,14 @@ export class Injector {
    * para poderlo procesar.
    */
   constructor(
-    module: TClass,
+    module: ZanobiModule,
     listProviders: Map<string, any>,
     listProvidersClass: Map<string, any>,
   ) {
     this.metadata = Metadata.getInstance();
     this.logger = Logger();
-    this.moduleName = module.name;
+    this.moduleName =
+      typeof module === 'function' ? module.name : module.module.name;
     this.module = module;
     this.listProviders = listProviders;
     this.listProvidersClass = listProvidersClass;
@@ -58,9 +59,7 @@ export class Injector {
         } else {
           this.listProviders.set(key, asValue(service.useValue));
         }
-      }
-
-      if (typeof service === 'object' && isClass(service.provider)) {
+      } else if (typeof service === 'object' && isClass(service.provider)) {
         let useExample: boolean = false;
         const key = service.provider.name;
         if (service.useClass && isClass(service.useClass)) {
@@ -72,24 +71,12 @@ export class Injector {
             `but it is not possible to add it because using useFactory or useValue`,
           );
         }
-        if (useExample) {
-          this.logger.debug(
-            'Example ✅',
-            '{ provider: UserClassRepository, useClass: UserClassImplementation }',
-          );
-          this.logger.debug(
-            'Example ❌',
-            '{ provider: UserClassRepository, useClass: () => { return "text" }}',
-          );
-          this.logger.debug(
-            'Example ❌',
-            '{ provider: UserClassRepository, useFactory: () => { return "text" }}',
-          );
-          this.logger.debug(
-            'Example ❌',
-            '{ provider: UserClassRepository, useValue: "Text" }',
-          );
-        }
+        if (useExample) this.logExampleValidProviderClassClass();
+      } else {
+        this.logger.important(
+          `Module [${this.moduleName}]: One of the providers is not a valid`,
+          `Check your @Module or DynamicModule definition.`,
+        );
       }
     });
 
@@ -100,6 +87,24 @@ export class Injector {
     );
   }
 
+  private logExampleValidProviderClassClass() {
+    this.logger.debug(
+      'Example ✅',
+      '{ provider: UserClassRepository, useClass: UserClassImplementation }',
+    );
+    this.logger.debug(
+      'Example ❌',
+      '{ provider: UserClassRepository, useClass: () => { return "text" }}',
+    );
+    this.logger.debug(
+      'Example ❌',
+      '{ provider: UserClassRepository, useFactory: () => { return "text" }}',
+    );
+    this.logger.debug(
+      'Example ❌',
+      '{ provider: UserClassRepository, useValue: "Text" }',
+    );
+  }
   /**
    * Método para obtener un objeto con los parámetros(key) y valores(useValue, useClass, useFactory)
    * que se inyectarán en la clase (target).

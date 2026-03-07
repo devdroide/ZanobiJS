@@ -1,4 +1,4 @@
-import { IModuleConfig } from '@zanobijs/common';
+import { IModuleConfig, ZanobiModule } from '@zanobijs/common';
 import {
   DEPENDENCIES_CLASS,
   DEPENDENCIES_INJECT,
@@ -49,12 +49,28 @@ export class Metadata {
    * @returns Un objeto con los metadatos del módulo
    * {imports, controllers ,services, exports }.
    */
-  getMetadataModule(module: TClass): IModuleConfig {
+  getMetadataModule(module: ZanobiModule): IModuleConfig {
+    if (typeof module === 'function') {
+      return {
+        imports: Reflect.getMetadata(MODULE_IMPORTS, module) || [],
+        controllers: Reflect.getMetadata(MODULE_CONTROLLERS, module) || [],
+        services: Reflect.getMetadata(MODULE_SERVICES, module) || [],
+        exports: Reflect.getMetadata(MODULE_EXPORTS, module) || [],
+      };
+    }
+    // Si es un módulo dinámico (objeto)
+    const staticMetadata = this.getMetadataModule(module.module);
     return {
-      imports: Reflect.getMetadata(MODULE_IMPORTS, module),
-      controllers: Reflect.getMetadata(MODULE_CONTROLLERS, module),
-      services: Reflect.getMetadata(MODULE_SERVICES, module),
-      exports: Reflect.getMetadata(MODULE_EXPORTS, module),
+      imports: [...(staticMetadata.imports || []), ...(module.imports || [])],
+      controllers: [
+        ...(staticMetadata.controllers || []),
+        ...(module.controllers || []),
+      ],
+      services: [
+        ...(staticMetadata.services || []),
+        ...(module.services || []),
+      ],
+      exports: [...(staticMetadata.exports || []), ...(module.exports || [])],
     };
   }
 
@@ -125,19 +141,27 @@ export class Metadata {
    * @param { TClass } target - La función/clase objetivo.
    * @returns Verdadero si el target tiene el metadato, falso en caso contrario.
    */
-  private hasMetadata(metadataKey: string, target: TClass): boolean {
+  private hasMetadata(metadataKey: string, target: ZanobiModule): boolean {
     return !!Reflect.getMetadata(metadataKey, target);
   }
   /**
    * Verifica si una clase es de tipo "module".
    *
-   * @param { TClass } target - La función/clase objetivo.
+   * @param { ZanobiModule } target - La función/clase objetivo.
    * @returns Verdadero si el target es de tipo "module", falso en caso contrario.
    */
-  isTypeModule(target: TClass): boolean {
-    return this.hasMetadata(IS_MODULE, target);
-  }
+  isTypeModule(target: ZanobiModule): boolean {
+    if (!target) return false;
 
+    const targetClass =
+      typeof target === 'function' ? target : (target as any).module;
+
+    if (!targetClass || typeof targetClass !== 'function') {
+      return false;
+    }
+
+    return this.hasMetadata(IS_MODULE, targetClass);
+  }
   /**
    * Verifica si una clase es de tipo "import".
    *

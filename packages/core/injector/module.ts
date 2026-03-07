@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { aliasTo } from 'awilix';
-import { IModuleConfig, ILoggerService } from '@zanobijs/common';
+import { IModuleConfig, ILoggerService, ZanobiModule } from '@zanobijs/common';
 import {
   unCapitalize,
   isEmpty,
@@ -19,7 +19,6 @@ import { InvalidProviderModuleException } from '../exceptions/invalidProvider.mo
  */
 export class Module {
   private config: IModuleConfig;
-  private module: any;
   private logger: ILoggerService;
   private injector: Injector;
   private registerClass: any = {};
@@ -28,6 +27,8 @@ export class Module {
   private types: string[] = ['controller', 'service'];
   private readonly listProviders: Map<string, any> = new Map();
   private readonly listProvidersClass: Map<string, any> = new Map();
+  private currentModule: ZanobiModule;
+  private moduleClass: TClass; // Para nombres y logs
 
   /**
    * Constructor del módulo.
@@ -43,13 +44,11 @@ export class Module {
    */
   setup(module: any): void {
     if (this.metadata.isTypeModule(module)) {
-      this.module = module;
-      this.logger.debug(
-        'Module - Setup - Create Injector to module:',
-        module.name,
-      );
+      this.currentModule = module;
+      this.moduleClass = typeof module === 'function' ? module : module.module;
+      this.logger.debug('Module - Setup:', this.moduleClass.name);
       this.injector = new Injector(
-        this.module,
+        this.currentModule,
         this.listProviders,
         this.listProvidersClass,
       );
@@ -76,7 +75,7 @@ export class Module {
    * @public
    */
   initialize(): void {
-    this.logger.debug('Module - Initialize:', this.module.name);
+    this.logger.debug('Module - Initialize:', this.moduleClass.name);
     this.getMetadataModule();
     this.registerDependenciesFromEntity();
     this.registerEntitiesFromProvider();
@@ -88,7 +87,7 @@ export class Module {
    * @private
    */
   private getMetadataModule(): void {
-    this.config = this.metadata.getMetadataModule(this.module);
+    this.config = this.metadata.getMetadataModule(this.currentModule);
   }
 
   /**
@@ -169,7 +168,7 @@ export class Module {
       } catch (error) {
         throw new InvalidProviderModuleException(
           value.name,
-          this.module.name,
+          this.moduleClass.name,
           error.message,
         );
       }
@@ -227,7 +226,10 @@ export class Module {
    * a registrar en el contenedor (asValue y asFunction) para ser resueltos
    */
   registerAllProviders(): void {
-    this.logger.debug('Module - Register list provider:', this.module.name);
+    this.logger.debug(
+      'Module - Register list provider:',
+      this.moduleClass.name,
+    );
     const listProviders = this.injector.getAllProvider();
     listProviders.forEach((value, key) => {
       this.registerClass[key] = value;
@@ -236,9 +238,9 @@ export class Module {
 
   /**
    * Devuelve las importaciones del módulo.
-   * @returns {TClass[] | undefined} - Importaciones del módulo.
+   * @returns {any[] | undefined} - Importaciones del módulo.
    */
-  getImports(): TClass[] | undefined {
+  getImports(): any[] | undefined {
     return this.config.imports;
   }
 
@@ -248,7 +250,7 @@ export class Module {
    */
   getRegisterClass(): any {
     this.logger.debug(
-      `Module ${this.module.name} - List of candidate classes to register in container.`,
+      `Module ${this.moduleClass.name} - List of candidate classes to register in container.`,
       this.registerClass,
     );
     return this.registerClass;

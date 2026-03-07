@@ -1,107 +1,84 @@
 import 'reflect-metadata';
-import { AwilixContainer, InjectionMode, createContainer } from 'awilix';
-import { Module } from './injector/module';
-import {
-  ContainerResolutionEntityException,
-  ContainerResolutionException,
-} from './exceptions/resolution.exception';
 import { ILoggerService } from '@zanobijs/common';
 import { Logger } from '@zanobijs/common/utils';
-import { IFactoryOptions } from './interfaces';
-import { TClass } from './interfaces/globals.interface';
+import { AwilixAdapter } from './adapters/awilix.adapter';
+import { Module } from './injector/module';
+import { IContainerAdapter, IFactoryOptions, TClass } from './interfaces';
 
 /**
- * Factory es una clase que facilita la creación y configuración de
- * contenedores de inyección de dependencias utilizando metadatos y
- * la librería `awilix` para registrar y resolver entidades como:
- * controladores y servicios.
+ * Factory es una clase que facilita la creación y configuración del
+ * contenedor de inyección de dependencias utilizando metadatos y
+ * la librería `awilix`
  */
 export class Factory {
   private moduleHandler: Module;
-  private registeredClasses = {};
-  private container: AwilixContainer<any>;
+  private container: IContainerAdapter;
   private logger: ILoggerService;
   private options: IFactoryOptions;
+  private allRegisteredClasses = {};
 
   constructor(appModule: TClass, options: IFactoryOptions = {}) {
-    process.env.ZANOBIJS_LOGGER = 'false';
-    process.env.ZANOBIJS_LOGGER_USER = 'false';
     this.options = options;
-    this.evaluateOptions();
+    this.setupEnvironment();
     this.logger = Logger();
     this.moduleHandler = new Module();
-    this.scanProviderModule(appModule);
-    this.registerProviderScanedModules();
-    this.processClassModule(appModule);
-  }
-  /**
-   * Se encarga de escaenear modulo por modulo los proveedores con el fin de luego
-   * poder ser registrados e inyectados en quien depende de ese proveedor
-   * @param {TClass} module - Módulo desde el que se escanearan los proveedores.
-   * @private
-   */
-  private scanProviderModule(module: TClass): void {
-    this.logger.debug('Factory - Scan Module:', module.name);
-    this.moduleHandler.setup(module);
-    this.moduleHandler.scan();
-    this.logger.debug('===================================================');
-    const importedModules = this.moduleHandler.getImports();
-    if (importedModules && importedModules.length) {
-      importedModules.forEach((moduleImport) => {
-        this.scanProviderModule(moduleImport);
-      });
-    }
+    this.container = new AwilixAdapter();
+    this.bootstrap(appModule);
   }
 
   /**
-   * Se encarga tomar la lista de proveedores y registralos para luego se resueltos
-   * cuando el usuario lo solicite
-   * @private
+   * Se encarga de configurar las variables de entorno necesarias para el
+   * del log de la aplicacion
    */
-  private registerProviderScanedModules() {
-    this.moduleHandler.registerAllProviders();
+  private setupEnvironment(): void {
+    process.env.ZANOBIJS_LOGGER = this.options.activeLoggerSystem
+      ? 'true'
+      : 'false';
+    process.env.ZANOBIJS_LOGGER_USER = this.options.activeLoggerUser
+      ? 'true'
+      : 'false';
   }
 
   /**
-   * Procesa modulo por modulos registrando los controladores, servicios y proveedores,
+   * Procesa los modulos registrandos los controladores, servicios y proveedores,
    * estos se le irá inyectando sus dependecias resueltas para ser usados por el usuario
    * @param {TClass} module - Módulo desde el que se registrarán las clases.
    * @private
    */
-  private processClassModule(module: TClass): void {
-    this.logger.debug('Factory - Process Class Module:', module.name);
+  private bootstrap(module: TClass): void {
+    this.logger.debug('Factory - Bootstrapping Module:', module.name);
+
+    // 1. Configurar y Escanear (Metadata + Providers)
     this.moduleHandler.setup(module);
+    this.moduleHandler.scan();
+
+    // 2. Inicializar (Dependencies + Alias)
     this.moduleHandler.initialize();
+
+    // 3. Registrar Proveedores del modulo actual
+    this.moduleHandler.registerAllProviders();
+
+    // 4. Acumular clases candidatas
     Object.assign(
-      this.registeredClasses,
+      this.allRegisteredClasses,
       this.moduleHandler.getRegisterClass(),
     );
-    this.logger.success(
-      'Factory - Process Class Module - Completion!!!',
-      module.name,
-    );
-    const importedModules = this.moduleHandler.getImports();
-    if (importedModules && importedModules.length) {
-      importedModules.forEach((moduleImport) => {
-        this.processClassModule(moduleImport);
-      });
+
+    // 5. Recursión sobre importaciones
+    const imports = this.moduleHandler.getImports();
+    if (imports?.length) {
+      imports.forEach((m) => this.bootstrap(m));
     }
-    this.logger.debug('===================================================');
   }
 
   /**
-   * Crea el contenedor de inyección de dependencias y registra el listado de
-   * controladores, servicio y proveedores que se ha venido creando a parti de escaneos
-   * y registros de clases.
+   * Registra el listado de controladores, servicio y proveedores
+   * que se ha venido creando a parti de escaneos y registros de clases.
    * @returns {Factory} - Instancia actual de la fábrica.
    */
   create(): Factory {
-    this.container = createContainer({ injectionMode: InjectionMode.CLASSIC });
-    this.container.register(this.registeredClasses);
-    this.logger.info(
-      'Factory - classes and providers registered in the container',
-      Object.keys(this.registeredClasses),
-    );
+    this.logger.info('Factory - Finalizing container registration...');
+    this.container.register(this.allRegisteredClasses);
     return this;
   }
 
@@ -112,29 +89,6 @@ export class Factory {
    * @returns {T} - Instancia resuelta.
    */
   get<T>(className: string): T {
-    try {
-      return this.container.resolve(className);
-    } catch (error) {
-      this.logger.info('Error resolving entity: ', error.message + '\n');
-      const resolutionError = error.message.split('\n');
-      const classNameFound = resolutionError[0].match(/'([^']+)'/);
-      if (classNameFound[1] === className) {
-        throw new ContainerResolutionEntityException(className, error.message);
-      }
-      throw new ContainerResolutionException(
-        className,
-        resolutionError[0],
-        error.message,
-      );
-    }
-  }
-
-  /**
-   * Se encarga de evaluar las opciones para ver si o no aplica y realizar lo correspondiente
-   */
-  private evaluateOptions(): void {
-    if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = 'true';
-    if (this.options.activeLoggerUser)
-      process.env.ZANOBIJS_LOGGER_USER = 'true';
+    return this.container.resolve<T>(className);
   }
 }

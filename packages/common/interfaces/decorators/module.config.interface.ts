@@ -12,3 +12,10 @@ export interface IModuleConfig {
   services?: any[];
   exports?: any[];
 }
+
+type TClass<T = any> = { new (...args: any[]): T };
+export interface IDynamicModule extends IModuleConfig {
+  module: TClass;
+}
+
+export type ZanobiModule = TClass | IDynamicModule;
