@@ -1,18 +1,18 @@
-import { expect } from 'chai';
-import { Injector } from '../../injector';
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { Injector } from "../../injector";
 import {
   Module1,
   ModuleFactory,
   ModuleProviderError,
-} from './mocks/classModuleToInject';
+} from "./mocks/classModuleToInject";
 import {
   Controller1,
   Controller2,
   Controller3,
   Service1,
-} from './mocks/classDependenciesToInject';
+} from "./mocks/classDependenciesToInject";
 
-describe('Core - Injector - injector', () => {
+describe("Core - Injector - injector", () => {
   let listProvider;
   let listProviderClass;
   let injector: Injector;
@@ -23,41 +23,42 @@ describe('Core - Injector - injector', () => {
     injector = new Injector(Module1, listProvider, listProviderClass);
     injector.scanProviders();
   });
-  after(() => {
+  afterEach(() => {
     injector = null;
   });
-  it('Should respond an object without paramters to inject', () => {
+  it("Should respond an object without paramters to inject", () => {
     const getInjectData = injector.getInjectData(Controller1);
-    expect(getInjectData).to.is.empty;
+    console.log("getInjectData", getInjectData);
+    expect(getInjectData).toEqual({});
   });
-  it('Should respond an object with property textInj to inject of Service1 ', () => {
+  it("Should respond an object with property textInj to inject of Service1 ", () => {
     const getInjectData = injector.getInjectData(Service1);
-    expect(getInjectData).to.have.property('textInj');
+    expect(getInjectData).toHaveProperty("textInj");
   });
 
-  it('Should respond an object empty because the provider does not exist', () => {
+  it("Should respond an object empty because the provider does not exist", () => {
     const getInjectData = injector.getInjectData(Controller2);
-    expect(getInjectData).to.is.empty;
+    expect(getInjectData).toEqual({});
   });
 
-  it('Should respond an object type asClass with paramters to inject', () => {
+  it("Should respond an object type asClass with paramters to inject", () => {
     const getInject = injector.getInjectorClass(Service1);
-    expect(getInject).to.have.property('lifetime');
-    expect(getInject).to.have.property('inject');
-    expect(getInject).to.have.property('injector');
+    expect(getInject).toHaveProperty("lifetime");
+    expect(getInject).toHaveProperty("inject");
+    expect(getInject).toHaveProperty("injector");
   });
 
-  it('Should respond an object type asClass without injector', () => {
+  it("Should respond an object type asClass without injector", () => {
     const getInject = injector.getInjectorClass(Controller3);
-    expect(getInject).to.not.have.property('injector');
+    expect(getInject).not.toHaveProperty("injector");
   });
 
-  it('Should respond an object type asClass without injector', () => {
+  it("Should respond an object type asClass without injector", () => {
     const allProvider = injector.getAllProvider();
-    expect(allProvider.has('TEXT_INJECT')).to.be.equal(true);
+    expect(allProvider.has("TEXT_INJECT")).toEqual(true);
   });
 
-  it('Should respond an number type asFunction without injector', () => {
+  it("Should respond an number type asFunction without injector", () => {
     const injectorWithFactory = new Injector(
       ModuleFactory,
       listProvider,
@@ -65,16 +66,16 @@ describe('Core - Injector - injector', () => {
     );
     injectorWithFactory.scanProviders();
     const allProvider = injectorWithFactory.getAllProvider();
-    expect(allProvider.has('NUMBER_FACTORY')).to.be.equal(true);
+    expect(allProvider.has("NUMBER_FACTORY")).toEqual(true);
   });
-  it('Should respond only one supplier because the others are not valid.', () => {
+  it("Should respond only one supplier because the others are not valid.", () => {
     const injectorWithFactory = new Injector(
       ModuleProviderError,
       listProvider,
       listProviderClass,
     );
     injectorWithFactory.scanProviders();
-    const allProviderClass = injectorWithFactory['listProvidersClass'];
-    expect(allProviderClass.size).to.be.equal(1);
+    const allProviderClass = injectorWithFactory["listProvidersClass"];
+    expect(allProviderClass.size).toEqual(1);
   });
 });

@@ -1,89 +1,88 @@
-import { expect } from 'chai';
-import * as sinon from 'sinon';
-import { LoggerService } from '../../services/logger.service';
-import { ILoggerService } from '../../interfaces';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { LoggerService } from "../../services/logger.service";
+import { ILoggerService } from "../../interfaces";
 
-describe('Commons - Services - Logger', () => {
-  describe('No print', () => {
+describe("Commons - Services - Logger", () => {
+  describe("No print", () => {
     let logger: ILoggerService;
-    let successSpy: sinon.SinonSpy;
+    let successSpy: any;
 
     beforeEach(() => {
-      process.env.ZANOBIJS_LOGGER = 'false';
+      process.env.ZANOBIJS_LOGGER = "false";
     });
     afterEach(() => {
-      successSpy.restore();
+      successSpy.mockReset();
     });
-    it('should respond true to the logger success call', () => {
-      LoggerService['instance'] = null;
+    it("should respond true to the logger success call", () => {
+      LoggerService["instance"] = null;
       logger = LoggerService.getInstance({ withColor: false });
-      successSpy = sinon.spy(logger, 'success');
-      logger.success('Logger user success');
-      expect(successSpy.calledOnce).to.be.true;
+      successSpy = vi.spyOn(logger, "success");
+      logger.success("Logger user success");
+      expect(successSpy).toHaveBeenCalled();
     });
   });
-  describe('Options dafault', () => {
+  describe("Options dafault", () => {
     let logger: ILoggerService;
-    let successSpy: sinon.SinonSpy;
-    let warnSpy: sinon.SinonSpy;
-    let errorSpy: sinon.SinonSpy;
-    let infoSpy: sinon.SinonSpy;
-    let debugSpy: sinon.SinonSpy;
+    let successSpy: any;
+    let warnSpy: any;
+    let errorSpy: any;
+    let infoSpy: any;
+    let debugSpy: any;
 
     beforeEach(() => {
-      process.env.ZANOBIJS_LOGGER = 'true';
-      LoggerService['instance'] = null;
+      process.env.ZANOBIJS_LOGGER = "true";
+      LoggerService["instance"] = null;
       logger = LoggerService.getInstance();
-      successSpy = sinon.spy(logger, 'success');
-      warnSpy = sinon.spy(logger, 'warn');
-      errorSpy = sinon.spy(logger, 'error');
-      infoSpy = sinon.spy(logger, 'info');
-      debugSpy = sinon.spy(logger, 'debug');
+      successSpy = vi.spyOn(logger, "success");
+      warnSpy = vi.spyOn(logger, "warn");
+      errorSpy = vi.spyOn(logger, "error");
+      infoSpy = vi.spyOn(logger, "info");
+      debugSpy = vi.spyOn(logger, "debug");
     });
     afterEach(() => {
-      successSpy.restore();
-      warnSpy.restore();
-      errorSpy.restore();
-      infoSpy.restore();
-      debugSpy.restore();
+      successSpy.mockReset();
+      warnSpy.mockReset();
+      errorSpy.mockReset();
+      infoSpy.mockReset();
+      debugSpy.mockReset();
     });
-    it('should respond true to the logger success call', () => {
-      logger.success('Logger success');
-      expect(successSpy.calledOnce).to.be.true;
+    it("should respond true to the logger success call", () => {
+      logger.success("Logger success");
+      expect(successSpy).toHaveBeenCalled();
     });
-    it('should respond true to the logger warn call', () => {
-      logger.warn('Logger warn');
-      expect(warnSpy.calledOnce).to.be.true;
+    it("should respond true to the logger warn call", () => {
+      logger.warn("Logger warn");
+      expect(warnSpy).toHaveBeenCalled();
     });
-    it('should respond true to the logger error call', () => {
-      logger.error('Logger error');
-      expect(errorSpy.calledOnce).to.be.true;
+    it("should respond true to the logger error call", () => {
+      logger.error("Logger error");
+      expect(errorSpy).toHaveBeenCalled();
     });
-    it('should respond true to the logger info call', () => {
-      logger.info('Logger info');
-      expect(infoSpy.calledOnce).to.be.true;
+    it("should respond true to the logger info call", () => {
+      logger.info("Logger info");
+      expect(infoSpy).toHaveBeenCalled();
     });
-    it('should respond true to the logger debug call', () => {
-      logger.debug('Logger debug', ['a', 'b']);
-      expect(debugSpy.calledOnce).to.be.true;
+    it("should respond true to the logger debug call", () => {
+      logger.debug("Logger debug", ["a", "b"]);
+      expect(debugSpy).toHaveBeenCalled();
     });
   });
-  describe('Options with color', () => {
+  describe("Options with color", () => {
     let logger: ILoggerService;
-    let successSpy: sinon.SinonSpy;
+    let successSpy: any;
 
     beforeEach(() => {
-      process.env.ZANOBIJS_LOGGER = 'true';
+      process.env.ZANOBIJS_LOGGER = "true";
     });
     afterEach(() => {
-      successSpy.restore();
+      successSpy.mockReset();
     });
-    it('should respond true to the logger success call', () => {
-      LoggerService['instance'] = null;
+    it("should respond true to the logger success call", () => {
+      LoggerService["instance"] = null;
       logger = LoggerService.getInstance({ withColor: false });
-      successSpy = sinon.spy(logger, 'success');
-      logger.success('Logger user success');
-      expect(successSpy.calledOnce).to.be.true;
+      successSpy = vi.spyOn(logger, "success");
+      logger.success("Logger user success");
+      expect(successSpy).toHaveBeenCalled();
     });
   });
 });

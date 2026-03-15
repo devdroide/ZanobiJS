@@ -1,169 +1,167 @@
-import { expect } from 'chai';
-import * as sinon from 'sinon';
-import { Logger, LoggerUser } from '../../utils/logger.utils';
-import { ILoggerService } from '../../interfaces';
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { Logger, LoggerUser } from "../../utils/logger.utils";
+import { ILoggerService } from "../../interfaces";
 
-describe('Commons - Utils - Logger', () => {
-  describe('Default', () => {
+describe("Commons - Utils - Logger", () => {
+  describe("Default", () => {
     let logger: ILoggerService;
-    let successSpy: sinon.SinonSpy;
+    let successSpy: any;
 
     beforeEach(() => {
-      process.env.ZANOBIJS_LOGGER = 'true';
+      process.env.ZANOBIJS_LOGGER = "true";
       logger = Logger();
-      successSpy = sinon.spy(logger, 'success');
+      successSpy = vi.spyOn(logger, "success");
     });
     afterEach(() => {
-      successSpy.restore();
+      successSpy.mockReset();
     });
-    it('should respond true to the logger success call', () => {
-      logger.success('Logger success');
-      expect(successSpy.calledOnce).to.be.true;
+    it("should respond true to the logger success call", () => {
+      logger.success("Logger success");
+      expect(successSpy).toHaveBeenCalled();
     });
   });
-  describe('With options', () => {
+  describe("With options", () => {
     let logger: ILoggerService;
-    let successSpy: sinon.SinonSpy;
+    let successSpy: any;
 
     beforeEach(() => {
-      // process.env.ZANOBIJS_LOGGER = "true";
       logger = Logger({ withColor: false });
-      successSpy = sinon.spy(logger, 'success');
+      successSpy = vi.spyOn(logger, "success");
     });
     afterEach(() => {
-      successSpy.restore();
+      successSpy.mockReset();
     });
-    it('should respond true to the logger success call', () => {
+    it("should respond true to the logger success call", () => {
       const objectTest = {
-        text: 'some test',
-        arrayTest: [1, 2, 3, 'text', 4, 'some'],
+        text: "some test",
+        arrayTest: [1, 2, 3, "text", 4, "some"],
         objectTest: {
           intoObject: {
-            textObject: 'text object',
+            textObject: "text object",
             object2: {
-              someTest: 'some test object 2',
+              someTest: "some test object 2",
             },
           },
         },
       };
-      logger.success('Logger success', objectTest);
-      expect(successSpy.calledOnce).to.be.true;
+      logger.success("Logger success", objectTest);
+      expect(successSpy).toHaveBeenCalled();
     });
-    it('should respond true to the logger success call', () => {
+    it("should respond true to the logger success call", () => {
       const objectTest = {
-        text: 'some test',
-        arrayTest: [1, 2, 3, 'text', 4, 'some'],
+        text: "some test",
+        arrayTest: [1, 2, 3, "text", 4, "some"],
         objectTest: {
           intoObject: {
-            textObject: 'text object',
+            textObject: "text object",
             object2: {
-              someTest: 'some test object 2',
+              someTest: "some test object 2",
             },
           },
         },
       };
       const objectTest2 = {
-        text: 'other some test',
-        arrayTest: [1, 2, 3, 'other text', 4, 'other some'],
+        text: "other some test",
+        arrayTest: [1, 2, 3, "other text", 4, "other some"],
         objectTest: {
           intoObject: {
-            textObject: 'other text object',
+            textObject: "other text object",
             object2: {
-              someTest: 'other some test object 2',
+              someTest: "other some test object 2",
             },
           },
         },
       };
-      logger.success('Logger success', objectTest, 'print text', objectTest2);
-      expect(successSpy.calledOnce).to.be.true;
+      logger.success("Logger success", objectTest, "print text", objectTest2);
+      expect(successSpy).toHaveBeenCalled();
     });
   });
 });
 
-describe('Commons - Utils - LoggerUser', () => {
-  process.env.ZANOBIJS_LOGGER_USER = 'true';
-  describe('Default', () => {
+describe("Commons - Utils - LoggerUser", () => {
+  process.env.ZANOBIJS_LOGGER_USER = "true";
+  describe("Default", () => {
     let loggerUser: ILoggerService;
-    let successSpy: sinon.SinonSpy;
-    let importantSpy: sinon.SinonSpy;
+    let successSpy: any;
+    let importantSpy: any;
 
     beforeEach(() => {
       loggerUser = LoggerUser();
-      successSpy = sinon.spy(loggerUser, 'success');
-      importantSpy = sinon.spy(loggerUser, 'important');
+      successSpy = vi.spyOn(loggerUser, "success");
+      importantSpy = vi.spyOn(loggerUser, "important");
     });
     afterEach(() => {
-      successSpy.restore();
-      importantSpy.restore();
+      successSpy.mockReset();
+      importantSpy.mockReset();
     });
-    it('should respond true to the logger User success call', () => {
-      loggerUser.success('Logger User success');
-      expect(successSpy.calledOnce).to.be.true;
+    it("should respond true to the logger User success call", () => {
+      loggerUser.success("Logger User success");
+      expect(successSpy).toHaveBeenCalled();
     });
-    it('should respond true to the logger User success call', () => {
-      loggerUser.important('Logger User important', 'zanobiJS unit test');
-      expect(importantSpy.calledOnce).to.be.true;
+    it("should respond true to the logger User success call", () => {
+      loggerUser.important("Logger User important", "zanobiJS unit test");
+      expect(importantSpy).toHaveBeenCalled();
     });
   });
-  describe('With options', () => {
+  describe("With options", () => {
     let loggerUser: ILoggerService;
-    let successSpy: sinon.SinonSpy;
+    let successSpy: any;
 
     beforeEach(() => {
       loggerUser = LoggerUser({ withColor: false });
-      successSpy = sinon.spy(loggerUser, 'success');
+      successSpy = vi.spyOn(loggerUser, "success");
     });
     afterEach(() => {
-      successSpy.restore();
+      successSpy.mockReset();
     });
-    it('should respond true to the loggerUser success call', () => {
+    it("should respond true to the loggerUser success call", () => {
       const objectTest = {
-        text: 'some test',
-        arrayTest: [1, 2, 3, 'text', 4, 'some'],
+        text: "some test",
+        arrayTest: [1, 2, 3, "text", 4, "some"],
         objectTest: {
           intoObject: {
-            textObject: 'text object',
+            textObject: "text object",
             object2: {
-              someTest: 'some test object 2',
+              someTest: "some test object 2",
             },
           },
         },
       };
-      loggerUser.success('Logger success', objectTest);
-      expect(successSpy.calledOnce).to.be.true;
+      loggerUser.success("Logger success", objectTest);
+      expect(successSpy).toHaveBeenCalled();
     });
-    it('should respond true to the logger success call with other args', () => {
+    it("should respond true to the logger success call with other args", () => {
       const objectTest = {
-        text: 'some test',
-        arrayTest: [1, 2, 3, 'text', 4, 'some'],
+        text: "some test",
+        arrayTest: [1, 2, 3, "text", 4, "some"],
         objectTest: {
           intoObject: {
-            textObject: 'text object',
+            textObject: "text object",
             object2: {
-              someTest: 'some test object 2',
+              someTest: "some test object 2",
             },
           },
         },
       };
       const objectTest2 = {
-        text: 'other some test',
-        arrayTest: [1, 2, 3, 'other text', 4, 'other some'],
+        text: "other some test",
+        arrayTest: [1, 2, 3, "other text", 4, "other some"],
         objectTest: {
           intoObject: {
-            textObject: 'other text object',
+            textObject: "other text object",
             object2: {
-              someTest: 'other some test object 2',
+              someTest: "other some test object 2",
             },
           },
         },
       };
       loggerUser.success(
-        'Logger success',
+        "Logger success",
         objectTest,
-        'print text',
+        "print text",
         objectTest2,
       );
-      expect(successSpy.calledOnce).to.be.true;
+      expect(successSpy).toHaveBeenCalled();
     });
   });
 });

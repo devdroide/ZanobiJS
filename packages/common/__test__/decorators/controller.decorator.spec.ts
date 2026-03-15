@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { expect } from 'chai';
+import { describe, it, expect } from "vitest";
 import { DEPENDENCIES_CLASS } from '../../utils/constants';
 import {
   ControllerMix,
@@ -11,73 +11,76 @@ import {
 } from '../mocks/controllers.mock';
 
 describe('Commons - Decorators - controller', () => {
-  it('should respond an empty array of dependencies', () => {
+  it("should return empty array of dependencies when controller has no constructor", () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ControllerOnly,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.be.empty;
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).toHaveLength(0);
   });
-  it('should respond an empty array of dependencies', () => {
+  it("should return empty array when controller has empty constructor", () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ControllerWithoutArg,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.be.empty;
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).toHaveLength(0);
   });
-  it('should respond an empty array of dependencies', () => {
+  it("should return empty array when controller has only methods", () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ControllerWithMethod,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.be.empty;
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).toHaveLength(0);
   });
-  it('should respond an array with dependecies as service', () => {
+  it("should return dependencies when controller injects a service", () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ControllerWithService,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.not.be.empty;
-    expect(dependenciesClass[0]).to.include({ type: 'Controller' });
-    expect(dependenciesClass[0]).to.include({ nameClass: 'ServiceOnly' });
-    expect(dependenciesClass[0]).to.include({
-      nameClassContainer: 'serviceOnly',
+    console.log("dependenciesClass[0]", dependenciesClass[0]);
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).not.toHaveLength(0);
+    expect(dependenciesClass[0]).toMatchObject({ type: "Controller" });
+    expect(dependenciesClass[0]).toMatchObject({ nameClass: "ServiceOnly" });
+    expect(dependenciesClass[0]).toMatchObject({
+      nameClassContainer: "serviceOnly",
     });
-    expect(dependenciesClass[0]).to.include({ nameParameter: 'serviceOnly' });
-    expect(dependenciesClass.length).to.be.equal(1);
+    expect(dependenciesClass[0]).toMatchObject({
+      nameParameter: "serviceOnly",
+    });
+    expect(dependenciesClass.length).toEqual(1);
   });
-  it('should respond an array with dependecies as paramter', () => {
+  it("should return dependencies when controller injects a primitive parameter", () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ControllerWithParameter,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.not.be.empty;
-    expect(dependenciesClass[0]).to.include({ type: 'Controller' });
-    expect(dependenciesClass[0]).to.include({ nameClass: 'String' });
-    expect(dependenciesClass[0]).to.include({
-      nameClassContainer: 'string',
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).not.toHaveLength(0);
+    expect(dependenciesClass[0]).toMatchObject({ type: "Controller" });
+    expect(dependenciesClass[0]).toMatchObject({ nameClass: "String" });
+    expect(dependenciesClass[0]).toMatchObject({
+      nameClassContainer: "string",
     });
-    expect(dependenciesClass[0]).to.include({ nameParameter: 'userName' });
-    expect(dependenciesClass.length).to.be.equal(1);
+    expect(dependenciesClass[0]).toMatchObject({ nameParameter: "userName" });
+    expect(dependenciesClass.length).toEqual(1);
   });
-  it('should respond an array with dependecies and additional @Inject', () => {
+  it("should return dependencies when controller mixes services and @Inject parameters", () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ControllerMix,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.not.be.empty;
-    expect(dependenciesClass[1]).to.include({ type: 'Controller' });
-    expect(dependenciesClass[1]).to.include({ nameClass: 'String' });
-    expect(dependenciesClass[1]).to.include({
-      nameClassContainer: 'string',
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).not.toHaveLength(0);
+    expect(dependenciesClass[1]).toMatchObject({ type: "Controller" });
+    expect(dependenciesClass[1]).toMatchObject({ nameClass: "String" });
+    expect(dependenciesClass[1]).toMatchObject({
+      nameClassContainer: "string",
     });
-    expect(dependenciesClass[1]).to.include({ nameParameter: 'apiKey' });
-    expect(dependenciesClass.length).to.be.equal(3);
+    expect(dependenciesClass[1]).toMatchObject({ nameParameter: "apiKey" });
+    expect(dependenciesClass.length).toEqual(3);
   });
 });
