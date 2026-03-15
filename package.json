@@ -7,8 +7,8 @@
   "scripts": {
     "lint:check": "biome check packages",
     "lint:fix": "biome check --write packages",
-    "format:check": "biome format packages",
-    "format:fix": "biome format --write packages",
+    "prettier:check": "biome format packages",
+    "prettier:fix": "biome format --write packages",
     "build": "tsc -b -v packages",
     "clean": "npx gulp clean:ts",
     "test": "vitest run",
