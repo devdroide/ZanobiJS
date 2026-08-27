@@ -7,7 +7,7 @@
 [![npm](https://img.shields.io/badge/npm-v1.0.0-darkorange.svg)](https://www.npmjs.com/package/@zanobijs/cli)
 [![coverage](https://img.shields.io/badge/coverage-100-green.svg)](https://mochajs.org/)
 [![test](https://img.shields.io/badge/test-mocha-CC0000.svg)](https://mochajs.org/)
-[![nodejs](https://img.shields.io/badge/nodejs->=16.0.0-darkgreen.svg)](https://nodejs.org)
+[![nodejs](https://img.shields.io/badge/nodejs->=24.0.0-darkgreen.svg)](https://nodejs.org)
 [![typescrit](https://img.shields.io/badge/TS->=5.2.2-darkblue.svg)](https://www.typescriptlang.org/)
 [![licence](https://img.shields.io/badge/licence-MIT-purple.svg)](https://en.wikipedia.org/wiki/MIT_License)
 [![Doc](https://img.shields.io/badge/ZNB-Documentation-blue.svg)](https://zanobijs.vercel.app/)
