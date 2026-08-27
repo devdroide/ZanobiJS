@@ -76,7 +76,7 @@ jobs:
 
       - name: Check test coverage
         env:
-          MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 90 }}
+          MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 100 }}
         run: |
           set -euo pipefail
           SUMMARY=coverage/coverage-summary.json
