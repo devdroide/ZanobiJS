@@ -39,7 +39,7 @@ jobs:
           fi
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -49,12 +49,12 @@ jobs:
     needs: [validate-branch]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js 24
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
@@ -71,21 +71,27 @@ jobs:
         continue-on-error: false
 
       - name: Run tests with coverage
-        run: npm run test
+        run: npm run test:coverage
         continue-on-error: false
 
       - name: Check test coverage
         env:
           MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 90 }}
         run: |
-          set -e
-          COVERAGE=$(npx nyc report --reporter=text | grep "All files" | awk '{print $3}' | tr -d '%')
-          echo "Test coverage: $COVERAGE%"
+          set -euo pipefail
+          SUMMARY=coverage/coverage-summary.json
+          if [[ ! -f "$SUMMARY" ]]; then
+            echo "❌ Error: $SUMMARY not found. Did the coverage run emit the json-summary reporter?"
+            exit 1
+          fi
+          COVERAGE=$(node -p "require('./$SUMMARY').total.lines.pct")
+          echo "Test coverage (lines): $COVERAGE%"
           echo "Minimum required coverage: $MIN_COVERAGE%"
           if (( $(echo "$COVERAGE < $MIN_COVERAGE" | bc -l) )); then
             echo "❌ Error: Test coverage is below $MIN_COVERAGE%. Current coverage: $COVERAGE%"
             exit 1
           fi
+          echo "✅ Coverage gate passed"
 
       - name: Check if changes are inside packages
         id: check_changes
