@@ -22,5 +22,8 @@
     "joi": "^17.11.0",
     "reflect-metadata": "^0.1.13"
   },
+  "engines": {
+    "node": ">= 24"
+  },
   "gitHead": "201c1b2c289b80d94fcc899dc087b1d95de801d7"
 }

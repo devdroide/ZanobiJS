@@ -29,5 +29,8 @@
   "peerDependencies": {
     "@zanobijs/common": "*"
   },
+  "engines": {
+    "node": ">= 24"
+  },
   "gitHead": "201c1b2c289b80d94fcc899dc087b1d95de801d7"
 }
