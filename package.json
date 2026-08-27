@@ -11,10 +11,12 @@
     "prettier:fix": "prettier --write \"packages/**/*.ts\"",
     "build": "tsc -b -v packages",
     "clean": "npx gulp clean:ts",
-    "test": "nyc mocha",
-    "testInject": "nyc mocha -r ts-node/register packages/core/__test__/injector/**.spec.ts --timeout 1000 --exit",
-    "testFactory": "nyc mocha -r ts-node/register packages/core/__test__/**.spec.ts --timeout 1000 --exit",
-    "testCore": "nyc mocha -r ts-node/register packages/core/**/*.spec.ts --timeout 1000 --exit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "testInject": "vitest run packages/core/__test__/injector/**.spec.ts",
+    "testFactory": "vitest run packages/core/__test__/**.spec.ts",
+    "testCore": "vitest run packages/core/**/*.spec.ts",
     "version:prerelease": "lerna version prerelease --preid beta --conventional-commits --conventional-prerelease --create-release github",
     "version:newBeta": "lerna version premajor --preid beta --conventional-commits --conventional-prerelease --create-release github",
     "version:conventional": "lerna version --conventional-commits --create-release github",
@@ -28,11 +30,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
-    "@types/chai": "^4.3.9",
-    "@types/mocha": "^10.0.3",
+    "@swc/core": "^1.16.1",
     "@types/node": "^20.8.7",
-    "@types/sinon": "^10.0.20",
-    "chai": "^4.3.10",
+    "@vitest/coverage-v8": "^4.1.11",
     "del": "^7.1.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.1.2",
@@ -40,56 +40,16 @@
     "glob": "^11.0.2",
     "gulp": "^5.0.0",
     "lerna": "^8.2.2",
-    "mocha": "^10.2.0",
-    "nyc": "^15.1.0",
     "prettier": "^3.5.3",
-    "sinon": "^17.0.1",
-    "sinon-chai": "^3.7.0",
-    "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
-    "typescript-eslint": "^8.28.0"
+    "typescript-eslint": "^8.28.0",
+    "unplugin-swc": "^1.5.11",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13"
   },
   "engines": {
     "node": ">= 24"
-  },
-  "nyc": {
-    "include": [
-      "packages/**/*.ts"
-    ],
-    "exclude": [
-      "**/*.js",
-      "**/*.d.ts",
-      "**/*.spec.ts",
-      "**/*.mock.ts",
-      "packages/**/__test__/**/*.ts",
-      "packages/**/test/**/*.ts",
-      "packages/testing/**/*.ts"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "lcov",
-      "html",
-      "text-summary"
-    ],
-    "check-coverage": true,
-    "all": true,
-    "sourceMap": true,
-    "instrument": true
-  },
-  "mocha": {
-    "require": [
-      "ts-node/register",
-      "tsconfig-paths/register",
-      "node_modules/reflect-metadata/Reflect.js"
-    ],
-    "exit": true
   }
 }
