@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, expect, it } from 'vitest';
 import { Factory } from '../index';
 import {
   Module1,
@@ -23,9 +23,7 @@ describe('Core - factory options', () => {
         activeLoggerUser: true,
       });
     } catch (error) {
-      expect(error.message).to.be.equal(
-        'The class must have an annotation @Module()',
-      );
+      expect(error.message).toBe('The class must have an annotation @Module()');
     }
   });
   it('should respond create factory', () => {
@@ -33,7 +31,7 @@ describe('Core - factory options', () => {
       activeLoggerSystem: false,
     });
     const app = factory.create();
-    expect(app).to.be.instanceOf(Factory);
+    expect(app).toBeInstanceOf(Factory);
   });
 });
 
@@ -44,10 +42,10 @@ describe('Core - factory - Entities', () => {
     try {
       app.get('SomeController');
     } catch (error) {
-      expect(error.message).to.be.equal(
+      expect(error.message).toBe(
         "Please check that the entity 'SomeController' exists and is registered in @modulo",
       );
-      expect(error.detail).to.have.string(
+      expect(error.detail).toContain(
         "Could not resolve 'SomeController'.\n\nResolution path: SomeController",
       );
     }
@@ -58,10 +56,10 @@ describe('Core - factory - Entities', () => {
     try {
       app.get('TEXT_PROVIDER');
     } catch (error) {
-      expect(error.message).to.be.equal(
+      expect(error.message).toBe(
         "Please check that the entity 'TEXT_PROVIDER' exists and is registered in @modulo",
       );
-      expect(error.detail).to.have.string(
+      expect(error.detail).toContain(
         "Could not resolve 'TEXT_PROVIDER'.\n\nResolution path: TEXT_PROVIDER",
       );
     }
@@ -73,10 +71,10 @@ describe('Core - factory - Entities', () => {
       const controller6: Controller6 = app.get('controller6');
       controller6.geData();
     } catch (error) {
-      expect(error.message).to.be.equal(
+      expect(error.message).toBe(
         "Could not resolve 'service2'. please review 'controller6' and its dependencies.",
       );
-      expect(error.detail).to.have.string(
+      expect(error.detail).toContain(
         "Could not resolve 'service2'.\n\nResolution path: controller6 -> Controller6 -> serv2 -> service2",
       );
     }
@@ -85,13 +83,13 @@ describe('Core - factory - Entities', () => {
     const factory = new Factory(Module1);
     const app = factory.create();
     const controller1: Controller1 = app.get('controller1');
-    expect(controller1.getData()).to.be.equal('Hello world');
+    expect(controller1.getData()).toBe('Hello world');
   });
   it('It should respond the useValue of provider.', () => {
     const factory = new Factory(Module1);
     const app = factory.create();
     const textInject: string = app.get('TEXT_INJECT');
-    expect(textInject).to.be.equal('Hello world inject');
+    expect(textInject).toBe('Hello world inject');
   });
 });
 
@@ -103,7 +101,7 @@ describe('Core - factory - Module to Module', () => {
     });
     const app = factory.create();
     const controller1: Controller1 = app.get('controller1');
-    expect(controller1.getData()).to.be.equal('Hello world');
+    expect(controller1.getData()).toBe('Hello world');
   });
   it('It should respond getData of controller.', () => {
     const factory = new Factory(Module5, {
@@ -112,7 +110,7 @@ describe('Core - factory - Module to Module', () => {
     });
     const app = factory.create();
     const controller1: Controller1 = app.get('controller1');
-    expect(controller1.getData()).to.be.equal('Hello world');
+    expect(controller1.getData()).toBe('Hello world');
   });
   it('It should respond to the class value that was changed or overridden.', () => {
     const factory = new Factory(ModuleRepository, {
@@ -121,6 +119,6 @@ describe('Core - factory - Module to Module', () => {
     });
     const app = factory.create();
     const controllerUser: ControllerUser = app.get('ControllerUser');
-    expect(controllerUser.register()).to.be.equal('Created');
+    expect(controllerUser.register()).toBe('Created');
   });
 });
