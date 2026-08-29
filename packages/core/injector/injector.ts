@@ -4,6 +4,7 @@ import { Logger } from '@zanobijs/common/utils';
 import { isClass, isEmpty } from '@zanobijs/common/utils/shared.utils';
 import { asClass, asFunction, asValue } from 'awilix';
 import { TClass } from '../interfaces';
+import { MissingInjectTokenException } from '../exceptions/missingInjectToken.exception';
 
 export type Constructor<T> = { new (...args: any[]): T };
 
@@ -106,6 +107,8 @@ export class Injector {
    *
    * @param { TClass} target - La clase objetivo.
    * @returns {object} - Objeto con datos a inyectar.
+   * @throws {MissingInjectTokenException} Si un `@Inject(token)` de `target` no tiene
+   * su provider registrado en este módulo ni en ninguno de los módulos importados.
    */
   getInjectData(target: TClass): object {
     const injectData = {};
@@ -117,9 +120,10 @@ export class Injector {
           const providerValue = this.listProviders.get(key);
           injectData[paramName] = providerValue.resolve();
         } else {
-          this.logger.important(
-            `You are trying to inject @INJECT('${key}') into '${target.name}'`,
-            `but the provider '${key}' and its value are not registered in '${this.moduleName}' or any other previously loaded modules`,
+          throw new MissingInjectTokenException(
+            key,
+            target.name,
+            this.moduleName,
           );
         }
       }

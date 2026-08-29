@@ -2,7 +2,6 @@ import { Module } from '@zanobijs/common';
 import {
   ABSServiceRepository,
   Controller1,
-  Controller2,
   Controller3,
   Controller4,
   Controller5,
@@ -19,7 +18,7 @@ import {
 
 @Module({
   imports: [],
-  controllers: [Controller1, Controller2],
+  controllers: [Controller1],
   services: [
     Service1,
     {
@@ -131,6 +130,10 @@ export class ModuleProviderError {}
   imports: [],
   controllers: [Controller5],
   services: [
+    {
+      provider: 'TEXT_INJECT',
+      useValue: 'Hello world inject',
+    },
     {
       provider: 'MyService1',
       useClass: ServiceWithoutInjectable,

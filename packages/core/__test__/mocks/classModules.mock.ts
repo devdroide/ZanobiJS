@@ -57,7 +57,12 @@ export class Module4 {}
 @Module({
   imports: [Module1],
   controllers: [Controller7],
-  services: [],
+  services: [
+    {
+      provider: 'SOME_INJECT',
+      useValue: 'some-injected-value',
+    },
+  ],
   exports: [],
 })
 export class Module5 {}
