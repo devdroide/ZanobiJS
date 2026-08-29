@@ -7,6 +7,7 @@ import {
   Module5,
   ModuleEmpty,
   ModuleRepository,
+  ModuleWithThrowingConstructor,
 } from './mocks/classModules.mock';
 import {
   Controller1,
@@ -90,6 +91,15 @@ describe('Core - factory - Entities', () => {
     const app = factory.create();
     const textInject: string = app.get('TEXT_INJECT');
     expect(textInject).toBe('Hello world inject');
+  });
+  it('should propagate the original error unwrapped when a constructor throws', () => {
+    const factory = new Factory(ModuleWithThrowingConstructor, {
+      activeLoggerSystem: false,
+    });
+    const app = factory.create();
+    expect(() => app.get('serviceThatThrowsOnConstruct')).toThrow(
+      'Missing DB_URL environment variable',
+    );
   });
 });
 

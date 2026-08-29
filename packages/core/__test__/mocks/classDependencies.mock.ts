@@ -145,3 +145,10 @@ export class ControllerUser {
     return this.regUserUseCase.execute();
   }
 }
+
+@Injectable()
+export class ServiceThatThrowsOnConstruct {
+  constructor() {
+    throw new Error('Missing DB_URL environment variable');
+  }
+}
