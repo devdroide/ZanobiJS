@@ -7,3 +7,5 @@ coverage/*
 .github
 /node_modules
 .nyc_output
+
+/.nx/workspace-data
