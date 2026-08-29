@@ -6,7 +6,7 @@ const packages = ["common", "core"]; // Agrega aquí los nombres de tus paquetes
 // Tarea para limpiar los archivos compilados en la carpeta src de cada paquete
 gulp.task("clean:ts", async () => {
     console.log(`Deleting files in root`);
-    await deleteAsync(["CHANGELOG.md", "*.tsbuildinfo"]);
+    await deleteAsync(["*.tsbuildinfo"]);
     console.log(`Files deleted in root`);
 
     const cleanTasks = packages.map(async (packageName) => {
@@ -16,7 +16,6 @@ gulp.task("clean:ts", async () => {
       `packages/${packageName}/*.js.map`,
       `packages/${packageName}/*.d.ts`,
       `packages/${packageName}/*.tsbuildinfo`,
-      `packages/${packageName}/CHANGELOG.md`,
       `packages/${packageName}/**/*.js`,
       `packages/${packageName}/**/*.js.map`,
       `packages/${packageName}/**/*.d.ts`,

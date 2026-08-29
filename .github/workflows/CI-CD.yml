@@ -53,10 +53,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js 24
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22.13.0'
           cache: 'npm'
 
       - name: Install dependencies
@@ -76,7 +76,7 @@ jobs:
 
       - name: Check test coverage
         env:
-          MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 90 }}
+          MIN_COVERAGE: ${{ vars.MIN_COVERAGE || 100 }}
         run: |
           set -euo pipefail
           SUMMARY=coverage/coverage-summary.json

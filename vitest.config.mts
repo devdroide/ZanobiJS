@@ -6,6 +6,14 @@ import swc from 'unplugin-swc';
 // (basado en reflect-metadata) no funciona en los tests.
 export default defineConfig({
   plugins: [swc.vite()],
+  resolve: {
+    // Vite resuelve .js antes que .ts por defecto. Los packages se publican
+    // compilando el .js junto al .ts (sin dist/, porque hay imports profundos
+    // tipo @zanobijs/common/utils/constants sin exports map) — sin esto, un
+    // `npm run build` local seguido de `npm test` sin `npm run clean` de por
+    // medio hace que los tests carguen el .js compilado en vez del .ts fuente.
+    extensions: ['.ts', '.mts', '.js', '.mjs', '.json'],
+  },
   test: {
     globals: true,
     environment: 'node',
@@ -24,10 +32,10 @@ export default defineConfig({
         'packages/**/__test__/**',
       ],
       thresholds: {
-        lines: 90,
-        functions: 90,
-        branches: 90,
-        statements: 90,
+        lines: 100,
+        functions: 100,
+        branches: 100,
+        statements: 100,
       },
     },
   },
