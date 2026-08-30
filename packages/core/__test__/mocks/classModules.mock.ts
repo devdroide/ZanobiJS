@@ -6,6 +6,7 @@ import {
   Controller7,
   ControllerUser,
   RegisterUserUseCase,
+  ServiceThatThrowsOnConstruct,
   UserImplements,
 } from './classDependencies.mock';
 
@@ -57,7 +58,12 @@ export class Module4 {}
 @Module({
   imports: [Module1],
   controllers: [Controller7],
-  services: [],
+  services: [
+    {
+      provider: 'SOME_INJECT',
+      useValue: 'some-injected-value',
+    },
+  ],
   exports: [],
 })
 export class Module5 {}
@@ -79,3 +85,11 @@ export class Module5 {}
   exports: [],
 })
 export class ModuleRepository {}
+
+@Module({
+  imports: [],
+  controllers: [],
+  services: [ServiceThatThrowsOnConstruct],
+  exports: [],
+})
+export class ModuleWithThrowingConstructor {}

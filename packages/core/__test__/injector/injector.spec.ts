@@ -1,5 +1,6 @@
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { Injector } from '../../injector';
+import { MissingInjectTokenException } from '../../exceptions/missingInjectToken.exception';
 import {
   Module1,
   ModuleFactory,
@@ -35,9 +36,10 @@ describe('Core - Injector - injector', () => {
     expect(getInjectData).toHaveProperty('textInj');
   });
 
-  it('Should respond an object empty because the provider does not exist', () => {
-    const getInjectData = injector.getInjectData(Controller2);
-    expect(getInjectData).toEqual({});
+  it('should throw MissingInjectTokenException because the provider does not exist', () => {
+    expect(() => injector.getInjectData(Controller2)).toThrow(
+      MissingInjectTokenException,
+    );
   });
 
   it('Should respond an object type asClass with paramters to inject', () => {

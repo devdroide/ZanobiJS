@@ -1,5 +1,10 @@
 import 'reflect-metadata';
-import { AwilixContainer, InjectionMode, createContainer } from 'awilix';
+import {
+  AwilixContainer,
+  AwilixResolutionError,
+  InjectionMode,
+  createContainer,
+} from 'awilix';
 import { Module } from './injector/module';
 import {
   ContainerResolutionEntityException,
@@ -110,15 +115,22 @@ export class Factory {
    * teniendo en cuenta el nombre de la entidad proporcionada.
    * @param {string} className - Nombre de la entidad a resolver.
    * @returns {T} - Instancia resuelta.
+   * @throws {ContainerResolutionEntityException | ContainerResolutionException}
+   * Si `awilix` no logra resolver la entidad o alguna de sus dependencias.
+   * @throws Propaga sin modificar cualquier otro error (p. ej. uno lanzado por
+   * el propio constructor de la clase que se está resolviendo).
    */
   get<T>(className: string): T {
     try {
       return this.container.resolve(className);
     } catch (error) {
+      if (!(error instanceof AwilixResolutionError)) {
+        throw error;
+      }
       this.logger.info('Error resolving entity: ', error.message + '\n');
       const resolutionError = error.message.split('\n');
       const classNameFound = resolutionError[0].match(/'([^']+)'/);
-      if (classNameFound[1] === className) {
+      if (classNameFound?.[1] === className) {
         throw new ContainerResolutionEntityException(className, error.message);
       }
       throw new ContainerResolutionException(

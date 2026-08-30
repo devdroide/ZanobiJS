@@ -19,6 +19,15 @@ import { OnlyTextPatternFactory } from '../patterns/onlyTextPattern.service';
 import { TextPatternFactory } from '../patterns/textPattern.service';
 import { TokenPatternFactory } from '../patterns/tokenPattern.service';
 
+/**
+ * Valor de reemplazo cuando un patrón de enmascarado lanza una excepción.
+ *
+ * Diseño fail-closed intencional: `apply()` nunca debe devolver el texto
+ * original sin enmascarar ante un fallo, porque el propósito de este
+ * servicio es evitar que datos sensibles lleguen a un log en texto plano.
+ */
+export const MASKING_ERROR_PLACEHOLDER = '[MASKING_ERROR]';
+
 export class ProviderPatternService {
   private readonly listPattern: TPattern = new Map();
   private readonly configSchema: TPatternBySchema = new Map();
@@ -87,6 +96,12 @@ export class ProviderPatternService {
   }
 
   apply(text: string, patterns: string[]): string {
+    /** Sin patrones que aplicar no hay enmascarado que intentar: esto no es
+     * un fallo, es un no-op legítimo. El fail-closed de abajo es solo para
+     * cuando un patrón SÍ se intenta aplicar y su ejecución falla. */
+    if (!patterns || patterns.length === 0) {
+      return text;
+    }
     try {
       let resultMasker: string = text;
       patterns.forEach((patternName: string) => {
@@ -97,7 +112,7 @@ export class ProviderPatternService {
       });
       return resultMasker;
     } catch {
-      return text;
+      return MASKING_ERROR_PLACEHOLDER;
     }
   }
 }
