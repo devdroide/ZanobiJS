@@ -10,6 +10,7 @@ import {
   ContainerResolutionEntityException,
   ContainerResolutionException,
 } from './exceptions/resolution.exception';
+import { CircularModuleImportException } from './exceptions/circularModuleImport.exception';
 import { ILoggerService } from '@zanobijs/common';
 import { Logger } from '@zanobijs/common/utils';
 import { IFactoryOptions } from './interfaces';
@@ -27,6 +28,8 @@ export class Factory {
   private container: AwilixContainer<any>;
   private logger: ILoggerService;
   private options: IFactoryOptions;
+  private readonly scannedModules = new Set<TClass>();
+  private readonly processedModules = new Set<TClass>();
 
   constructor(appModule: TClass, options: IFactoryOptions = {}) {
     process.env.ZANOBIJS_LOGGER = 'false';
@@ -43,17 +46,34 @@ export class Factory {
    * Se encarga de escaenear modulo por modulo los proveedores con el fin de luego
    * poder ser registrados e inyectados en quien depende de ese proveedor
    * @param {TClass} module - Módulo desde el que se escanearan los proveedores.
+   * @param {TClass[]} path - Cadena de módulos ancestros en la recursión actual,
+   * usada para detectar ciclos de imports.
    * @private
+   * @throws {CircularModuleImportException} Si `module` ya está en `path`.
    */
-  private scanProviderModule(module: TClass): void {
+  private scanProviderModule(module: TClass, path: TClass[] = []): void {
+    if (path.includes(module)) {
+      throw new CircularModuleImportException(
+        [...path, module].map((m) => m.name).join(' -> '),
+      );
+    }
+    /** Un mismo módulo puede llegar por varias ramas del grafo de imports
+     * (ej. un CommonModule importado por varios módulos de feature). No es
+     * un error: ya fue escaneado, no hay nada más que hacer aquí. */
+    if (this.scannedModules.has(module)) {
+      return;
+    }
+    this.scannedModules.add(module);
+
     this.logger.debug('Factory - Scan Module:', module.name);
     this.moduleHandler.setup(module);
     this.moduleHandler.scan();
     this.logger.debug('===================================================');
     const importedModules = this.moduleHandler.getImports();
     if (importedModules && importedModules.length) {
+      const nextPath = [...path, module];
       importedModules.forEach((moduleImport) => {
-        this.scanProviderModule(moduleImport);
+        this.scanProviderModule(moduleImport, nextPath);
       });
     }
   }
@@ -72,8 +92,19 @@ export class Factory {
    * estos se le irá inyectando sus dependecias resueltas para ser usados por el usuario
    * @param {TClass} module - Módulo desde el que se registrarán las clases.
    * @private
+   *
+   * @remarks
+   * No repite la detección de ciclos: `scanProviderModule` ya recorrió este
+   * mismo grafo de imports antes (misma metadata, mismas aristas) y habría
+   * lanzado `CircularModuleImportException` si existiera uno. Solo se
+   * deduplica por módulo (`processedModules`) para el caso de diamante.
    */
   private processClassModule(module: TClass): void {
+    if (this.processedModules.has(module)) {
+      return;
+    }
+    this.processedModules.add(module);
+
     this.logger.debug('Factory - Process Class Module:', module.name);
     this.moduleHandler.setup(module);
     this.moduleHandler.initialize();
