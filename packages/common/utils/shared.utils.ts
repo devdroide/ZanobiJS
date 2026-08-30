@@ -135,6 +135,16 @@ export const unCapitalize = (word: string): string =>
   word.charAt(0).toLowerCase() + word.slice(1);
 
 /**
+ * Cache de nombres de parámetros por clase/función. `getConstructorParamNames`
+ * es pura respecto a `func` (mismo input → mismo output siempre), pero se
+ * invoca varias veces sobre la MISMA clase: una vez por cada `@Inject(token)`
+ * en el constructor (decorador de parámetro) más una vez desde
+ * `createClassDecorator` (`@Controller`/`@Injectable`). Sin cache, cada una
+ * de esas llamadas repite el mismo `toString()` + regex + parseo.
+ */
+const constructorParamNamesCache = new WeakMap<Function | object, string[]>();
+
+/**
  * Obtiene los nombres de los parámetros del constructor de una función o clase.
  *
  * Esta función es útil cuando se quiere inspeccionar y/o manipular los argumentos
@@ -148,21 +158,33 @@ export const unCapitalize = (word: string): string =>
  * getConstructorParamNames(exampleFunc) // Devuelve ["arg1", "arg2"]
  */
 export const getConstructorParamNames = (func: Function | object): string[] => {
+  if (constructorParamNamesCache.has(func)) {
+    return constructorParamNamesCache.get(func)!;
+  }
+
   const ctorString = func.toString();
   /** Encuentra lo que está dentro de los paréntesis del constructor. */
   const ctorRegex = /constructor\s*\(([^)]*)\)/;
   const ctorParamsMatch = ctorRegex.exec(ctorString);
   /** Verifica si paramsString está vacío */
-  if (!ctorParamsMatch) return [];
+  if (!ctorParamsMatch) {
+    constructorParamNamesCache.set(func, []);
+    return [];
+  }
 
   const paramsString = ctorParamsMatch[1].trim();
   /** Verifica si paramsString está vacío */
-  if (!paramsString) return [];
+  if (!paramsString) {
+    constructorParamNamesCache.set(func, []);
+    return [];
+  }
 
-  return paramsString.split(',').map((param) => {
+  const paramNames = paramsString.split(',').map((param) => {
     /** Elimina todo después e incluyendo ":" o "=" para manejar anotaciones de tipo y valores predeterminados */
     return param.split(':')[0].split('=')[0].trim();
   });
+  constructorParamNamesCache.set(func, paramNames);
+  return paramNames;
 };
 
 /**
