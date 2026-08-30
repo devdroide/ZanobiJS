@@ -20,3 +20,23 @@ export class CustomTestPatternMockFactory extends ABSPattern {
     return CustomTestPatternMock.getInstance();
   }
 }
+
+class ThrowingPatternMock implements IPattern {
+  private static instance: ThrowingPatternMock;
+  private constructor() {}
+
+  public static getInstance(): ThrowingPatternMock {
+    if (!ThrowingPatternMock.instance)
+      ThrowingPatternMock.instance = new ThrowingPatternMock();
+    return ThrowingPatternMock.instance;
+  }
+  mask(): string {
+    throw new Error('Simulated bug in a custom masking pattern');
+  }
+}
+
+export class ThrowingPatternMockFactory extends ABSPattern {
+  override createPattern(): IPattern {
+    return ThrowingPatternMock.getInstance();
+  }
+}

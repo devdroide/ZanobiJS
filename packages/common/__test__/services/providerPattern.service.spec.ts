@@ -1,12 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ProviderPatternService } from '../../services/masker/process/providerPattern.service';
+import {
+  MASKING_ERROR_PLACEHOLDER,
+  ProviderPatternService,
+} from '../../services/masker/process/providerPattern.service';
 import { schemaMock } from '../mocks/providerPattern.mock';
 import {
   MSG_PATTERN_EXIST,
   MSG_SCHEMA_PATTERN_EXIST,
   PatternException,
 } from '../../exceptions';
-import { CustomTestPatternMockFactory } from '../mocks/cutomsPattern.mock';
+import {
+  CustomTestPatternMockFactory,
+  ThrowingPatternMockFactory,
+} from '../mocks/cutomsPattern.mock';
 
 describe('Commons - Services - Provider Pattern', () => {
   describe('Pattern and Schema Configuration Response Error', () => {
@@ -115,6 +121,16 @@ describe('Commons - Services - Provider Pattern', () => {
     it('should respond without applying anything because the pattern does not exist.', () => {
       const maskerResult = provPattern.apply('12345678', ['SomePattern']);
       expect(maskerResult).toBe('12345678');
+    });
+    it('should respond with the fail-closed placeholder, never the original text, when a registered pattern throws', () => {
+      provPattern.setupCustomPattern(
+        'Throwing',
+        ThrowingPatternMockFactory,
+        false,
+      );
+      const maskerResult = provPattern.apply('4111111111111111', ['Throwing']);
+      expect(maskerResult).toBe(MASKING_ERROR_PLACEHOLDER);
+      expect(maskerResult).not.toBe('4111111111111111');
     });
   });
   describe('Responses Apply - Pattern All Text and Alternate', () => {
