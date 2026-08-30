@@ -1,6 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Factory } from '../index';
+import { Module as ModuleClass } from '../injector/module';
+import { CircularModuleImportException } from '../exceptions/circularModuleImport.exception';
 import {
+  CircularModuleA,
+  DiamondAppModule,
   Module1,
   Module2,
   Module4,
@@ -130,5 +134,28 @@ describe('Core - factory - Module to Module', () => {
     const app = factory.create();
     const controllerUser: ControllerUser = app.get('ControllerUser');
     expect(controllerUser.register()).toBe('Created');
+  });
+});
+
+describe('Core - factory - Module graph traversal', () => {
+  it('should scan and process each module only once even when reached via multiple import paths (diamond)', () => {
+    const setupSpy = vi.spyOn(ModuleClass.prototype, 'setup');
+    const factory = new Factory(DiamondAppModule, {
+      activeLoggerSystem: false,
+    });
+    const app = factory.create();
+    const controller1: Controller1 = app.get('controller1');
+    expect(controller1.getData()).toBe('Hello world');
+    // 4 módulos únicos en el grafo (DiamondAppModule, Module2, Module3, Module1)
+    // x 2 fases (scanProviderModule + processClassModule) = 8, sin importar
+    // que Module1 sea alcanzable por dos rutas distintas.
+    expect(setupSpy).toHaveBeenCalledTimes(8);
+    setupSpy.mockRestore();
+  });
+
+  it('should throw CircularModuleImportException when modules import each other', () => {
+    expect(
+      () => new Factory(CircularModuleA, { activeLoggerSystem: false }),
+    ).toThrow(CircularModuleImportException);
   });
 });
