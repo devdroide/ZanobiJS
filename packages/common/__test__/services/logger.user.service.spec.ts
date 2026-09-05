@@ -158,5 +158,33 @@ describe('Commons - Services - Logger User', () => {
       loggerUser.masker('requestSchema').success('print id:', dataMock);
       expect(successSpy).toHaveBeenCalledOnce();
     });
+    it('should not throw and should print a placeholder when the selected schema does not exist', () => {
+      const consoleLogSpy = vi
+        .spyOn(console, 'log')
+        .mockImplementation(() => {});
+      successSpy = vi.spyOn(loggerUser, 'success');
+
+      expect(() => {
+        loggerUser.masker('nonExistentSchema').success('print id:', dataMock);
+      }).not.toThrow();
+
+      expect(successSpy).toHaveBeenCalledOnce();
+      const printedMessage = consoleLogSpy.mock.calls[0][1];
+      expect(printedMessage).toContain('[MASKING_ERROR]');
+      consoleLogSpy.mockRestore();
+    });
+    it('should reset the selected schema after a masking failure (no leak to the next log)', () => {
+      const consoleLogSpy = vi
+        .spyOn(console, 'log')
+        .mockImplementation(() => {});
+      successSpy = vi.spyOn(loggerUser, 'success');
+
+      loggerUser.masker('nonExistentSchema').success('print id:', dataMock);
+      // sin volver a llamar .masker(), el próximo log no debe heredar el schema roto
+      expect(() => {
+        loggerUser.success('another log', dataMock);
+      }).not.toThrow();
+      consoleLogSpy.mockRestore();
+    });
   });
 });

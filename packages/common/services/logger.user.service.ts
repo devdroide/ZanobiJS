@@ -1,9 +1,13 @@
 /* eslint-disable no-console */
 import { ABSBaseLoggerService } from './base.logger.service';
 import { ProcessDataService } from './masker/process/processData.service';
-import { ProviderPatternService } from './masker/process/providerPattern.service';
+import {
+  MASKING_ERROR_PLACEHOLDER,
+  ProviderPatternService,
+} from './masker/process/providerPattern.service';
 import { ILoggerUserService, IOptionsLog } from '../interfaces';
 import { coerceBooleanProperty, colorPrint } from '../utils/shared.utils';
+import { Logger } from '../utils/logger.utils';
 
 /**
  * Servicio para manejar el registro de mensajes con diferentes niveles de importancia.
@@ -98,10 +102,24 @@ export class LoggerUserService
     let messageProcess = message;
     let argProcess = arg;
 
-    // Procesar los datos si el enmascarador está activo
+    // Procesar los datos si el enmascarador está activo. Un fallo del masker
+    // (ej. un schema mal configurado) nunca debe: (1) crashear el código que
+    // llamó al log, (2) imprimir el dato original sin enmascarar, ni (3)
+    // dejar `schemaNamaSelected` pegado para la próxima invocación.
     if (this.options.activeMasker) {
-      messageProcess = this.processData.process(messageProcess);
-      argProcess = arg ? this.processData.process(arg) : '';
+      try {
+        messageProcess = this.processData.process(messageProcess);
+        argProcess = arg ? this.processData.process(arg) : '';
+      } catch (error) {
+        Logger().error(
+          'Masker failed to process log data — check your schema configuration',
+          error.message,
+        );
+        messageProcess = MASKING_ERROR_PLACEHOLDER;
+        argProcess = MASKING_ERROR_PLACEHOLDER;
+      } finally {
+        this.deselectSchema();
+      }
     }
 
     // Determinar el color a usar

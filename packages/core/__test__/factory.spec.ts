@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Factory } from '../index';
 import { Module as ModuleClass } from '../injector/module';
 import { CircularModuleImportException } from '../exceptions/circularModuleImport.exception';
@@ -201,5 +201,48 @@ describe('Core - factory - createRequestScope', () => {
     const scopeB = app.createRequestScope();
 
     expect(scopeA.get('controller1')).toBe(scopeB.get('controller1'));
+  });
+});
+
+describe('Core - factory - logger env vars (SEC-05)', () => {
+  afterEach(() => {
+    delete process.env.ZANOBIJS_LOGGER;
+    delete process.env.ZANOBIJS_LOGGER_USER;
+  });
+
+  it('should default the env vars from options when none were set externally', () => {
+    delete process.env.ZANOBIJS_LOGGER;
+    delete process.env.ZANOBIJS_LOGGER_USER;
+
+    new Factory(ModuleEmpty, {
+      activeLoggerSystem: true,
+      activeLoggerUser: true,
+    });
+
+    expect(process.env.ZANOBIJS_LOGGER).toBe('true');
+    expect(process.env.ZANOBIJS_LOGGER_USER).toBe('true');
+  });
+
+  it('should default to false when neither the env var nor options provide a value', () => {
+    delete process.env.ZANOBIJS_LOGGER;
+    delete process.env.ZANOBIJS_LOGGER_USER;
+
+    new Factory(ModuleEmpty, {});
+
+    expect(process.env.ZANOBIJS_LOGGER).toBe('false');
+    expect(process.env.ZANOBIJS_LOGGER_USER).toBe('false');
+  });
+
+  it('should respect an externally-set env var instead of overwriting it with options', () => {
+    process.env.ZANOBIJS_LOGGER = 'true';
+    process.env.ZANOBIJS_LOGGER_USER = 'true';
+
+    new Factory(ModuleEmpty, {
+      activeLoggerSystem: false,
+      activeLoggerUser: false,
+    });
+
+    expect(process.env.ZANOBIJS_LOGGER).toBe('true');
+    expect(process.env.ZANOBIJS_LOGGER_USER).toBe('true');
   });
 });
