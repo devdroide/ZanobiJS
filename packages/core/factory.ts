@@ -89,8 +89,6 @@ export class Factory {
   private readonly processedModules = new Set<TClass>();
 
   constructor(appModule: TClass, options: IFactoryOptions = {}) {
-    process.env.ZANOBIJS_LOGGER = 'false';
-    process.env.ZANOBIJS_LOGGER_USER = 'false';
     this.options = options;
     this.evaluateOptions();
     this.logger = Logger();
@@ -232,10 +230,22 @@ export class Factory {
 
   /**
    * Se encarga de evaluar las opciones para ver si o no aplica y realizar lo correspondiente
+   *
+   * `ZANOBIJS_LOGGER`/`ZANOBIJS_LOGGER_USER` son pensadas para poder prenderse/apagarse
+   * desde la configuración de despliegue (variables de entorno de Lambda/contenedor) sin
+   * tocar código ni redeployar. Por eso, si el operador ya las configuró externamente,
+   * NO se pisan — `options` solo aplica como default cuando la variable no existe.
    */
   private evaluateOptions(): void {
-    if (this.options.activeLoggerSystem) process.env.ZANOBIJS_LOGGER = 'true';
-    if (this.options.activeLoggerUser)
-      process.env.ZANOBIJS_LOGGER_USER = 'true';
+    if (process.env.ZANOBIJS_LOGGER === undefined) {
+      process.env.ZANOBIJS_LOGGER = String(
+        this.options.activeLoggerSystem ?? false,
+      );
+    }
+    if (process.env.ZANOBIJS_LOGGER_USER === undefined) {
+      process.env.ZANOBIJS_LOGGER_USER = String(
+        this.options.activeLoggerUser ?? false,
+      );
+    }
   }
 }
