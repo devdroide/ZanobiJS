@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { Injectable } from '@zanobijs/common';
 import { Metadata } from '../metadata';
 import { ModuleEmpty } from './mocks/classModules.mock';
 import { Controller3, Service1 } from './mocks/classDependencies.mock';
@@ -60,6 +61,19 @@ describe('Core - metadata', () => {
       expect(resultMetadata).toHaveProperty('dParam');
       expect(resultMetadata).toHaveProperty('dInject');
       expect(resultMetadata.dInject.size).not.toBe(0);
+    });
+  });
+  describe('Get Lifetime', () => {
+    it('should respond singleton by default when there is no decorator', () => {
+      expect(metadata.getLifetime(genericClassForTesting)).toBe('singleton');
+    });
+    it('should respond singleton by default for a decorated class without options', () => {
+      expect(metadata.getLifetime(Service1)).toBe('singleton');
+    });
+    it('should respond the lifetime declared in the decorator options', () => {
+      @Injectable({ lifetime: 'request' })
+      class ServiceRequestScoped {}
+      expect(metadata.getLifetime(ServiceRequestScoped)).toBe('request');
     });
   });
 });

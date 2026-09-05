@@ -9,6 +9,17 @@ import { MissingInjectTokenException } from '../exceptions/missingInjectToken.ex
 export type Constructor<T> = { new (...args: any[]): T };
 
 /**
+ * Mapea el `lifetime` público de `ZanobiJS` al método fluido de `awilix`.
+ * `request` usa `Lifetime.SCOPED` de `awilix` internamente: sin un scope real
+ * creado (ver `Factory.createRequestScope`), se resuelve igual que `singleton`.
+ */
+const LIFETIME_METHOD = {
+  singleton: 'singleton',
+  request: 'scoped',
+  transient: 'transient',
+} as const;
+
+/**
  * La clase `Injector` es la encargada de manejar la inyección de dependencias
  * solo para parametros tipo objecto { provider, useValue }
  */
@@ -143,7 +154,8 @@ export class Injector {
    */
   getInjectorClass(target: TClass) {
     const injectData = this.getInjectData(target);
-    let injector = asClass(target).scoped();
+    const lifetime = this.metadata.getLifetime(target);
+    let injector = asClass(target)[LIFETIME_METHOD[lifetime]]();
     if (!isEmpty(injectData)) {
       this.logger.debug(
         `Inject - list dependencies to inject of ${target.name}:`,

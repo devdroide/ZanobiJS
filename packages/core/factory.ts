@@ -17,6 +17,63 @@ import { IFactoryOptions } from './interfaces';
 import { TClass } from './interfaces/globals.interface';
 
 /**
+ * Resuelve `className` desde `container` traduciendo los errores de `awilix`
+ * al vocabulario de excepciones de `ZanobiJS`. Compartido entre `Factory.get()`
+ * y `RequestScope.get()` para no duplicar el manejo de `AwilixResolutionError`.
+ * @throws {ContainerResolutionEntityException | ContainerResolutionException}
+ * Si `awilix` no logra resolver la entidad o alguna de sus dependencias.
+ * @throws Propaga sin modificar cualquier otro error (p. ej. uno lanzado por
+ * el propio constructor de la clase que se está resolviendo).
+ */
+function resolveEntity<T>(
+  container: AwilixContainer<any>,
+  className: string,
+  logger: ILoggerService,
+): T {
+  try {
+    return container.resolve(className);
+  } catch (error) {
+    if (!(error instanceof AwilixResolutionError)) {
+      throw error;
+    }
+    logger.info('Error resolving entity: ', error.message + '\n');
+    const resolutionError = error.message.split('\n');
+    const classNameFound = resolutionError[0].match(/'([^']+)'/);
+    if (classNameFound?.[1] === className) {
+      throw new ContainerResolutionEntityException(className, error.message);
+    }
+    throw new ContainerResolutionException(
+      className,
+      resolutionError[0],
+      error.message,
+    );
+  }
+}
+
+/**
+ * Handle atado a un scope de `awilix` puntual (una copia liviana del
+ * contenedor raíz, ver `Factory.createRequestScope`). Resuelve entidades
+ * `singleton` desde el contenedor raíz (reusadas, gratis) y entidades
+ * `request` desde este scope (instancia nueva, se descarta con él).
+ */
+export class RequestScope {
+  constructor(
+    private readonly container: AwilixContainer<any>,
+    private readonly logger: ILoggerService,
+  ) {}
+
+  /**
+   * Resuelve y devuelve una instancia del scope teniendo en cuenta el
+   * nombre de la entidad proporcionada.
+   * @param {string} className - Nombre de la entidad a resolver.
+   * @returns {T} - Instancia resuelta.
+   */
+  get<T>(className: string): T {
+    return resolveEntity<T>(this.container, className, this.logger);
+  }
+}
+
+/**
  * Factory es una clase que facilita la creación y configuración de
  * contenedores de inyección de dependencias utilizando metadatos y
  * la librería `awilix` para registrar y resolver entidades como:
@@ -132,7 +189,10 @@ export class Factory {
    * @returns {Factory} - Instancia actual de la fábrica.
    */
   create(): Factory {
-    this.container = createContainer({ injectionMode: InjectionMode.CLASSIC });
+    this.container = createContainer({
+      injectionMode: InjectionMode.CLASSIC,
+      strict: true,
+    });
     this.container.register(this.registeredClasses);
     this.logger.info(
       'Factory - classes and providers registered in the container',
@@ -152,24 +212,22 @@ export class Factory {
    * el propio constructor de la clase que se está resolviendo).
    */
   get<T>(className: string): T {
-    try {
-      return this.container.resolve(className);
-    } catch (error) {
-      if (!(error instanceof AwilixResolutionError)) {
-        throw error;
-      }
-      this.logger.info('Error resolving entity: ', error.message + '\n');
-      const resolutionError = error.message.split('\n');
-      const classNameFound = resolutionError[0].match(/'([^']+)'/);
-      if (classNameFound?.[1] === className) {
-        throw new ContainerResolutionEntityException(className, error.message);
-      }
-      throw new ContainerResolutionException(
-        className,
-        resolutionError[0],
-        error.message,
-      );
-    }
+    return resolveEntity<T>(this.container, className, this.logger);
+  }
+
+  /**
+   * Crea una copia liviana del contenedor raíz para usar durante una
+   * única invocación/petición (Lambda, Azure Function, request HTTP...).
+   *
+   * Las entidades `singleton` se reusan tal cual desde el contenedor raíz
+   * (cero costo). Las entidades con `lifetime: 'request'` (ver `@Injectable`)
+   * se resuelven de cero dentro de este scope y se descartan junto con él.
+   *
+   * @returns {RequestScope} - Handle atado a este scope puntual.
+   */
+  createRequestScope(): RequestScope {
+    const scope = this.container.createScope();
+    return new RequestScope(scope, this.logger);
   }
 
   /**

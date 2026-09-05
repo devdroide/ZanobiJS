@@ -11,12 +11,14 @@ import {
   Module5,
   ModuleEmpty,
   ModuleRepository,
+  ModuleRequestScope,
   ModuleWithThrowingConstructor,
 } from './mocks/classModules.mock';
 import {
   Controller1,
   Controller6,
   ControllerUser,
+  ServiceRequestScoped,
 } from './mocks/classDependencies.mock';
 
 describe('Core - factory options', () => {
@@ -157,5 +159,47 @@ describe('Core - factory - Module graph traversal', () => {
     expect(
       () => new Factory(CircularModuleA, { activeLoggerSystem: false }),
     ).toThrow(CircularModuleImportException);
+  });
+});
+
+describe('Core - factory - createRequestScope', () => {
+  it("should resolve a fresh instance of a 'request' lifetime class per scope", () => {
+    const factory = new Factory(ModuleRequestScope, {
+      activeLoggerSystem: false,
+    });
+    const app = factory.create();
+
+    const scopeA = app.createRequestScope();
+    const serviceA: ServiceRequestScoped = scopeA.get('serviceRequestScoped');
+    serviceA.setState('customer-A-data');
+
+    const scopeB = app.createRequestScope();
+    const serviceB: ServiceRequestScoped = scopeB.get('serviceRequestScoped');
+
+    expect(serviceB).not.toBe(serviceA);
+    expect(serviceB.getState()).toBeUndefined();
+  });
+
+  it('should reuse the same instance within the same scope', () => {
+    const factory = new Factory(ModuleRequestScope, {
+      activeLoggerSystem: false,
+    });
+    const app = factory.create();
+
+    const scope = app.createRequestScope();
+    const first: ServiceRequestScoped = scope.get('serviceRequestScoped');
+    const second: ServiceRequestScoped = scope.get('serviceRequestScoped');
+
+    expect(second).toBe(first);
+  });
+
+  it('should reuse the same singleton instance across different request scopes', () => {
+    const factory = new Factory(Module1, { activeLoggerSystem: false });
+    const app = factory.create();
+
+    const scopeA = app.createRequestScope();
+    const scopeB = app.createRequestScope();
+
+    expect(scopeA.get('controller1')).toBe(scopeB.get('controller1'));
   });
 });

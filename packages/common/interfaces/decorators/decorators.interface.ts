@@ -11,3 +11,18 @@ export interface IDependenciesClass {
   nameClassContainer: string;
   nameParameter: string;
 }
+
+/**
+ * Ciclo de vida de una clase dentro del contenedor de inyección de dependencias.
+ * - singleton: una sola instancia para toda la vida del proceso (default).
+ * - request: una instancia nueva por cada `factory.createRequestScope()`.
+ * - transient: una instancia nueva en cada resolución.
+ */
+export type ClassLifetime = 'singleton' | 'request' | 'transient';
+
+/**
+ * Opciones aceptadas por `@Injectable` y `@Controller`.
+ */
+export interface IClassDecoratorOptions {
+  lifetime?: ClassLifetime;
+}
