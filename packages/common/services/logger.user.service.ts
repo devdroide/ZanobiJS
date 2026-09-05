@@ -34,6 +34,10 @@ export class LoggerUserService
    */
   private constructor(options?: IOptionsLog) {
     super(options);
+    this.processData.configureLimits({
+      maxDepth: options?.maxDepth,
+      maxStringLength: options?.maxStringLength,
+    });
     this.initializeMasker();
   }
 

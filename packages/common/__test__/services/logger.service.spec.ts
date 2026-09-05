@@ -67,6 +67,40 @@ describe('Commons - Services - Logger', () => {
       expect(debugSpy).toHaveBeenCalledOnce();
     });
   });
+  describe('maxDepth (SEC-06)', () => {
+    let consoleLogSpy: ReturnType<typeof vi.spyOn>;
+
+    beforeEach(() => {
+      process.env.ZANOBIJS_LOGGER = 'true';
+      consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    });
+    afterEach(() => {
+      consoleLogSpy.mockRestore();
+    });
+
+    it('should bound util.inspect depth with the default (10) when not provided', () => {
+      LoggerService['instance'] = null;
+      const logger = LoggerService.getInstance({ withColor: false });
+      const shallow = { a: { b: 'value' } };
+      logger.info('deep object', shallow);
+      const printedArg = consoleLogSpy.mock.calls[0][3];
+      expect(printedArg).toContain('value');
+    });
+
+    it('should truncate nested objects beyond a custom maxDepth', () => {
+      LoggerService['instance'] = null;
+      const logger = LoggerService.getInstance({
+        withColor: false,
+        maxDepth: 1,
+      });
+      const deep = { a: { b: { c: 'too deep' } } };
+      logger.info('deep object', deep);
+      const printedArg = consoleLogSpy.mock.calls[0][3];
+      expect(printedArg).not.toContain('too deep');
+      expect(printedArg).toContain('[Object]');
+    });
+  });
+
   describe('Options with color', () => {
     let logger: ILoggerService;
     let successSpy: ReturnType<typeof vi.spyOn>;
