@@ -6,6 +6,7 @@ import {
   Controller7,
   ControllerUser,
   RegisterUserUseCase,
+  ServiceRequestScoped,
   ServiceThatThrowsOnConstruct,
   UserImplements,
 } from './classDependencies.mock';
@@ -93,6 +94,14 @@ export class ModuleRepository {}
   exports: [],
 })
 export class ModuleWithThrowingConstructor {}
+
+@Module({
+  imports: [],
+  controllers: [],
+  services: [ServiceRequestScoped],
+  exports: [],
+})
+export class ModuleRequestScope {}
 
 /**
  * Diamante real: Module2 y Module3 ya importan Module1 cada uno por su

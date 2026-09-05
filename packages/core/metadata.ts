@@ -1,4 +1,4 @@
-import { IModuleConfig } from '@zanobijs/common';
+import { ClassLifetime, IModuleConfig } from '@zanobijs/common';
 import {
   DEPENDENCIES_CLASS,
   DEPENDENCIES_INJECT,
@@ -8,6 +8,7 @@ import {
   IS_IMPORTS,
   IS_MODULE,
   IS_SERVICE,
+  LIFETIME_CLASS,
   MODULE_CONTROLLERS,
   MODULE_EXPORTS,
   MODULE_IMPORTS,
@@ -100,6 +101,16 @@ export class Metadata {
    */
   getInjectionDependencies(target: TClass): Map<string, string> {
     return Reflect.getMetadata(DEPENDENCIES_INJECT, target) || new Map();
+  }
+
+  /**
+   * Obtiene el lifetime declarado en `@Injectable`/`@Controller` de una clase.
+   *
+   * @param { TClass } target - La función/clase objetivo.
+   * @returns El lifetime de la clase. `'singleton'` si no se declaró ninguno.
+   */
+  getLifetime(target: TClass): ClassLifetime {
+    return Reflect.getMetadata(LIFETIME_CLASS, target) ?? 'singleton';
   }
 
   /**

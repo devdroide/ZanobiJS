@@ -1,16 +1,18 @@
 import 'reflect-metadata';
-import { IDependenciesClass } from '../interfaces';
+import { IDependenciesClass, IClassDecoratorOptions } from '../interfaces';
 import { Logger } from '../utils';
 import { unCapitalize, getConstructorParamNames } from '../utils/shared.utils';
 import {
   DEPENDENCIES_CONSTRUCTOR,
   DEPENDENCIES_CLASS,
+  LIFETIME_CLASS,
 } from '../utils/constants';
 const logger = Logger();
 // Función auxiliar que contiene la lógica común
 export function createClassDecorator(
   type: 'Service' | 'Controller',
   metadataKey: string,
+  options?: IClassDecoratorOptions,
 ): ClassDecorator {
   return (target: Function) => {
     logger.debug(`@${type} target`, target.name);
@@ -40,5 +42,10 @@ export function createClassDecorator(
     /** Define los metadatos de dependencias en la clase. */
     Reflect.defineMetadata(DEPENDENCIES_CLASS, dependenciesClass, target);
     Reflect.defineMetadata(metadataKey, true, target);
+    Reflect.defineMetadata(
+      LIFETIME_CLASS,
+      options?.lifetime ?? 'singleton',
+      target,
+    );
   };
 }

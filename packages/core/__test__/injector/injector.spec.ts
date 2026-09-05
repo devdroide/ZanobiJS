@@ -1,4 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { Lifetime } from 'awilix';
 import { Injector } from '../../injector';
 import { MissingInjectTokenException } from '../../exceptions/missingInjectToken.exception';
 import {
@@ -11,6 +12,7 @@ import {
   Controller2,
   Controller3,
   Service1,
+  ServiceRequestScoped,
 } from './mocks/classDependenciesToInject';
 
 describe('Core - Injector - injector', () => {
@@ -47,6 +49,16 @@ describe('Core - Injector - injector', () => {
     expect(getInject).toHaveProperty('lifetime');
     expect(getInject).toHaveProperty('inject');
     expect(getInject).toHaveProperty('injector');
+  });
+
+  it('Should default to SINGLETON lifetime when no options were declared', () => {
+    const getInject = injector.getInjectorClass(Service1);
+    expect(getInject.lifetime).toBe(Lifetime.SINGLETON);
+  });
+
+  it("Should use SCOPED lifetime for classes with { lifetime: 'request' }", () => {
+    const getInject = injector.getInjectorClass(ServiceRequestScoped);
+    expect(getInject.lifetime).toBe(Lifetime.SCOPED);
   });
 
   it('Should respond an object type asClass without injector', () => {

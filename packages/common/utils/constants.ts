@@ -8,6 +8,7 @@ export const IS_IMPORTS = '__is:import__';
 export const IS_CONTROLLER = '__is:controller__';
 export const IS_SERVICE = '__is:service__';
 export const IS_EXPORT = '__is:export__';
+export const LIFETIME_CLASS = '__lifetime:class__';
 export const MODULE_IMPORTS = 'module:imports';
 export const MODULE_CONTROLLERS = 'module:controllers';
 export const MODULE_SERVICES = 'module:services';

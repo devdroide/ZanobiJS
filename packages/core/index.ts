@@ -1,3 +1,3 @@
-export { Factory } from './factory';
+export { Factory, RequestScope } from './factory';
 export * from './injector';
 export * from './interfaces';
