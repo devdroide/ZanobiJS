@@ -93,4 +93,40 @@ describe('Commons - Services - Process Data', () => {
       expect(resultMasker).toBe(input);
     });
   });
+
+  describe('DoS limits', () => {
+    let processData: ProcessDataService;
+
+    beforeEach(() => {
+      ProcessDataService['instance'] = null;
+      processData = ProcessDataService.getInstance();
+    });
+
+    it('should keep default limits when configureLimits receives no overrides', () => {
+      processData.configureLimits({});
+      const resultMasker = processData.process('Some text');
+      expect(resultMasker).toBe('Some text');
+    });
+
+    it('should stop recursion at maxDepth and return a placeholder', () => {
+      processData.configureLimits({ maxDepth: 2 });
+      const deep = { a: { b: { c: 'too deep' } } };
+      const resultMasker = processData.process(deep);
+      expect(resultMasker.a.b).toBe('[MAX_DEPTH_EXCEEDED]');
+    });
+
+    it('should truncate a long plain string before applying mask patterns', () => {
+      processData.configureLimits({ maxStringLength: 10 });
+      const longText = 'a'.repeat(50);
+      const resultMasker = processData.process(longText);
+      expect(resultMasker).toBe('a'.repeat(10) + '[TRUNCATED]');
+    });
+
+    it('should truncate a long text that looks like an object but fails to parse', () => {
+      processData.configureLimits({ maxStringLength: 10 });
+      const malformed = '{' + 'a'.repeat(50) + '}';
+      const resultMasker = processData.process(malformed);
+      expect(resultMasker).toBe(malformed.slice(0, 10) + '[TRUNCATED]');
+    });
+  });
 });

@@ -14,6 +14,7 @@ export abstract class ABSBaseLoggerService {
     this.options.withColor = options?.withColor ?? true;
     this.options.activeMasker = options?.activeMasker ?? false;
     this.options.configSchemaMasker = options?.configSchemaMasker ?? {};
+    this.options.maxDepth = options?.maxDepth ?? 10;
   }
 
   /**
@@ -30,13 +31,18 @@ export abstract class ABSBaseLoggerService {
   /**
    * Formatea el argumento que se va a imprimir.
    *
+   * `depth` está acotado por `options.maxDepth` (default 10) en vez de
+   * `null` (sin límite): un objeto arbitrariamente grande/anidado que
+   * llegue a loguearse (ej. el body de un request) no debe poder forzar
+   * una serialización sin cota — mismo riesgo de DoS que en el masker.
+   *
    * @param arg - argumento a formatear para imprimir.
    * @returns argumentos formateado.
    */
   protected formatArg(arg: any) {
     return util.inspect(arg, {
       showHidden: false,
-      depth: null,
+      depth: this.options.maxDepth,
       colors: this.options.withColor,
     });
   }
