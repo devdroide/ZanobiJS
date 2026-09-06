@@ -28,7 +28,7 @@ jobs:
           fi
 
       - name: Check branch name pattern
-        if: github.base_ref == 'develop'
+        if: github.base_ref == 'develop' && github.actor != 'dependabot[bot]'
         env:
           BRANCH_NAME: ${{ github.head_ref }}
         run: |
