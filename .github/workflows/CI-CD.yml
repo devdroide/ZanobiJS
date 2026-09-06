@@ -11,9 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check PR title follows Conventional Commits
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "🔍 Checking PR title for conventional commit format"
-          PR_TITLE="${{ github.event.pull_request.title }}"
           if [[ "$PR_TITLE" =~ ^(chore|ci|docs|feat|fix|style|refactor|test|sample|build|revert).*: ]]; then
             echo "✅ PR title is valid: $PR_TITLE"
           else
@@ -28,8 +29,9 @@ jobs:
 
       - name: Check branch name pattern
         if: github.base_ref == 'develop'
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
         run: |
-          BRANCH_NAME="${{ github.head_ref }}"
           if [[ "$BRANCH_NAME" =~ ^(chore|ci|docs|feat|fix|style|refactor|test|sample|build|revert)\/.+ ]]; then
             echo "✅ Branch name $BRANCH_NAME follows the required naming convention"
           else
@@ -39,7 +41,7 @@ jobs:
           fi
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
 
@@ -49,12 +51,12 @@ jobs:
     needs: [validate-branch]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
 
       - name: Setup Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22.13.0'
           cache: 'npm'
@@ -96,23 +98,28 @@ jobs:
       - name: Check if changes are inside packages
         id: check_changes
         run: |
-          echo "🔍 Checking for changes inside packages"
+          echo "🔍 Checking for changes inside packages or workflows"
           git fetch origin ${{ github.base_ref }} --depth=1
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
           echo "Changed files:"
           echo "$CHANGED_FILES"
 
-          if echo "$CHANGED_FILES" | grep -q '^packages/'; then
-            echo "✅ Changes detected inside packages"
+          # .github/workflows/ se incluye para que Sonar reescanee sus reglas
+          # de GitHub Actions cuando cambian los workflows, no solo el código.
+          if echo "$CHANGED_FILES" | grep -qE '^(packages/|\.github/workflows/)'; then
+            echo "✅ Changes detected inside packages or workflows"
             echo "changed=true" >> $GITHUB_OUTPUT
           else
-            echo "🟡 No changes inside packages"
+            echo "🟡 No relevant changes detected"
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: SonarQube Scan
         if: steps.check_changes.outputs.changed == 'true'
-        uses: SonarSource/sonarqube-scan-action@master
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f # v8.2.1
+        with:
+          # v8 cambió el default a false; se mantiene el comportamiento previo explícito
+          skipSignatureVerification: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -123,7 +130,7 @@ jobs:
 
       - name: SonarQube Quality Gate check
         if: steps.check_changes.outputs.changed == 'true'
-        uses: SonarSource/sonarqube-quality-gate-action@master
+        uses: SonarSource/sonarqube-quality-gate-action@7a5fffe8e523c40e0c740b6bc2712ab503e52efa # v1.2.1
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
