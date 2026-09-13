@@ -134,3 +134,6 @@ dist
 .wiki/
 CLAUDE.md
 .plans/
+
+# test/bundling — artefactos generados por npm run test:bundle
+test/bundling/compiled/

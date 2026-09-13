@@ -20,6 +20,24 @@ describe('Commons - Utils - shared utils', () => {
     class AnService {}
     expect(isClass(AnService)).toBe(true);
   });
+  it('should respond false for a plain function (not a class)', () => {
+    function aFunction() {}
+    expect(isClass(aFunction)).toBe(false);
+  });
+  it('should respond false for a non-function value', () => {
+    expect(isClass('not a function')).toBe(false);
+  });
+  it('should respond true for an anonymous class expression (SEC-02 regression — esbuild + keepNames)', () => {
+    // Simula lo que hace esbuild con `keepNames: true`: convierte una clase
+    // nombrada en una expresión de clase anónima, reasignando `.name` en
+    // runtime. Un isClass() basado en Function.toString() (`/^class\s/`)
+    // falla acá porque el texto es "class{...}", sin espacio ni nombre.
+    const AnonymousClass = class {
+      method() {}
+    };
+    Object.defineProperty(AnonymousClass, 'name', { value: 'RenamedLater' });
+    expect(isClass(AnonymousClass)).toBe(true);
+  });
   it('should respond is object', () => {
     const myObject = {};
     expect(isObject(myObject)).toBe(true);

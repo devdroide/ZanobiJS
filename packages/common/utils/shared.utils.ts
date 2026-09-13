@@ -11,14 +11,23 @@ export function isFunction(value: any): boolean {
 /**
  * Verifica si la función proporcionada es una clase.
  *
+ * No depende de `Function.prototype.toString()` — un bundler puede convertir
+ * una clase nombrada en una expresión de clase anónima (ej. esbuild con
+ * `keepNames: true` produce `class{...}` sin identificador, reasignando
+ * `.name` en runtime), lo que rompe un regex como `/^class\s/`. En cambio,
+ * usa una propiedad garantizada por el spec de ECMAScript e independiente
+ * del texto fuente: el `prototype` de una clase es siempre no-escribible
+ * (`writable: false`), mientras que el de una función común es escribible.
+ * Sobrevive cualquier minificación/bundling.
+ *
  * @param func - La función a verificar.
  * @returns Verdadero si es una clase; falso de lo contrario.
  */
 export function isClass(func: any): boolean {
   if (typeof func !== 'function') return false;
 
-  const funcAsString = Function.prototype.toString.call(func);
-  return /^class\s/.test(funcAsString);
+  const descriptor = Object.getOwnPropertyDescriptor(func, 'prototype');
+  return !!descriptor && descriptor.writable === false;
 }
 
 /**

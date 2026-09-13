@@ -14,6 +14,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:bundle": "tsc -p test/bundling/tsconfig.json && node test/bundling/verify-bundling.mjs",
     "testInject": "vitest run packages/core/__test__/injector/**.spec.ts",
     "testFactory": "vitest run packages/core/__test__/**.spec.ts",
     "testCore": "vitest run packages/core/**/*.spec.ts",
@@ -34,6 +35,7 @@
     "@types/node": "^20.8.7",
     "@vitest/coverage-v8": "^4.1.11",
     "del": "^7.1.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
@@ -54,6 +56,7 @@
   },
   "overrides": {
     "js-yaml": "4.3.2",
-    "pacote": "21.5.1"
+    "pacote": "21.5.1",
+    "smol-toml": "1.8.0"
   }
 }
