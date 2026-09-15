@@ -26,9 +26,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: '22.13.0'
+          node-version: '22.14.0'
           registry-url: 'https://registry.npmjs.org/'
           cache: 'npm'
+
+      # Trusted Publishing (OIDC) requiere npm >= 11.5.1; el npm bundleado con Node 22.14.0 es menor.
+      - name: Update npm for OIDC trusted publishing
+        run: npm install -g npm@11.5.1
 
       - name: Install dependencies
         run: npm ci
@@ -91,8 +95,7 @@ jobs:
             npm exec --no -- lerna publish from-package --yes
           fi
           echo "🚀 Version v$VERSION Published to NPM with tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ZANOBIJS_31122025 }}
+        # Publish vía OIDC Trusted Publishing (npm >= 11.5.1) — sin token de larga vida.
 
       - name: Without Publish to NPM
         if: steps.lerna_check.outputs.has_changes == 'false'
