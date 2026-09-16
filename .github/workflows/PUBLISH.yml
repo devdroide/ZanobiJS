@@ -24,12 +24,19 @@ jobs:
           fetch-depth: 0
           ssh-key: ${{ secrets.DEPLOY_KEY }}
 
+      # Sin registry-url: ese input siempre escribe
+      # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` en .npmrc — con
+      # NODE_AUTH_TOKEN sin definir (caso esperado con Trusted Publishing,
+      # sin token clásico), el placeholder se expande a vacío y npm ve "hay
+      # auth configurada", usando el flujo clásico con token vacío en vez de
+      # disparar el intercambio OIDC — causa raíz real, verificada, del 404.
+      # npm apunta a registry.npmjs.org por default, no hace falta el input.
+      # Tampoco cache: mismo motivo que documenta el ejemplo oficial de npm
+      # para Trusted Publishing (evitar credenciales/config vieja en caché).
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22.14.0'
-          registry-url: 'https://registry.npmjs.org/'
-          cache: 'npm'
 
       # Trusted Publishing (OIDC) requiere npm >= 11.5.1; el npm bundleado con Node 22.14.0 es menor.
       - name: Update npm for OIDC trusted publishing
