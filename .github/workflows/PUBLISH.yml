@@ -13,8 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      # OIDC token para npm provenance — lerna lo detecta y activa solo
-      # (GITHUB_ACTIONS + repo público), no requiere flag en el comando.
+      # OIDC token para npm provenance (auto-detectado por libnpmpublish vía
+      # GITHUB_ACTIONS + repo público) y para Trusted Publishing (detectado
+      # por el comando `npm publish` real — ver el paso "Publish to NPM").
       id-token: write
     steps:
       - name: Checkout code
@@ -71,30 +72,40 @@ jobs:
         id: lerna_check
         run: |
           if [[ "${{ env.VERSION_OLD }}" == "${{ env.VERSION_NEW }}" ]]; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "👷 No changes to version: ${{ env.VERSION_OLD }}"
+            echo "👷 No new version bump: ${{ env.VERSION_OLD }} — building/publishing anyway"
           else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "🎉 New version (${{ steps.set_vars.outputs.BRANCH }}): ${{ env.VERSION_NEW }}"
           fi
 
+      # Build y Publish corren SIEMPRE (no solo cuando lerna detecta un bump
+      # nuevo): el loop de `npm publish` de abajo es idempotente por paquete
+      # (npm view decide si ya está publicado), así que si algo quedó
+      # bumpeado en git pero nunca publicado de verdad (ej. un run anterior
+      # falló en el publish real), el siguiente push a beta/main lo
+      # recupera solo — sin depender de que aparezca un commit nuevo que
+      # fuerce otro bump.
       - name: Build packages
-        if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
           npm run build
           echo "📦 Build completed!"
 
       - name: Publish to NPM
-        if: steps.lerna_check.outputs.has_changes == 'true'
         run: |
-          if [[ ${{ steps.set_vars.outputs.BRANCH }} == 'beta' ]]; then
-            npm exec --no -- lerna publish from-package --yes --pre-dist-tag beta
-          else
-            npm exec --no -- lerna publish from-package --yes
-          fi
-          echo "🚀 Version v$VERSION Published to NPM with tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
-        # Publish vía OIDC Trusted Publishing (npm >= 11.5.1) — sin token de larga vida.
-
-      - name: Without Publish to NPM
-        if: steps.lerna_check.outputs.has_changes == 'false'
-        run: echo "👷 There are no changes to publish on NPM."
+          # `lerna publish` NO usa Trusted Publishing (OIDC): llama a la librería
+          # libnpmpublish directo, nunca ejecuta el comando `npm publish` del CLI
+          # real — y el intercambio OIDC de Trusted Publishing vive únicamente en
+          # `npm/lib/commands/publish.js` (verificado en el código fuente de npm).
+          # Por eso se publica paquete por paquete con `npm publish` real: solo
+          # ese comando dispara la detección OIDC.
+          DIST_TAG="${{ steps.set_vars.outputs.DIST_TAG }}"
+          for pkg_dir in packages/*/; do
+            PKG_NAME=$(node -p "require('./${pkg_dir}package.json').name")
+            PKG_VERSION=$(node -p "require('./${pkg_dir}package.json').version")
+            if npm view "$PKG_NAME@$PKG_VERSION" version >/dev/null 2>&1; then
+              echo "⏭️  $PKG_NAME@$PKG_VERSION ya está publicado, se omite"
+            else
+              echo "🚀 Publicando $PKG_NAME@$PKG_VERSION (tag: $DIST_TAG)"
+              (cd "$pkg_dir" && npm publish --tag "$DIST_TAG")
+            fi
+          done
+          echo "🚀 Versión v${{ env.VERSION_NEW }} publicada a NPM con tag $DIST_TAG"
