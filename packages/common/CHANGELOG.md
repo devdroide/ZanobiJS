@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.1](https://github.com/devdroide/ZanobiJS/compare/v2.0.0-beta.0...v2.0.0-beta.1) (2026-09-16)
+
+### Bug Fixes
+
+- **commons:** correct stale maxDepth doc comment after logger-user extraction ([26e06b5](https://github.com/devdroide/ZanobiJS/commit/26e06b5d70f2776c5aa6b5006e10a642e0e566be))
+
 # [2.0.0-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.2...v2.0.0-beta.0) (2026-09-16)
 
 ### Bug Fixes
