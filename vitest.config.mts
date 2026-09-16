@@ -28,6 +28,10 @@ export default defineConfig({
         __dirname,
         'packages/common/exceptions/runtime.exception.ts',
       ),
+      '@zanobijs/common/services/base.logger.service': path.resolve(
+        __dirname,
+        'packages/common/services/base.logger.service.ts',
+      ),
       '@zanobijs/common/utils': path.resolve(__dirname, 'packages/common/utils/index.ts'),
       '@zanobijs/common': path.resolve(__dirname, 'packages/common/index.ts'),
     },

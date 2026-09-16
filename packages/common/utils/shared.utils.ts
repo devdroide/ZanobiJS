@@ -66,28 +66,6 @@ export function isMap(value: any): boolean {
 }
 
 /**
- * Verifica si el valor proporcionado es un posible objeto transformado en cadena.
- *
- * @param value - El valor a verificar.
- * @returns Verdadero si el valor es un posible objeto; falso de lo contrario.
- */
-export function isObjectString(value: string) {
-  const trimmed = value.trim();
-  return trimmed.startsWith('{') && trimmed.endsWith('}');
-}
-
-/**
- * Verifica si el valor proporcionado es un posible array transformado en cadena.
- *
- * @param value - El valor a verificar.
- * @returns Verdadero si el valor es un posible array; falso de lo contrario.
- */
-export function isArrayString(value: string) {
-  const trimmed = value.trim();
-  return trimmed.startsWith('[') && trimmed.endsWith(']');
-}
-
-/**
  * Verifica si el valor proporcionado es null.
  *
  * @param value - El valor a verificar.
