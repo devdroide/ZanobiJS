@@ -12,13 +12,8 @@ gulp.task("clean:ts", async () => {
     const cleanTasks = packages.map(async (packageName) => {
     console.log(`Deleting files in packages/${packageName}`);
     await deleteAsync([
-      `packages/${packageName}/*.js`,
-      `packages/${packageName}/*.js.map`,
-      `packages/${packageName}/*.d.ts`,
       `packages/${packageName}/*.tsbuildinfo`,
-      `packages/${packageName}/**/*.js`,
-      `packages/${packageName}/**/*.js.map`,
-      `packages/${packageName}/**/*.d.ts`,
+      `packages/${packageName}/lib`,
     ]);
     console.log(`Files deleted in packages/${packageName}`);
   });

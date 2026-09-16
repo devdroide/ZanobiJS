@@ -1,12 +1,15 @@
 {
   "extends": "../tsconfig.build.json",
   "compilerOptions": {
-    "outDir": ".",
+    "outDir": "lib/types",
     "rootDir": ".",
+    "composite": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "paths": {
       "@zanobijs/common": ["../common/lib/types"],
       "@zanobijs/common/*": ["../common/lib/types/*"]
     }
   },
-  "exclude": ["node_modules", "dist", "lib", "__test__/**/*", "*.spec.ts"]
+  "exclude": ["node_modules", "lib", "dist", "__test__/**/*", "*.spec.ts"]
 }

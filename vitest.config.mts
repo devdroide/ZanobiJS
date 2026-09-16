@@ -1,4 +1,8 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import swc from 'unplugin-swc';
 
 // unplugin-swc es obligatorio: el transform por defecto de Vitest (esbuild)
@@ -7,11 +11,30 @@ import swc from 'unplugin-swc';
 export default defineConfig({
   plugins: [swc.vite()],
   resolve: {
-    // Vite resuelve .js antes que .ts por defecto. Los packages se publican
-    // compilando el .js junto al .ts (sin dist/, porque hay imports profundos
-    // tipo @zanobijs/common/utils/constants sin exports map) — sin esto, un
-    // `npm run build` local seguido de `npm test` sin `npm run clean` de por
-    // medio hace que los tests carguen el .js compilado en vez del .ts fuente.
+    // Con el `exports` map de PERF-05, Node/Vite resuelve @zanobijs/* contra
+    // el build compilado en packages/*/lib/. Estos alias fuerzan resolución
+    // directa contra el .ts fuente para que los tests siempre corran contra
+    // código en vivo, nunca contra un build (posiblemente viejo/inexistente).
+    alias: {
+      '@zanobijs/common/utils/constants': path.resolve(
+        __dirname,
+        'packages/common/utils/constants.ts',
+      ),
+      '@zanobijs/common/utils/shared.utils': path.resolve(
+        __dirname,
+        'packages/common/utils/shared.utils.ts',
+      ),
+      '@zanobijs/common/exceptions/runtime.exception': path.resolve(
+        __dirname,
+        'packages/common/exceptions/runtime.exception.ts',
+      ),
+      '@zanobijs/common/utils': path.resolve(__dirname, 'packages/common/utils/index.ts'),
+      '@zanobijs/common': path.resolve(__dirname, 'packages/common/index.ts'),
+    },
+    // Vite resuelve .js antes que .ts por defecto. Sin esto, un `npm run build`
+    // local seguido de `npm test` sin `npm run clean` de por medio hace que
+    // los tests carguen el .js compilado en vez del .ts fuente en imports
+    // relativos dentro del propio package.
     extensions: ['.ts', '.mts', '.js', '.mjs', '.json'],
   },
   test: {

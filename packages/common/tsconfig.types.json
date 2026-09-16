@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.build.json",
+  "compilerOptions": {
+    "outDir": "lib/types",
+    "rootDir": ".",
+    "composite": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "paths": {}
+  },
+  "exclude": ["node_modules", "lib", "dist", "__test__/**/*", "*.spec.ts"]
+}

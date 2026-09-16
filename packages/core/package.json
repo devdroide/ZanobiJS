@@ -5,7 +5,17 @@
   "keywords": [],
   "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
   "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise el archivo de LICENCIA.",
-  "typings": "index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "typings": "./lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
+    }
+  },
+  "files": ["lib"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/devdroide/ZanobiJS.git",
@@ -24,7 +34,8 @@
   "homepage": "https://github.com/devdroide/ZanobiJS#readme",
   "dependencies": {
     "awilix": "10.0.2",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^2.8.1"
   },
   "peerDependencies": {
     "@zanobijs/common": "*"

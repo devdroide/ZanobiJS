@@ -137,3 +137,8 @@ CLAUDE.md
 
 # test/bundling — artefactos generados por npm run test:bundle
 test/bundling/compiled/
+
+# PERF-05 — build dual CJS/ESM (Rollup), generado por npm run build.
+# PUBLISH.yml lo commitea explícitamente antes de `lerna publish` (ver
+# .wiki/workflows/release-versioning.md); en el resto de ramas es artefacto.
+packages/*/lib/
