@@ -4,14 +4,9 @@
     "outDir": ".",
     "rootDir": ".",
     "paths": {
-      "@zanobijs/common": ["../common"],
-      "@zanobijs/common/*": ["../common/*"]
+      "@zanobijs/common": ["../common/lib/types"],
+      "@zanobijs/common/*": ["../common/lib/types/*"]
     }
   },
-  "exclude": ["node_modules", "dist", "__test__/**/*", "*.spec.ts"],
-  "references": [
-    {
-      "path": "../common/tsconfig.build.json"
-    }
-  ]
+  "exclude": ["node_modules", "dist", "lib", "__test__/**/*", "*.spec.ts"]
 }

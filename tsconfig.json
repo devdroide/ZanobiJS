@@ -14,7 +14,7 @@
     "allowJs": false,
     "outDir": "dist",
     "baseUrl": ".",
-    "types": ["node", "mocha", "sinon"],
+    "types": ["node"],
     "paths": {
       "zanobijs-common": ["./packages/common"],
       "zanobijs-common/*": ["./packages/common/*"],

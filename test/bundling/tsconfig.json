@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2022",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "outDir": "./compiled",
+    "rootDir": "./fixture",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["fixture/**/*.ts"]
+}

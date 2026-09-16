@@ -67,6 +67,15 @@ export class ServiceUseFactory {
   }
 }
 
+@Injectable({ lifetime: 'request' })
+export class ServiceRequestScoped {
+  constructor(@Inject('TEXT_INJECT') private textInj: string) {}
+
+  getDataService() {
+    return this.textInj;
+  }
+}
+
 // ==================================================
 // =========== Controller to Inject =================
 // ==================================================

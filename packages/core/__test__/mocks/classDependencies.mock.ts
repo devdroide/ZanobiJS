@@ -145,3 +145,23 @@ export class ControllerUser {
     return this.regUserUseCase.execute();
   }
 }
+
+@Injectable()
+export class ServiceThatThrowsOnConstruct {
+  constructor() {
+    throw new Error('Missing DB_URL environment variable');
+  }
+}
+
+@Injectable({ lifetime: 'request' })
+export class ServiceRequestScoped {
+  private state: string;
+
+  setState(value: string): void {
+    this.state = value;
+  }
+
+  getState(): string {
+    return this.state;
+  }
+}

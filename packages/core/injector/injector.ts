@@ -4,8 +4,20 @@ import { Logger } from '@zanobijs/common/utils';
 import { isClass, isEmpty } from '@zanobijs/common/utils/shared.utils';
 import { asClass, asFunction, asValue } from 'awilix';
 import { TClass } from '../interfaces';
+import { MissingInjectTokenException } from '../exceptions/missingInjectToken.exception';
 
 export type Constructor<T> = { new (...args: any[]): T };
+
+/**
+ * Mapea el `lifetime` público de `ZanobiJS` al método fluido de `awilix`.
+ * `request` usa `Lifetime.SCOPED` de `awilix` internamente: sin un scope real
+ * creado (ver `Factory.createRequestScope`), se resuelve igual que `singleton`.
+ */
+const LIFETIME_METHOD = {
+  singleton: 'singleton',
+  request: 'scoped',
+  transient: 'transient',
+} as const;
 
 /**
  * La clase `Injector` es la encargada de manejar la inyección de dependencias
@@ -106,6 +118,8 @@ export class Injector {
    *
    * @param { TClass} target - La clase objetivo.
    * @returns {object} - Objeto con datos a inyectar.
+   * @throws {MissingInjectTokenException} Si un `@Inject(token)` de `target` no tiene
+   * su provider registrado en este módulo ni en ninguno de los módulos importados.
    */
   getInjectData(target: TClass): object {
     const injectData = {};
@@ -117,9 +131,10 @@ export class Injector {
           const providerValue = this.listProviders.get(key);
           injectData[paramName] = providerValue.resolve();
         } else {
-          this.logger.important(
-            `You are trying to inject @INJECT('${key}') into '${target.name}'`,
-            `but the provider '${key}' and its value are not registered in '${this.moduleName}' or any other previously loaded modules`,
+          throw new MissingInjectTokenException(
+            key,
+            target.name,
+            this.moduleName,
           );
         }
       }
@@ -139,7 +154,8 @@ export class Injector {
    */
   getInjectorClass(target: TClass) {
     const injectData = this.getInjectData(target);
-    let injector = asClass(target).scoped();
+    const lifetime = this.metadata.getLifetime(target);
+    let injector = asClass(target)[LIFETIME_METHOD[lifetime]]();
     if (!isEmpty(injectData)) {
       this.logger.debug(
         `Inject - list dependencies to inject of ${target.name}:`,

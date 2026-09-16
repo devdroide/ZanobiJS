@@ -11,3 +11,11 @@ export const PROVIDER_INVALID_MODULE_ERROR = (
   moduleName: string,
 ) =>
   `Please check that ${entity} located in the @module ${moduleName} exists and is @Injectable().`;
+export const MISSING_INJECT_TOKEN_ERROR = (
+  token: string,
+  targetName: string,
+  moduleName: string,
+) =>
+  `Cannot inject @Inject('${token}') into '${targetName}': the provider '${token}' is not registered in '${moduleName}' or any other previously loaded module.`;
+export const CIRCULAR_MODULE_IMPORT_ERROR = (chain: string) =>
+  `Circular module import detected: ${chain}. A module cannot import, directly or indirectly, another module that already imports it.`;

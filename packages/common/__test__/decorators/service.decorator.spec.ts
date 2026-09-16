@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { describe, expect, it } from 'vitest';
 import { DEPENDENCIES_CLASS } from '../../utils/constants';
 import {
   ServiceMix,
@@ -12,52 +12,54 @@ describe('Commons - Decorator - service', () => {
       DEPENDENCIES_CLASS,
       ServiceOnly,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.be.empty;
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).toHaveLength(0);
   });
   it('should respond an array with dependecies type controller', () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ServiceWithService,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.not.be.empty;
-    expect(dependenciesClass[0]).to.include({ type: 'Service' });
-    expect(dependenciesClass[0]).to.include({ nameClass: 'ServiceOnly' });
-    expect(dependenciesClass[0]).to.include({
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).not.toHaveLength(0);
+    expect(dependenciesClass[0]).toMatchObject({ type: 'Service' });
+    expect(dependenciesClass[0]).toMatchObject({ nameClass: 'ServiceOnly' });
+    expect(dependenciesClass[0]).toMatchObject({
       nameClassContainer: 'serviceOnly',
     });
-    expect(dependenciesClass[0]).to.include({ nameParameter: 'serviceOnly' });
-    expect(dependenciesClass.length).to.be.equal(1);
+    expect(dependenciesClass[0]).toMatchObject({
+      nameParameter: 'serviceOnly',
+    });
+    expect(dependenciesClass.length).toBe(1);
   });
   it('should respond an array with dependecies as paramter', () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ServiceWithParameter,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.not.be.empty;
-    expect(dependenciesClass[0]).to.include({ type: 'Service' });
-    expect(dependenciesClass[0]).to.include({ nameClass: 'String' });
-    expect(dependenciesClass[0]).to.include({
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).not.toHaveLength(0);
+    expect(dependenciesClass[0]).toMatchObject({ type: 'Service' });
+    expect(dependenciesClass[0]).toMatchObject({ nameClass: 'String' });
+    expect(dependenciesClass[0]).toMatchObject({
       nameClassContainer: 'string',
     });
-    expect(dependenciesClass[0]).to.include({ nameParameter: 'userName' });
-    expect(dependenciesClass.length).to.be.equal(1);
+    expect(dependenciesClass[0]).toMatchObject({ nameParameter: 'userName' });
+    expect(dependenciesClass.length).toBe(1);
   });
   it('should respond an array with dependecies and additional @Inject', () => {
     const dependenciesClass = Reflect.getMetadata(
       DEPENDENCIES_CLASS,
       ServiceMix,
     );
-    expect(dependenciesClass).to.be.an('array');
-    expect(dependenciesClass).to.not.be.empty;
-    expect(dependenciesClass[1]).to.include({ type: 'Service' });
-    expect(dependenciesClass[1]).to.include({ nameClass: 'String' });
-    expect(dependenciesClass[1]).to.include({
+    expect(dependenciesClass).toBeInstanceOf(Array);
+    expect(dependenciesClass).not.toHaveLength(0);
+    expect(dependenciesClass[1]).toMatchObject({ type: 'Service' });
+    expect(dependenciesClass[1]).toMatchObject({ nameClass: 'String' });
+    expect(dependenciesClass[1]).toMatchObject({
       nameClassContainer: 'string',
     });
-    expect(dependenciesClass[1]).to.include({ nameParameter: 'apiKey' });
-    expect(dependenciesClass.length).to.be.equal(3);
+    expect(dependenciesClass[1]).toMatchObject({ nameParameter: 'apiKey' });
+    expect(dependenciesClass.length).toBe(3);
   });
 });

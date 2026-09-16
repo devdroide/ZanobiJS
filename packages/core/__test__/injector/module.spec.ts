@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { expect } from 'chai';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Module } from '../../injector';
 import {
   Module1,
@@ -22,14 +22,14 @@ describe('Core - Injector - module', () => {
         const mockModule = {};
         moduleInstance.setup(mockModule);
       } catch (error) {
-        expect(error.message).to.equal(
+        expect(error.message).toBe(
           'The class must have an annotation @Module()',
         );
       }
     });
     it('should respond no problem with the setup.', () => {
       moduleInstance.setup(ModuleTestEmpty);
-      expect(moduleInstance.getRegisterClass()).to.is.empty;
+      expect(moduleInstance.getRegisterClass()).toEqual({});
     });
   });
 
@@ -57,10 +57,10 @@ describe('Core - Injector - module', () => {
 
       moduleInstance.initialize();
 
-      expect(metadataCalled).to.be.true;
+      expect(metadataCalled).toBe(true);
       // expect(registerAllProviders).to.be.true;
       // expect(registerDependencies).to.be.true;
-      expect(registerDependenciesToAlias).to.be.true;
+      expect(registerDependenciesToAlias).toBe(true);
     });
   });
 
@@ -72,21 +72,21 @@ describe('Core - Injector - module', () => {
       moduleInstance.setup(Module1);
       moduleInstance.scan();
       moduleInstance.initialize();
-      expect(moduleInstance.getRegisterClass()).to.have.property('service1');
-      expect(moduleInstance.getRegisterClass()).to.have.property('textInj');
+      expect(moduleInstance.getRegisterClass()).toHaveProperty('service1');
+      expect(moduleInstance.getRegisterClass()).toHaveProperty('textInj');
     });
     it('Should respond imports of module', () => {
       moduleInstance.setup(Module2);
       moduleInstance.scan();
       moduleInstance.initialize();
-      expect(moduleInstance.getImports()).to.not.empty;
+      expect(moduleInstance.getImports()).not.toHaveLength(0);
     });
     it('Should respond empty register class', () => {
       moduleInstance.setup(Module3);
       moduleInstance.scan();
       moduleInstance.initialize();
-      expect(moduleInstance.getRegisterClass()).to.not.empty;
-      expect(moduleInstance.getRegisterClass()).to.have.property('serv1');
+      expect(moduleInstance.getRegisterClass()).not.toEqual({});
+      expect(moduleInstance.getRegisterClass()).toHaveProperty('serv1');
     });
     it('Should respond with an error because a provider is poorly defined.', () => {
       try {
@@ -94,12 +94,10 @@ describe('Core - Injector - module', () => {
         moduleInstance.scan();
         moduleInstance.initialize();
       } catch (error) {
-        expect(error.message).to.equal(
+        expect(error.message).toBe(
           'Please check that ServiceWithoutInjectable located in the @module ModuleProviderWithoutInjectable exists and is @Injectable().',
         );
-        expect(error.detail).to.equal(
-          'ServiceWithoutInjectable type is unknown',
-        );
+        expect(error.detail).toBe('ServiceWithoutInjectable type is unknown');
       }
     });
     it('Should respond with an error because a provider have module and is poorly defined.', () => {
@@ -108,10 +106,10 @@ describe('Core - Injector - module', () => {
         moduleInstance.scan();
         moduleInstance.initialize();
       } catch (error) {
-        expect(error.message).to.equal(
+        expect(error.message).toBe(
           'Please check that ModuleFactory located in the @module ModuleProviderHaveModule exists and is @Injectable().',
         );
-        expect(error.detail).to.equal(
+        expect(error.detail).toBe(
           'The type used in the provider useClass property is not valid',
         );
       }

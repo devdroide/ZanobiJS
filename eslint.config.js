@@ -6,6 +6,7 @@ const prettier = require('eslint-config-prettier');
 const pluginPrettier = require('eslint-plugin-prettier');
 
 module.exports = [
+  { ignores: ['packages/**/lib/**'] },
   js.configs.recommended,
   ...ts.configs.recommended,
   {

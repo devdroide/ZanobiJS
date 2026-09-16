@@ -11,14 +11,23 @@ export function isFunction(value: any): boolean {
 /**
  * Verifica si la función proporcionada es una clase.
  *
+ * No depende de `Function.prototype.toString()` — un bundler puede convertir
+ * una clase nombrada en una expresión de clase anónima (ej. esbuild con
+ * `keepNames: true` produce `class{...}` sin identificador, reasignando
+ * `.name` en runtime), lo que rompe un regex como `/^class\s/`. En cambio,
+ * usa una propiedad garantizada por el spec de ECMAScript e independiente
+ * del texto fuente: el `prototype` de una clase es siempre no-escribible
+ * (`writable: false`), mientras que el de una función común es escribible.
+ * Sobrevive cualquier minificación/bundling.
+ *
  * @param func - La función a verificar.
  * @returns Verdadero si es una clase; falso de lo contrario.
  */
 export function isClass(func: any): boolean {
   if (typeof func !== 'function') return false;
 
-  const funcAsString = Function.prototype.toString.call(func);
-  return /^class\s/.test(funcAsString);
+  const descriptor = Object.getOwnPropertyDescriptor(func, 'prototype');
+  return !!descriptor && descriptor.writable === false;
 }
 
 /**
@@ -54,28 +63,6 @@ export function isArray(value: any): boolean {
  */
 export function isMap(value: any): boolean {
   return value instanceof Map;
-}
-
-/**
- * Verifica si el valor proporcionado es un posible objeto transformado en cadena.
- *
- * @param value - El valor a verificar.
- * @returns Verdadero si el valor es un posible objeto; falso de lo contrario.
- */
-export function isObjectString(value: string) {
-  const trimmed = value.trim();
-  return trimmed.startsWith('{') && trimmed.endsWith('}');
-}
-
-/**
- * Verifica si el valor proporcionado es un posible array transformado en cadena.
- *
- * @param value - El valor a verificar.
- * @returns Verdadero si el valor es un posible array; falso de lo contrario.
- */
-export function isArrayString(value: string) {
-  const trimmed = value.trim();
-  return trimmed.startsWith('[') && trimmed.endsWith(']');
 }
 
 /**
@@ -135,6 +122,16 @@ export const unCapitalize = (word: string): string =>
   word.charAt(0).toLowerCase() + word.slice(1);
 
 /**
+ * Cache de nombres de parámetros por clase/función. `getConstructorParamNames`
+ * es pura respecto a `func` (mismo input → mismo output siempre), pero se
+ * invoca varias veces sobre la MISMA clase: una vez por cada `@Inject(token)`
+ * en el constructor (decorador de parámetro) más una vez desde
+ * `createClassDecorator` (`@Controller`/`@Injectable`). Sin cache, cada una
+ * de esas llamadas repite el mismo `toString()` + regex + parseo.
+ */
+const constructorParamNamesCache = new WeakMap<Function | object, string[]>();
+
+/**
  * Obtiene los nombres de los parámetros del constructor de una función o clase.
  *
  * Esta función es útil cuando se quiere inspeccionar y/o manipular los argumentos
@@ -148,21 +145,33 @@ export const unCapitalize = (word: string): string =>
  * getConstructorParamNames(exampleFunc) // Devuelve ["arg1", "arg2"]
  */
 export const getConstructorParamNames = (func: Function | object): string[] => {
+  if (constructorParamNamesCache.has(func)) {
+    return constructorParamNamesCache.get(func)!;
+  }
+
   const ctorString = func.toString();
   /** Encuentra lo que está dentro de los paréntesis del constructor. */
   const ctorRegex = /constructor\s*\(([^)]*)\)/;
   const ctorParamsMatch = ctorRegex.exec(ctorString);
   /** Verifica si paramsString está vacío */
-  if (!ctorParamsMatch) return [];
+  if (!ctorParamsMatch) {
+    constructorParamNamesCache.set(func, []);
+    return [];
+  }
 
   const paramsString = ctorParamsMatch[1].trim();
   /** Verifica si paramsString está vacío */
-  if (!paramsString) return [];
+  if (!paramsString) {
+    constructorParamNamesCache.set(func, []);
+    return [];
+  }
 
-  return paramsString.split(',').map((param) => {
+  const paramNames = paramsString.split(',').map((param) => {
     /** Elimina todo después e incluyendo ":" o "=" para manejar anotaciones de tipo y valores predeterminados */
     return param.split(':')[0].split('=')[0].trim();
   });
+  constructorParamNamesCache.set(func, paramNames);
+  return paramNames;
 };
 
 /**
