@@ -1,6 +1,6 @@
 export interface IOptionsLog {
   withColor: boolean;
-  /** Profundidad máxima de recorrido recursivo del masker. Default: 10. */
+  /** Profundidad máxima de `util.inspect()` al formatear argumentos logueados. Default: 10. */
   maxDepth?: number;
 }
 export interface ILoggerService {
