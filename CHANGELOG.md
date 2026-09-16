@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.2...v2.0.0-beta.0) (2026-09-16)
+
+### Bug Fixes
+
+- **build:** stop deleting CHANGELOG.md in clean:ts ([77e9cdf](https://github.com/devdroide/ZanobiJS/commit/77e9cdfcdc10bdbba0c09349175885674a783cbb))
+- **commons,core:** :bug: respect operator env vars and contain masker failures (SEC-05) ([62f13a4](https://github.com/devdroide/ZanobiJS/commit/62f13a4dee32f87902623e361c7c30a9cfcb1e2f))
+- **commons,test:** 🐛 make masker fail-closed instead of fail-open ([cada4c7](https://github.com/devdroide/ZanobiJS/commit/cada4c7f8121c50663503882995d084701f2b171))
+- **commons:** :bug: fix isClass() detection broken under esbuild bundling ([b74fd38](https://github.com/devdroide/ZanobiJS/commit/b74fd3869cd9941bbc9ad623d1f8c49869ce1de8))
+- **commons:** :lock: bound masker recursion and log inspect depth (SEC-06) ([b0c5e80](https://github.com/devdroide/ZanobiJS/commit/b0c5e803dffaa3fdeb041d8e90df9332df8b4a6b))
+- **core,test:** 🐛 stop wrapping non-awilix errors in Factory.get() ([11b1873](https://github.com/devdroide/ZanobiJS/commit/11b1873a6e2a2fde93a78388a6c58f1a70148cb8))
+- **core,test:** 🐛 throw MissingInjectTokenException instead of silently logging ([ed7c33c](https://github.com/devdroide/ZanobiJS/commit/ed7c33cd63000cdbbbf4bc700c71ebe0d23e6ee7))
+- **core:** :bug: export exceptions from @zanobijs/core public entrypoint ([30b796d](https://github.com/devdroide/ZanobiJS/commit/30b796d516b9eab82fcda724f7c0ebe8c6faf4c6))
+- **test:** prioritize .ts over .js in Vitest module resolution ([dac487a](https://github.com/devdroide/ZanobiJS/commit/dac487a233bbb0a2a62fa09a9db44040c1225a84))
+
+### Features
+
+- **common:** remove user logger + masker (moving to @zanobijs/logger-user) ([7df011a](https://github.com/devdroide/ZanobiJS/commit/7df011a9159610369c2002ead784789f068f7aad))
+- **commons,test:** :sparkles: cache getConstructorParamNames per class ([4ac5ea3](https://github.com/devdroide/ZanobiJS/commit/4ac5ea376a046f8838e6136f9c33254767c99f05))
+- **core,common:** :sparkles: add awilix strict mode and request lifetime ([ef2f633](https://github.com/devdroide/ZanobiJS/commit/ef2f633a3bbabb587cf929ce50a9ea4eecd9bd6c))
+- **core,test:** :sparkles: memoize module traversal, detect import cycles ([3c9f9b0](https://github.com/devdroide/ZanobiJS/commit/3c9f9b07e32d81e96e302eedd8191190fbf0bdd8))
+
+### Performance Improvements
+
+- **build:** :zap: dual CJS/ESM build via Rollup (PERF-05) ([6398b2d](https://github.com/devdroide/ZanobiJS/commit/6398b2d402858dbcd58b4f40edb289ccc16f4e8a))
+
+### BREAKING CHANGES
+
+- **common:** LoggerUser, ILoggerUserService, ABSPattern, IPattern,
+  TPattern/TPatternByKey/TPatternBySchema/TConfigSchemaMasker, TClass
+  and PatternException are no longer exported from @zanobijs/common.
+  This functionality is moving to a new package, @zanobijs/logger-user
+  (not yet published). The system logger (Logger(), ILoggerService)
+  is unaffected.
+
+  ABSBaseLoggerService is now a public export (new subpath
+  @zanobijs/common/services/base.logger.service) so the new package
+  can extend it from outside the monorepo. IOptionsLog split: base
+  interface keeps only withColor/maxDepth, masker-specific fields
+  (activeMasker, configSchemaMasker, maxStringLength) move to the new
+  package's own IOptionsLogUser.
+
+  Also removed: MSG_PATTERN_EXIST/MSG_SCHEMA_PATTERN_EXIST,
+  isObjectString/isArrayString, PatternException — dead code left over
+  once the masker was removed, no remaining references anywhere.
+
 # [1.2.0-beta.2](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-06-08)
 
 ### Bug Fixes

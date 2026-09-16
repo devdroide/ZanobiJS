@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-beta.0](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.2...v2.0.0-beta.0) (2026-09-16)
+
+### Bug Fixes
+
+- **commons,core:** :bug: respect operator env vars and contain masker failures (SEC-05) ([62f13a4](https://github.com/devdroide/ZanobiJS/commit/62f13a4dee32f87902623e361c7c30a9cfcb1e2f))
+- **core,test:** 🐛 stop wrapping non-awilix errors in Factory.get() ([11b1873](https://github.com/devdroide/ZanobiJS/commit/11b1873a6e2a2fde93a78388a6c58f1a70148cb8))
+- **core,test:** 🐛 throw MissingInjectTokenException instead of silently logging ([ed7c33c](https://github.com/devdroide/ZanobiJS/commit/ed7c33cd63000cdbbbf4bc700c71ebe0d23e6ee7))
+- **core:** :bug: export exceptions from @zanobijs/core public entrypoint ([30b796d](https://github.com/devdroide/ZanobiJS/commit/30b796d516b9eab82fcda724f7c0ebe8c6faf4c6))
+
+### Features
+
+- **core,common:** :sparkles: add awilix strict mode and request lifetime ([ef2f633](https://github.com/devdroide/ZanobiJS/commit/ef2f633a3bbabb587cf929ce50a9ea4eecd9bd6c))
+- **core,test:** :sparkles: memoize module traversal, detect import cycles ([3c9f9b0](https://github.com/devdroide/ZanobiJS/commit/3c9f9b07e32d81e96e302eedd8191190fbf0bdd8))
+
+### Performance Improvements
+
+- **build:** :zap: dual CJS/ESM build via Rollup (PERF-05) ([6398b2d](https://github.com/devdroide/ZanobiJS/commit/6398b2d402858dbcd58b4f40edb289ccc16f4e8a))
+
 # [1.2.0-beta.2](https://github.com/devdroide/ZanobiJS/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-06-08)
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 {
   "name": "@zanobijs/common",
-  "version": "1.2.0-beta.0",
+  "version": "2.0.0-beta.0",
   "description": "Zanobi - modern, small, powerful node.js lambda framework (@common)",
   "keywords": [],
   "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
@@ -40,7 +40,9 @@
       "require": "./lib/cjs/services/base.logger.service.js"
     }
   },
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "homepage": "https://zanobijs.vercel.app",
   "repository": {
     "type": "git",
