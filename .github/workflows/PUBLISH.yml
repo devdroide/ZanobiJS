@@ -13,9 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      # OIDC token para npm provenance (auto-detectado por libnpmpublish vía
-      # GITHUB_ACTIONS + repo público) y para Trusted Publishing (detectado
-      # por el comando `npm publish` real — ver el paso "Publish to NPM").
+      # OIDC token para npm provenance — lerna lo detecta y activa solo
+      # (GITHUB_ACTIONS + repo público), no requiere flag en el comando.
       id-token: write
     steps:
       - name: Checkout code
@@ -24,23 +23,12 @@ jobs:
           fetch-depth: 0
           ssh-key: ${{ secrets.DEPLOY_KEY }}
 
-      # Sin registry-url: ese input siempre escribe
-      # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` en .npmrc — con
-      # NODE_AUTH_TOKEN sin definir (caso esperado con Trusted Publishing,
-      # sin token clásico), el placeholder se expande a vacío y npm ve "hay
-      # auth configurada", usando el flujo clásico con token vacío en vez de
-      # disparar el intercambio OIDC — causa raíz real, verificada, del 404.
-      # npm apunta a registry.npmjs.org por default, no hace falta el input.
-      # Tampoco cache: mismo motivo que documenta el ejemplo oficial de npm
-      # para Trusted Publishing (evitar credenciales/config vieja en caché).
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '22.14.0'
-
-      # Trusted Publishing (OIDC) requiere npm >= 11.5.1; el npm bundleado con Node 22.14.0 es menor.
-      - name: Update npm for OIDC trusted publishing
-        run: npm install -g npm@11.5.1
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -85,12 +73,11 @@ jobs:
           fi
 
       # Build y Publish corren SIEMPRE (no solo cuando lerna detecta un bump
-      # nuevo): el loop de `npm publish` de abajo es idempotente por paquete
-      # (npm view decide si ya está publicado), así que si algo quedó
+      # nuevo): `lerna publish from-package` ya es idempotente por paquete
+      # (compara contra lo que hay en el registry), así que si algo quedó
       # bumpeado en git pero nunca publicado de verdad (ej. un run anterior
-      # falló en el publish real), el siguiente push a beta/main lo
-      # recupera solo — sin depender de que aparezca un commit nuevo que
-      # fuerce otro bump.
+      # falló en el publish), el siguiente push a beta/main lo recupera solo
+      # — sin depender de que aparezca un commit nuevo que fuerce otro bump.
       - name: Build packages
         run: |
           npm run build
@@ -98,21 +85,11 @@ jobs:
 
       - name: Publish to NPM
         run: |
-          # `lerna publish` NO usa Trusted Publishing (OIDC): llama a la librería
-          # libnpmpublish directo, nunca ejecuta el comando `npm publish` del CLI
-          # real — y el intercambio OIDC de Trusted Publishing vive únicamente en
-          # `npm/lib/commands/publish.js` (verificado en el código fuente de npm).
-          # Por eso se publica paquete por paquete con `npm publish` real: solo
-          # ese comando dispara la detección OIDC.
-          DIST_TAG="${{ steps.set_vars.outputs.DIST_TAG }}"
-          for pkg_dir in packages/*/; do
-            PKG_NAME=$(node -p "require('./${pkg_dir}package.json').name")
-            PKG_VERSION=$(node -p "require('./${pkg_dir}package.json').version")
-            if npm view "$PKG_NAME@$PKG_VERSION" version >/dev/null 2>&1; then
-              echo "⏭️  $PKG_NAME@$PKG_VERSION ya está publicado, se omite"
-            else
-              echo "🚀 Publicando $PKG_NAME@$PKG_VERSION (tag: $DIST_TAG)"
-              (cd "$pkg_dir" && npm publish --tag "$DIST_TAG")
-            fi
-          done
-          echo "🚀 Versión v${{ env.VERSION_NEW }} publicada a NPM con tag $DIST_TAG"
+          if [[ ${{ steps.set_vars.outputs.BRANCH }} == 'beta' ]]; then
+            npm exec --no -- lerna publish from-package --yes --pre-dist-tag beta
+          else
+            npm exec --no -- lerna publish from-package --yes
+          fi
+          echo "🚀 Versión v${{ env.VERSION_NEW }} publicada a NPM con tag ${{ steps.set_vars.outputs.DIST_TAG }}!"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_ZANOBIJS }}
