@@ -33,6 +33,11 @@
       "types": "./lib/types/exceptions/runtime.exception.d.ts",
       "import": "./lib/esm/exceptions/runtime.exception.js",
       "require": "./lib/cjs/exceptions/runtime.exception.js"
+    },
+    "./services/base.logger.service": {
+      "types": "./lib/types/services/base.logger.service.d.ts",
+      "import": "./lib/esm/services/base.logger.service.js",
+      "require": "./lib/cjs/services/base.logger.service.js"
     }
   },
   "files": ["lib"],

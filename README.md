@@ -80,6 +80,19 @@ If your build uses a bundler, preserve function/class names:
 | Serverless Framework (`serverless-esbuild`) | `custom.esbuild.keepNames: true` |
 | terser (webpack) | `terserOptions: { keep_fnames: true, keep_classnames: true }` |
 
+## Logger with masking (breaking change)
+
+The masking-aware user logger (`LoggerUser`, `ILoggerUserService`, and the pattern/masker types `ABSPattern`, `IPattern`, `TPattern*`, `TConfigSchemaMasker`) has been removed from `@zanobijs/common` and is moving to its own package, `@zanobijs/logger-user` — **not yet published (coming soon)**. The system logger (`Logger()`, `ILoggerService`) is unaffected and stays in `@zanobijs/common`.
+
+```ts
+// Still works, unchanged:
+import { Logger } from '@zanobijs/common/utils';
+const logger = Logger();
+
+// Removed from @zanobijs/common — will move to @zanobijs/logger-user (coming soon):
+// import { LoggerUser } from '@zanobijs/common/utils';
+```
+
 ## Issues
 
 Please be sure to read the [Issue Reporting Checklist](https://github.com/devdroide/ZanobiJS/blob/main/CONTRIBUTING.md) before opening an issue. Issues not conforming to the guidelines may be closed immediately.

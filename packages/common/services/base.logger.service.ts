@@ -12,8 +12,6 @@ export abstract class ABSBaseLoggerService {
 
   protected constructor(options?: IOptionsLog) {
     this.options.withColor = options?.withColor ?? true;
-    this.options.activeMasker = options?.activeMasker ?? false;
-    this.options.configSchemaMasker = options?.configSchemaMasker ?? {};
     this.options.maxDepth = options?.maxDepth ?? 10;
   }
 
