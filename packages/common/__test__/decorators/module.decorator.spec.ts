@@ -43,6 +43,37 @@ describe('Commons - Decorators - module', () => {
       expect(error).toBeInstanceOf(InvalidModuleSchemaException);
     }
   });
+  it('should respond missing imports in module', () => {
+    try {
+      @Module({
+        controllers: [],
+        services: [],
+        exports: [],
+      } as never)
+      class ModuleIncomplete {}
+    } catch (error) {
+      expect(error.detail).toBe(
+        "missing entity 'imports' into the @Module() decorator.",
+      );
+      expect(error).toBeInstanceOf(InvalidModuleSchemaException);
+    }
+  });
+  it('should respond services type [not an array] invalid in module', () => {
+    try {
+      @Module({
+        imports: [],
+        controllers: [],
+        services: 'not-an-array' as never,
+        exports: [],
+      })
+      class ModuleInvalidServices {}
+    } catch (error) {
+      expect(error.detail).toBe(
+        'The content of the "services" entity must be type "class".',
+      );
+      expect(error).toBeInstanceOf(InvalidModuleSchemaException);
+    }
+  });
   it('should respond missing services in module', () => {
     try {
       @Module({

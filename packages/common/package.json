@@ -5,7 +5,37 @@
   "keywords": [],
   "author": "John Edison Cortes Rivera [Devdroide] <johne.aplicativos@gmail.com>",
   "license": "ZanobiJS Usage License \n\n Review the LICENSE file.\n\n Revise el archivo de LICENCIA.",
-  "typings": "index.d.ts",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "typings": "./lib/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "import": "./lib/esm/index.js",
+      "require": "./lib/cjs/index.js"
+    },
+    "./utils": {
+      "types": "./lib/types/utils/index.d.ts",
+      "import": "./lib/esm/utils/index.js",
+      "require": "./lib/cjs/utils/index.js"
+    },
+    "./utils/constants": {
+      "types": "./lib/types/utils/constants.d.ts",
+      "import": "./lib/esm/utils/constants.js",
+      "require": "./lib/cjs/utils/constants.js"
+    },
+    "./utils/shared.utils": {
+      "types": "./lib/types/utils/shared.utils.d.ts",
+      "import": "./lib/esm/utils/shared.utils.js",
+      "require": "./lib/cjs/utils/shared.utils.js"
+    },
+    "./exceptions/runtime.exception": {
+      "types": "./lib/types/exceptions/runtime.exception.d.ts",
+      "import": "./lib/esm/exceptions/runtime.exception.js",
+      "require": "./lib/cjs/exceptions/runtime.exception.js"
+    }
+  },
+  "files": ["lib"],
   "homepage": "https://zanobijs.vercel.app",
   "repository": {
     "type": "git",
@@ -19,8 +49,8 @@
     "url": "https://github.com/devdroide/ZanobiJS/issues"
   },
   "dependencies": {
-    "joi": "^17.11.0",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "tslib": "^2.8.1"
   },
   "engines": {
     "node": ">= 22.13.0"
